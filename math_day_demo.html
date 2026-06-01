@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>数学学习 - Day 27 演示</title>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #0d1117; --bg2: #161b22; --bg3: #21262d; --border: #30363d;
+      --text: #e6edf3; --text2: #8b949e; --text3: #6e7681;
+      --green: #3fb950; --blue: #58a6ff; --purple: #a371f7; --orange: #d29922;
+      --font: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+      --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+      --r: 6px;
+    }
+    body {
+      font-family: var(--font); background: var(--bg); color: var(--text);
+      min-height: 100vh; display: flex; justify-content: center;
+      font-size: 14px; line-height: 1.5;
+    }
+    .page { max-width: 720px; width: 100%; padding: 0 20px 60px; }
+
+    /* Top Bar — 与现有页面一致 */
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 0; border-bottom: 1px solid var(--border);
+    }
+    .topbar-left { display: flex; align-items: center; gap: 6px; }
+    .topbar-title { font-size: 14px; font-weight: 600; }
+    .topbar-badge {
+      font-size: 11px; padding: 1px 7px; border-radius: 20px;
+      background: rgba(163,113,247,0.12); color: var(--purple);
+      border: 1px solid rgba(163,113,247,0.3);
+    }
+
+    /* Breadcrumb — 与现有页面一致 */
+    .breadcrumb {
+      padding: 12px 0 14px; border-bottom: 1px solid var(--border);
+      font-size: 13px; color: var(--text3);
+    }
+    .breadcrumb .current { color: var(--text); font-weight: 600; }
+
+    /* Day meta — 与现有页面一致 */
+    .day-meta {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 0; border-bottom: 1px solid var(--border);
+      font-size: 15px; font-weight: 600; color: var(--text);
+    }
+
+    /* Sync badge — 与现有页面一致，点击跳转到对应 Main Day */
+    .sync-badge {
+      display: inline-block; margin: 8px 0 4px;
+      padding: 3px 10px; font-size: 11px;
+      background: var(--bg3); color: var(--blue);
+      border: 1px solid rgba(88,166,255,0.3);
+      border-radius: 20px; cursor: pointer; transition: all 0.15s;
+    }
+    .sync-badge:hover { background: rgba(88,166,255,0.1); }
+
+    /* Day description — 与现有页面一致 */
+    .day-description {
+      font-size: 13px; line-height: 1.7; color: var(--text2);
+      padding: 8px 0 12px; border-bottom: 1px solid var(--border);
+    }
+
+    /* Prompt area — 与现有页面一致 */
+    .prompt-area { padding: 14px 0; border-bottom: 1px solid var(--border); }
+    .prompt-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .prompt-header span {
+      font-size: 11px; font-weight: 600; color: var(--text3);
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .btn-copy {
+      padding: 3px 10px; font-size: 11px; font-family: var(--font);
+      background: var(--bg3); color: var(--text2);
+      border: 1px solid var(--border); border-radius: var(--r);
+      cursor: pointer; transition: all 0.15s;
+    }
+    .btn-copy:hover { background: var(--border); color: var(--text); }
+    .btn-copy.copied { background: var(--green); border-color: var(--green); color: #fff; }
+
+    .prompt-content {
+      background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r);
+      padding: 14px 16px; font-size: 13px; line-height: 1.8;
+      color: var(--text); white-space: pre-wrap; word-break: break-word;
+      font-family: var(--font);
+    }
+
+    /* Task list — 与现有页面一致 */
+    .task-list { padding: 8px 0 0; }
+    .task-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 7px 10px; border-radius: var(--r); cursor: pointer;
+      transition: background 0.15s; user-select: none;
+    }
+    .task-item:hover { background: var(--bg2); }
+    .task-item input[type="checkbox"] {
+      width: 16px; height: 16px; flex-shrink: 0;
+      accent-color: var(--green); cursor: pointer;
+    }
+    .task-item span { font-size: 13px; color: var(--text); flex: 1; }
+    .task-item:has(input:checked) span { text-decoration: line-through; color: var(--text3); }
+    .task-item:has(input:checked) { opacity: 0.55; }
+
+    /* Footer — 与现有页面一致 */
+    .day-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 0 24px; font-size: 12px; color: var(--text3);
+    }
+    .day-nav { display: flex; gap: 6px; }
+    .btn-nav {
+      padding: 4px 12px; font-size: 12px; font-family: var(--font);
+      background: var(--bg2); color: var(--text2);
+      border: 1px solid var(--border); border-radius: var(--r);
+      cursor: pointer; transition: all 0.15s;
+    }
+    .btn-nav:hover { background: var(--bg3); color: var(--text); }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ====== Top Bar（与现有页面一致） ====== -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <span class="topbar-title">量化学习计划追踪</span>
+      <span class="topbar-badge">数学</span>
+    </div>
+  </div>
+
+  <!-- ====== Breadcrumb（与现有页面一致） ====== -->
+  <div class="breadcrumb">
+    数学 &gt; 模块三：线性代数基础 &gt; <span class="current">Day 27</span>
+  </div>
+
+  <!-- ====== Day Meta（与现有页面一致） ====== -->
+  <div class="day-meta">Day 27：向量点积——相似度的数学根源</div>
+
+  <!-- ====== Sync Badge（与现有页面一致） ====== -->
+  <button class="sync-badge" onclick="alert('跳转到 Main Day 42')">↗ 同步：Main Day 42 - Embedding与向量检索</button>
+
+  <!-- ====== Day Description（与现有页面一致） ====== -->
+  <p class="day-description">理解点积=相似度的数学根源，余弦相似度∈[−1,+1]。这是ChromaDB/RAG检索"相似文本"的数学基础——两个Embedding向量的夹角越小，语义越接近。</p>
+
+  <!-- ====== Prompt 区（与现有页面一致） ====== -->
+  <div class="prompt-area">
+    <div class="prompt-header">
+      <span>Prompt</span>
+      <button class="btn-copy" onclick="copyPrompt()">Copy</button>
+    </div>
+    <pre class="prompt-content" id="prompt-content">=== Math Day 27：向量点积——相似度的数学根源 ===
+
+【每日学习时长】约25分钟
+
+【与主计划的关联】
+你今天在 Main Day 42 正在学：Embedding 向量检索——用 ChromaDB 做语义相似搜索。
+当你写下 collection.query(query_embeddings=[...]) 时，ChromaDB 内部就在做「查询向量与库存向量的余弦相似度计算」。
+今天这 25 分钟数学，就是让你看清楚那一行代码背后到底发生了什么。
+关联度：对 AI 开发直觉 ★★★ / 对量化实践 ★
+
+【学习目的】
+建立「点积 = 方向一致性度量」的核心直觉。两个向量点积越大，方向越一致；点积为 0，互相垂直；点积为负，方向相反。把点积除以两个向量的长度之积，就得到余弦相似度 ∈ [−1, +1]。这就是所有向量检索（RAG、推荐系统、语义搜索）的数学引擎。不理解点积，Embedding 检索对你来说就是黑盒。
+
+【学习标准】
+- 能口述：点积公式 v·w = v₁w₁ + v₂w₂ = |v||w|cos(θ)，每一项的几何含义
+- 能写代码计算两个给定向量的余弦相似度
+- 能解释：为什么余弦相似度比欧氏距离更适合比较文本语义？
+- 能画图说明：两个向量夹角 0°/90°/180° 时，余弦相似度分别接近 1/0/−1
+
+【学习难度】
+初中数学基础 → 大学一年级线性代数直觉
+前置知识：向量是什么（Day 24）、向量加减法（Day 25）
+不需要理解证明，只需要理解几何含义
+
+【所需工具】
+Python 3.x + numpy + matplotlib
+
+【核心概念】
+- 点积（Dot Product）v·w = v₁w₁ + v₂w₂ + ... = |v| × |w| × cos(θ)
+- 方向一致（θ=0°）→ cos=1 → 点积最大
+- 垂直（θ=90°）→ cos=0 → 点积为 0
+- 方向相反（θ=180°）→ cos=−1 → 点积最小（负值）
+- 余弦相似度 = (v·w) / (|v| × |w|) ∈ [−1, +1]
+
+【练习任务】
+- 定义 v1=[1,2], v2=[2,4], v3=[−2,1]，手算 v1·v2 和 v1·v3
+- 写 cosine_sim(a,b) 函数，验证 v1 和 v2 相似度≈1，v1 和 v3≈0
+- 画三个向量，标注两两之间的夹角和余弦相似度
+- 思考：两篇文章的 Embedding 余弦相似度=0.95 说明什么？=0.02 说明什么？</pre>
+  </div>
+
+  <!-- ====== Task List（与现有页面一致） ====== -->
+  <div class="task-list">
+    <label class="task-item" onclick="this.classList.toggle('done')">
+      <input type="checkbox"><span>手算 v1·v2 和 v1·v3，验证结果</span>
+    </label>
+    <label class="task-item" onclick="this.classList.toggle('done')">
+      <input type="checkbox"><span>写 cosine_sim() 函数，计算 v1与v2、v1与v3 的余弦相似度</span>
+    </label>
+    <label class="task-item" onclick="this.classList.toggle('done')">
+      <input type="checkbox"><span>画图并解释：夹角 0°/90°/180° 分别对应什么余弦相似度？</span>
+    </label>
+  </div>
+
+  <!-- ====== Day Footer（与现有页面一致） ====== -->
+  <div class="day-footer">
+    <span>Day 27 / 61 · 模块三</span>
+    <div class="day-nav">
+      <button class="btn-nav">← Day 26</button>
+      <button class="btn-nav">Home</button>
+      <button class="btn-nav">Day 28 →</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function copyPrompt() {
+    var text = document.getElementById('prompt-content').textContent;
+    navigator.clipboard.writeText(text).then(function() {
+      var btn = document.querySelector('.btn-copy');
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(function() { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1500);
+    });
+  }
+</script>
+</body>
+</html>

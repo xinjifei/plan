@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -c ' *)",
+      "Bash(python fix_math_titles.py)",
+      "Bash(python compare_main.py)",
+      "Bash(python check_alignment.py)",
+      "Bash(node -c \"d:/PY_practice_file/plan/app.js\")",
+      "Bash(python _append_modules.py)",
+      "Bash(python -c \"import ast; ast.parse\\(open\\('math_outline.py', encoding='utf-8'\\).read\\(\\)\\); print\\('Python syntax OK'\\)\")",
+      "Bash(python -c \"with open\\('math_outline.py', encoding='utf-8'\\) as f: content = f.read\\(\\); compile\\(content[:content.find\\('\\\\n=======\\\\n', content.find\\('模块三'\\)\\)], 'test', 'exec'\\)\")",
+      "Bash(python sync_math_to_appjs.py)",
+      "Bash(PYTHONIOENCODING=utf-8 python sync_math_to_appjs.py)",
+      "Bash(node -c app.js)",
+      "Bash(PYTHONIOENCODING=utf-8 python -c ' *)",
+      "Bash(python audit_math.py)",
+      "Bash(python -c \"import sys; sys.stdout.reconfigure\\(encoding='utf-8'\\); import re; f=open\\('app.js',encoding='utf-8'\\); c=f.read\\(\\); f.close\\(\\); m=re.search\\(r'prompt: .\\(=== Math Day 1[^.]*\\)', c, re.DOTALL\\); lines=m.group\\(1\\).split\\('\\\\n'\\); [print\\(f'Line {i}: indent={len\\(l\\)-len\\(l.lstrip\\(\\)\\)}'\\) for i,l in enumerate\\(lines[:8]\\)]\")",
+      "Bash(python -c \"import sys; sys.stdout.reconfigure\\(encoding='utf-8'\\); f=open\\('app.js',encoding='utf-8'\\); c=f.read\\(\\); f.close\\(\\); pos=c.find\\('const MATH_TRACK'\\); end=c.find\\('const KEY_MAIN', pos\\); print\\(f'MATH_TRACK starts at char {pos}'\\); print\\(f'KEY_MAIN at char {end}'\\); print\\(f'Between them: {c[end-50:end]}'\\)\")",
+      "Bash(python -c \"import sys; sys.stdout.reconfigure\\(encoding='utf-8'\\); f=open\\('app.js',encoding='utf-8'\\); c=f.read\\(\\); f.close\\(\\); import re; m=re.search\\(r'prompt: .\\(=== Math Day 1[^.]*\\)', c, re.DOTALL\\); lines=m.group\\(1\\).split\\('\\\\n'\\); [print\\(f'L{i}: {repr\\(l[:80]\\)}'\\) for i,l in enumerate\\(lines[:10]\\)]\")",
+      "Bash(python -c \"import sys; sys.stdout.reconfigure\\(encoding='utf-8'\\); f=open\\('app.js',encoding='utf-8'\\); c=f.read\\(\\); f.close\\(\\); import re; m=re.search\\(r'prompt: .\\(=== Math Day 1[^.]*\\)', c, re.DOTALL\\); lines=m.group\\(1\\).split\\('\\\\n'\\); [print\\(f'L{i}: {repr\\(l[:100]\\)}'\\) for i,l in enumerate\\(lines[:12]\\)]\")",
+      "Bash(python -c \"import sys; sys.stdout.reconfigure\\(encoding='utf-8'\\); f=open\\('app.js',encoding='utf-8'\\); c=f.read\\(\\); f.close\\(\\); print\\('getDay:', c.count\\('getDay\\(n\\)'\\), 'totalDays:', c.count\\('get totalDays\\(\\)'\\), 'MATH_TRACK:', c.count\\('const MATH_TRACK'\\)\\)\")"
+    ]
+  }
+}
