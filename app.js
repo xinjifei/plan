@@ -6175,10 +6175,12 @@ const Store = {
     // 从 streak 开始后新完成的天数
     var newlyDone = totalDone - baseline;
 
-    // 不掉队：新完成天数 >= 经过日历天数
-    if (newlyDone >= daysSince) {
-      if (daysSince > total) return total;
-      return daysSince;
+    // 不掉队：新完成天数 >= 经过日历天数 - 1（今天还没结束，不强制要求）
+    // 今天没做完不影响连胜，只有昨天及之前没完成才会断
+    if (newlyDone >= daysSince - 1) {
+      var streak = Math.min(newlyDone, daysSince);
+      if (streak > total) return total;
+      return streak;
     }
     return 0;
   }
