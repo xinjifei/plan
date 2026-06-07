@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>方案B · Warm Card · 预览</title>
+<style>
+/* ===== CSS Variables ===== */
+:root {
+  --bg: #fafaf7; --card: #ffffff; --bg-hover: #f5f3ef; --border: #e8e5df;
+  --text: #1a1a1a; --text2: #8c8c8c; --text3: #bfbfbf;
+  --accent: #d4923a; --green: #4a9e6e; --purple: #7c5cbf; --streak: #e87830;
+  --c0: #f0ede7; --c1: #d4e8d8; --c2: #a3d4ae; --c3: #6cbe80; --c4: #4a9e6e;
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --r: 12px;
+}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html, body { height:100%; overflow-x:hidden; font-family:var(--font); background:var(--bg); color:var(--text); font-size:14px; line-height:1.6; }
+
+/* ===== Topbar (warm, with pill) ===== */
+.topbar {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:12px 20px; background:var(--card); border-bottom:1px solid var(--border);
+  flex-shrink:0;
+}
+.topbar-left { display:flex; align-items:baseline; gap:8px; }
+.topbar-title { font-size:15px; font-weight:700; color:var(--text); }
+.topbar-sub { font-size:12px; color:var(--text2); }
+
+.track-pills { display:flex; gap:6px; }
+.track-pill {
+  padding:5px 16px; font-size:12px; font-weight:500; font-family:var(--font);
+  border-radius:20px; border:1px solid var(--border); cursor:pointer;
+  background:transparent; color:var(--text2); transition:all 0.2s;
+}
+.track-pill.active { background:var(--text); color:#fff; border-color:var(--text); }
+.track-pill:hover:not(.active) { border-color:var(--text2); color:var(--text); }
+
+/* ===== App Container (centered, max-width) ===== */
+#app { max-width:720px; margin:0 auto; padding:0 20px 60px; height:calc(100% - 46px); overflow-y:auto; }
+#app::-webkit-scrollbar { width:4px; }
+#app::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
+
+.view { display:none; }
+.view.active { display:block; }
+
+/* ===== Home ===== */
+
+/* Hero Streak Card */
+.hero-card {
+  background:var(--card); border-radius:16px; padding:28px 24px 20px;
+  box-shadow:0 2px 16px rgba(0,0,0,0.05); border:1px solid var(--border);
+  text-align:center; margin-top:20px; transition:box-shadow 0.2s;
+}
+.hero-card:hover { box-shadow:0 4px 24px rgba(0,0,0,0.08); }
+.hero-emoji { font-size:28px; margin-bottom:4px; }
+.hero-streak { font-size:48px; font-weight:700; color:var(--streak); letter-spacing:-0.02em; line-height:1; }
+.hero-label { font-size:13px; color:var(--text2); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:4px; }
+.hero-msg { font-size:14px; color:var(--text2); margin-bottom:12px; }
+
+.progress-ring { display:flex; align-items:center; justify-content:center; gap:12px; margin:12px 0 4px; }
+.progress-ring svg { transform:rotate(-90deg); }
+.progress-ring-text { font-size:13px; color:var(--text2); }
+.progress-ring-text strong { color:var(--text); font-weight:700; }
+
+/* Mini KPI Cards */
+.kpi-row { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin:16px 0; }
+.kpi-card {
+  background:var(--card); border-radius:10px; padding:16px 12px; text-align:center;
+  box-shadow:0 1px 4px rgba(0,0,0,0.04); border:1px solid var(--border);
+  transition:transform 0.15s, box-shadow 0.15s;
+}
+.kpi-card:hover { transform:translateY(-1px); box-shadow:0 4px 12px rgba(0,0,0,0.06); }
+.kpi-icon { font-size:18px; margin-bottom:2px; }
+.kpi-val { font-size:22px; font-weight:700; color:var(--text); }
+.kpi-label { font-size:11px; color:var(--text2); }
+
+/* Stage Cards */
+.stage-card {
+  background:var(--card); border-radius:12px; margin-bottom:14px;
+  box-shadow:0 1px 4px rgba(0,0,0,0.04); border:1px solid var(--border);
+  overflow:hidden; transition:transform 0.15s, box-shadow 0.15s;
+}
+.stage-card:hover { transform:translateY(-1px); box-shadow:0 4px 12px rgba(0,0,0,0.06); }
+.stage-card.open .stage-body { display:block; }
+.stage-card:not(.open) .stage-body { display:none; }
+
+.stage-header {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:14px 20px; cursor:pointer; user-select:none;
+}
+.stage-header:hover { background:var(--bg-hover); }
+.stage-header-left { flex:1; min-width:0; }
+.stage-name { font-size:14px; font-weight:600; color:var(--text); }
+.stage-sections { font-size:11px; color:var(--text2); margin-top:2px; }
+.stage-pill {
+  padding:3px 10px; font-size:11px; border-radius:20px;
+  background:var(--bg); color:var(--text2); border:1px solid var(--border);
+  font-weight:500; flex-shrink:0;
+}
+.stage-card.open .stage-pill.done { background:rgba(74,158,110,0.1); color:var(--green); border-color:rgba(74,158,110,0.2); }
+
+.stage-body { padding:10px 20px 18px; border-top:1px solid var(--border); }
+.mini-grid { display:flex; flex-wrap:wrap; gap:3px; margin-bottom:8px; }
+.mini-cell {
+  width:12px; height:12px; border-radius:2px; cursor:pointer; flex-shrink:0;
+  transition:transform 0.1s; position:relative;
+}
+.mini-cell:hover { transform:scale(1.5); z-index:2; }
+.mini-cell[data-level="0"] { background:var(--c0); border:1px solid var(--border); }
+.mini-cell[data-level="1"] { background:var(--c1); }
+.mini-cell[data-level="2"] { background:var(--c2); }
+.mini-cell[data-level="3"] { background:var(--c3); }
+.mini-cell[data-level="4"] { background:var(--c4); }
+.section-tags { font-size:11px; color:var(--text2); display:flex; flex-wrap:wrap; gap:4px 12px; }
+
+.legend {
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  padding:16px 0 4px; font-size:11px; color:var(--text2);
+}
+.legend-dot { display:inline-block; width:8px; height:8px; border-radius:2px; }
+
+/* ===== Day Detail ===== */
+.back-link {
+  display:inline-block; padding:16px 0 10px; font-size:13px; color:var(--text2);
+  cursor:pointer; transition:color 0.15s; border-bottom:1px solid var(--border);
+  width:100%;
+}
+.back-link:hover { color:var(--accent); }
+.day-cat { font-size:12px; color:var(--text2); margin-top:8px; }
+.day-h1 { font-size:20px; font-weight:700; color:var(--text); margin:4px 0; line-height:1.3; }
+.day-num { font-size:13px; color:var(--text2); margin-bottom:14px; }
+
+/* Task card with custom circles */
+.task-card {
+  background:var(--card); border-radius:12px; padding:20px;
+  box-shadow:0 1px 4px rgba(0,0,0,0.04); border:1px solid var(--border);
+  margin-bottom:14px;
+}
+.task-card-header { display:flex; align-items:center; gap:10px; margin-bottom:14px; }
+.task-ring {
+  width:40px; height:40px; flex-shrink:0;
+}
+.task-card-title { font-size:13px; font-weight:600; color:var(--text); }
+.task-card-sub { font-size:11px; color:var(--text2); }
+
+.task-row {
+  display:flex; align-items:center; gap:10px; padding:8px 0;
+  cursor:pointer; border-radius:6px; transition:background 0.15s;
+}
+.task-row:hover { background:var(--bg); }
+.task-dot {
+  width:20px; height:20px; border-radius:50%; flex-shrink:0;
+  border:2px solid var(--border); display:flex; align-items:center; justify-content:center;
+  transition:all 0.2s;
+}
+.task-row.done .task-dot { border-color:var(--green); background:var(--green); }
+.task-dot::after { content:''; width:6px; height:6px; border-radius:50%; background:#fff; opacity:0; transition:opacity 0.15s; }
+.task-row.done .task-dot::after { opacity:1; }
+.task-text { font-size:13px; color:var(--text); flex:1; }
+.task-row.done .task-text { text-decoration:line-through; color:var(--text2); }
+
+.day-desc-text { font-size:13px; line-height:1.8; color:var(--text2); padding:6px 0 14px; }
+
+/* Collapsible Prompt */
+.prompt-wrap { margin-bottom:14px; }
+.prompt-toggle {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:12px 16px; background:var(--card); border:1px solid var(--border);
+  border-radius:10px; cursor:pointer; transition:background 0.15s;
+}
+.prompt-toggle:hover { background:var(--bg-hover); }
+.prompt-toggle span { font-size:13px; font-weight:600; color:var(--text); }
+.prompt-toggle .arrow { font-size:11px; color:var(--text2); transition:transform 0.2s; }
+.prompt-wrap.open .prompt-toggle .arrow { transform:rotate(180deg); }
+
+.prompt-body {
+  max-height:0; overflow:hidden; transition:max-height 0.3s ease;
+  background:var(--card); border:1px solid var(--border); border-top:none;
+  border-radius:0 0 10px 10px;
+}
+.prompt-wrap.open .prompt-body { max-height:600px; overflow-y:auto; }
+.prompt-inner { padding:14px 16px; }
+.prompt-inner pre {
+  font-family:var(--font); font-size:12px; line-height:1.7; color:var(--text2);
+  white-space:pre-wrap; word-break:break-word;
+}
+.prompt-copy-btn {
+  margin-top:8px; padding:4px 14px; font-size:11px; font-family:var(--font);
+  background:var(--bg); color:var(--text2); border:1px solid var(--border);
+  border-radius:20px; cursor:pointer; transition:all 0.15s;
+}
+.prompt-copy-btn:hover { background:var(--text); color:#fff; border-color:var(--text); }
+
+/* Nav buttons */
+.day-nav-row { display:flex; align-items:center; justify-content:center; gap:24px; padding:10px 0 30px; }
+.nav-btn {
+  padding:8px 20px; font-size:13px; font-family:var(--font); font-weight:500;
+  background:var(--card); color:var(--text); border:1px solid var(--border);
+  border-radius:20px; cursor:pointer; transition:all 0.15s;
+}
+.nav-btn:hover { background:var(--text); color:#fff; border-color:var(--text); }
+.nav-btn.hidden { visibility:hidden; }
+.home-link { font-size:12px; color:var(--text2); cursor:pointer; transition:color 0.15s; }
+.home-link:hover { color:var(--accent); }
+
+.sync-badge {
+  display:inline-block; padding:4px 12px; margin:4px 0 10px; font-size:11px;
+  background:rgba(124,92,191,0.06); color:var(--purple); border:1px solid rgba(124,92,191,0.2);
+  border-radius:20px; cursor:pointer; transition:all 0.15s;
+}
+.sync-badge:hover { background:rgba(124,92,191,0.12); }
+
+/* ===== Done Overlay ===== */
+.done-overlay {
+  position:fixed; inset:0; z-index:100;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  background:rgba(250,250,247,0.92); backdrop-filter:blur(6px);
+  opacity:0; pointer-events:none; transition:opacity 0.25s;
+}
+.done-overlay.show { opacity:1; pointer-events:auto; }
+.done-icon {
+  width:56px; height:56px; border-radius:50%; background:rgba(74,158,110,0.1);
+  border:2px solid var(--green); display:flex; align-items:center; justify-content:center;
+  animation:pulse 1.5s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%,100% { transform:scale(1); box-shadow:0 0 0 0 rgba(74,158,110,0.2); }
+  50% { transform:scale(1.06); box-shadow:0 0 0 12px rgba(74,158,110,0); }
+}
+#done-msg { margin-top:12px; font-size:14px; font-weight:500; color:var(--text); }
+
+/* ===== Toast ===== */
+.toast {
+  position:fixed; bottom:30px; left:50%; transform:translateX(-50%) translateY(16px);
+  background:var(--text); color:#fff; padding:10px 20px;
+  border-radius:20px; font-size:13px; opacity:0; transition:all 0.2s;
+  pointer-events:none; z-index:200; box-shadow:0 4px 16px rgba(0,0,0,0.1);
+}
+.toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+@media (max-width:480px) {
+  .kpi-row { grid-template-columns:1fr 1fr 1fr; gap:6px; }
+  .kpi-val { font-size:18px; }
+  .hero-streak { font-size:36px; }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <span class="topbar-title">量化学习计划追踪</span>
+    <span class="topbar-sub" id="tb-sub">每日3小时</span>
+  </div>
+  <div class="track-pills" id="track-pills">
+    <button class="track-pill active" data-track="main">主计划</button>
+    <button class="track-pill" data-track="math">数学</button>
+  </div>
+</div>
+
+<div id="app">
+  <!-- Home View -->
+  <div class="view active" id="view-home">
+    <div class="hero-card" id="hero-card">
+      <div class="hero-emoji">🔥</div>
+      <div class="hero-streak" id="hero-streak">0</div>
+      <div class="hero-label">day streak</div>
+      <div class="hero-msg" id="hero-msg">开始你的学习之旅吧</div>
+      <div class="progress-ring">
+        <svg id="progress-ring-svg" width="60" height="60"><circle cx="30" cy="30" r="25" fill="none" stroke="#e8e5df" stroke-width="5"/><circle id="progress-ring-arc" cx="30" cy="30" r="25" fill="none" stroke="#4a9e6e" stroke-width="5" stroke-linecap="round" stroke-dasharray="0 157"/></svg>
+        <div class="progress-ring-text"><strong id="ring-count">0</strong>/<span id="ring-total">3</span> · <strong id="ring-pct">0%</strong></div>
+      </div>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi-card"><div class="kpi-icon">✅</div><div class="kpi-val" id="kpi-today">0/3</div><div class="kpi-label">今日任务</div></div>
+      <div class="kpi-card"><div class="kpi-icon">📅</div><div class="kpi-val" id="kpi-week">—</div><div class="kpi-label">本周学习</div></div>
+      <div class="kpi-card"><div class="kpi-icon">🎯</div><div class="kpi-val" id="kpi-pct">0%</div><div class="kpi-label">完成率</div></div>
+    </div>
+
+    <div id="stage-list"></div>
+
+    <div class="legend">
+      <span>未开始</span><span class="legend-dot" style="background:var(--c0);border:1px solid var(--border)"></span>
+      <span class="legend-dot" style="background:var(--c1)"></span>
+      <span class="legend-dot" style="background:var(--c2)"></span>
+      <span class="legend-dot" style="background:var(--c3)"></span>
+      <span class="legend-dot" style="background:var(--c4)"></span><span>已完成</span>
+    </div>
+  </div>
+
+  <!-- Day Detail View -->
+  <div class="view" id="view-day">
+    <div class="back-link" id="back-link">← 返回列表</div>
+    <div class="day-cat" id="day-cat"></div>
+    <div class="day-h1" id="day-meta"></div>
+    <div class="day-num" id="day-num"></div>
+    <button class="sync-badge" id="sync-badge" style="display:none"></button>
+
+    <div class="task-card" id="task-card">
+      <div class="task-card-header">
+        <svg class="task-ring" id="task-ring-svg" viewBox="0 0 40 40"><circle cx="20" cy="20" r="16" fill="none" stroke="#e8e5df" stroke-width="3"/><circle id="task-ring-arc" cx="20" cy="20" r="16" fill="none" stroke="#4a9e6e" stroke-width="3" stroke-linecap="round" stroke-dasharray="0 100"/></svg>
+        <div><div class="task-card-title">学习任务</div><div class="task-card-sub" id="task-card-sub">0/3 completed</div></div>
+      </div>
+      <div id="task-list"></div>
+    </div>
+
+    <p class="day-desc-text" id="day-desc"></p>
+
+    <div class="prompt-wrap" id="prompt-wrap">
+      <div class="prompt-toggle" id="prompt-toggle">
+        <span>📖 学习指引</span><span class="arrow">▼</span>
+      </div>
+      <div class="prompt-body"><div class="prompt-inner"><pre id="prompt-content"></pre><button class="prompt-copy-btn" id="copy-btn">复制 Prompt</button></div></div>
+    </div>
+
+    <div class="day-nav-row">
+      <button class="nav-btn" id="btn-prev">◀ 上一天</button>
+      <span class="home-link" id="btn-home">回到首页</span>
+      <button class="nav-btn" id="btn-next">下一天 ▶</button>
+    </div>
+  </div>
+</div>
+
+<div class="done-overlay" id="done-overlay">
+  <div class="done-icon"><svg width="24" height="24" viewBox="0 0 16 16" fill="none"><path d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z" fill="#4a9e6e"/></svg></div>
+  <p id="done-msg"></p>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ==================== DATA (same as Scheme A) ====================
+const MAIN_PLAN = {
+  stages:[{id:1,name:"阶段一：Python核心概念速览",sections:[
+    {name:"程序是怎么运行的",daysData:[
+      {globalDay:1,title:"变量、数据类型、输入输出",description:"变量不是「存储数据」，而是「给数据贴标签」。今天不背语法——让AI生成代码，你逐行理解每一行在做什么。",prompt:"=== 第1天：变量、数据类型与输入输出 ===\n\n【每日学习时长】约3小时\n\n【学习目的】\n建立「变量=给数据贴标签」的核心直觉。理解Python的基本数据类型。\n\n【核心概念】\n- 变量 = 给数据贴标签\n- 基本类型：int/float/str/bool\n- print() 输出 / input() 输入\n\n【练习任务】\n- 让AI写一个程序，你能解释每一行\n- 修改变量值观察输出变化\n- 用自己的话总结四个概念",tasks:["让AI生成代码，逐行理解变量/类型/输入/输出","修改变量值观察输出变化","用自己的话总结四个概念各自的作用"]},
+      {globalDay:2,title:"控制流——判断与循环",description:"if让程序做决策，for/while让程序重复劳动。今天不记精确语法——让AI生成含条件判断和循环的代码，你能口述执行流程。",prompt:"=== 第2天：控制流——判断与循环 ===\n\n【每日学习时长】约3小时\n\n【学习目的】\n建立「程序可以自己做决策」和「程序可以批量处理」两个核心思维。\n\n【核心概念】\n- if/elif/else：条件判断\n- for循环：遍历数据\n- while循环：条件满足就一直做\n\n【练习任务】\n- 让AI生成含if/for/while的代码，口述执行流程\n- 指出分叉点、循环边界、退出条件\n- 修改条件，预测行为，运行验证",tasks:["让AI生成含三种控制流的代码，口述执行流程","指出分叉点、循环边界、退出条件","修改条件，预测行为，运行验证"]}
+    ]},
+    {name:"数据结构概念",daysData:[
+      {globalDay:3,title:"列表与字典——数据的容器",description:"列表=有序集合，字典=键值对映射。今天不记所有方法名，让AI写代码。你需要的是：看到数据结构，知道怎么描述你想取的数据。",prompt:"=== 第3天：列表与字典 ===\n\n【每日学习时长】约3小时\n\n【学习目的】\n建立「数据容器」的思维模型。列表是有序集合，字典是键值映射。\n\n【核心概念】\n- 列表 = 有序集合 [\"股票A\",\"股票B\"]\n- 字典 = 键值对 {\"name\":\"茅台\",\"price\":1800}\n- 列表嵌套字典是实战中最常见的数据格式\n\n【练习任务】\n- 定义一个股票字典列表，让AI提取字段\n- 描述过滤需求→AI写代码→你验证\n- 故意模糊描述，观察AI理解偏差",tasks:["定义股票字典列表，让AI提取字段，你验证","描述过滤需求→AI写代码→你验证输出","故意模糊描述，观察AI的理解偏差"]}
+    ]}
+  ]}],
+  _map:null,get totalDays(){return 3;},
+  getDay(n){if(!this._map){this._map={};this.stages.forEach(function(s){s.sections.forEach(function(sec){sec.daysData.forEach(function(d){this._map[d.globalDay]={globalDay:d.globalDay,title:d.title,description:d.description,prompt:d.prompt,tasks:d.tasks,stageName:s.name,sectionName:sec.name};},this);},this);},this);}return this._map[n]||null;}
+};
+
+const MATH_TRACK = {
+  modules:[{id:1,name:"数学思维基础",subtitle:"从确定性到随机性",daysData:[
+    {globalDay:1,syncMain:39,title:"函数思维——从Python函数到数学函数",description:"建立「函数 = 确定的映射规则」这一核心直觉。Python 的 def 和数学的 f(x) 本质相同。",prompt:"=== Math Day 1：函数思维 ===\n\n【每日学习时长】约25分钟\n\n【学习目的】\n建立「函数 = 确定的映射规则」这一核心直觉。\n\n【核心概念】\n- 函数 = 确定的映射规则\n- f(x) = 2x + 1：x进去→2x+1出来\n- Python def 和数学函数本质相同\n\n【练习任务】\n- 定义 f(x)=2x+1，生成输出，画折线图\n- 定义 f(x)=x² 和 g(x)=sin(x)，各画一张图\n- 描述三种函数的形状差异",tasks:["定义 f(x)=2x+1，生成输出，画折线图","定义 f(x)=x² 和 g(x)=sin(x)，各画一张图","描述三种函数的形状差异"]},
+    {globalDay:2,syncMain:40,title:"坐标与图形——用眼睛理解关系",description:"学会用笛卡尔坐标系把数字关系画出来。折线图的本质：把 x 从小到大排列，看 y 跟着怎么变。",prompt:"=== Math Day 2：坐标与图形 ===\n\n【每日学习时长】约25分钟\n\n【学习目的】\n学会用笛卡尔坐标系把数字关系画出来。\n\n【核心概念】\n- 笛卡尔坐标系：x轴 + y轴\n- 折线图 = 把(x,y)点连起来\n- 图上的「趋势」比数字表直观100倍\n\n【练习任务】\n- 用matplotlib画 f(x)=2x+1 的折线图\n- 同一张图画三条线，不同颜色标注\n- 解释每条线的趋势",tasks:["用matplotlib画 f(x)=2x+1 的折线图","同一张图画三条线，不同颜色标注","解释每条线的趋势"]},
+    {globalDay:3,syncMain:41,title:"变化率——斜率的直觉",description:"斜率 = 变化率 = 「x每增加1，y变化多少」。这是导数的前概念，是理解梯度下降的基础。",prompt:"=== Math Day 3：变化率——斜率的直觉 ===\n\n【每日学习时长】约25分钟\n\n【学习目的】\n建立「斜率=变化率」的核心直觉。\n\n【核心概念】\n- 斜率 = Δy/Δx = 变化率\n- 正斜率 = y随x增加而增加\n- 斜率越大 = 变化越快\n\n【练习任务】\n- 计算 f(x)=2x+1 在 x=1到x=3 的斜率\n- 比较三条不同斜率的直线\n- 解释「变化率」在你的生活中意味着什么",tasks:["计算 f(x)=2x+1 的斜率","比较三条不同斜率的直线","解释「变化率」在生活中的含义"]}
+  ]}],
+  _map:null,get totalDays(){return 3;},
+  getDay(n){if(!this._map){var s=this;this._map={};s.modules.forEach(function(m){m.daysData.forEach(function(d){s._map[d.globalDay]={globalDay:d.globalDay,syncMain:d.syncMain,title:d.title,description:d.description,prompt:d.prompt,tasks:d.tasks,moduleName:m.name};});});}return this._map[n]||null;}
+};
+
+var currentTrack="main",currentDay=1;
+var KEY_MAIN="demo_b_main",KEY_MATH="demo_b_math";
+
+var Store = {
+  key:function(){return currentTrack==="math"?KEY_MATH:KEY_MAIN;},
+  load:function(){try{var r=localStorage.getItem(this.key());return r?JSON.parse(r):{};}catch(e){return{};}},
+  save:function(d){localStorage.setItem(this.key(),JSON.stringify(d));},
+  toggleTask:function(day,idx){var d=this.load();var dk="d"+day;if(!d[dk])d[dk]={tasks:[false,false,false]};d[dk].tasks[idx]=!d[dk].tasks[idx];this.save(d);},
+  isTaskDone:function(day,idx){var d=this.load();var dk="d"+day;return!!(d[dk]&&d[dk].tasks&&d[dk].tasks[idx]);},
+  isDayDone:function(day){var d=this.load();var dk="d"+day;return!!(d[dk]&&d[dk].tasks&&d[dk].tasks.every(function(t){return t;}));},
+  getDayLevel:function(day){var d=this.load();var dk="d"+day;if(!d[dk]||!d[dk].tasks)return 0;var done=d[dk].tasks.filter(function(t){return t;}).length;if(done===3)return 4;if(done===2)return 3;if(done===1)return 2;return 1;},
+  getDoneDays:function(){var plan=currentTrack==="math"?MATH_TRACK:MAIN_PLAN;var d=this.load();var c=0;for(var i=1;i<=plan.totalDays;i++){var dk="d"+i;if(d[dk]&&d[dk].tasks&&d[dk].tasks.every(function(t){return t;}))c++;}return c;},
+  getStreak:function(){
+    var plan=currentTrack==="math"?MATH_TRACK:MAIN_PLAN;var total=plan.totalDays;var data=this.load();var prefix=currentTrack==="math"?"math":"main";var totalDone=0;
+    for(var i=1;i<=total;i++){var dk="d"+i;if(data[dk]&&data[dk].tasks&&data[dk].tasks.every(function(t){return t;}))totalDone++;}
+    function fmt(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+    var streakStart=localStorage.getItem("streakStart_"+prefix);var baseline=parseInt(localStorage.getItem("streakBaseline_"+prefix))||0;var today=new Date();
+    if(!streakStart){var todayStr=fmt(today);if(totalDone>0){var defS=4;var sd=new Date(today.getFullYear(),today.getMonth(),today.getDate()-defS+1);streakStart=fmt(sd);baseline=Math.max(0,totalDone-defS);}else{streakStart=todayStr;baseline=0;}localStorage.setItem("streakStart_"+prefix,streakStart);localStorage.setItem("streakBaseline_"+prefix,String(baseline));}
+    var tOnly=new Date(today.getFullYear(),today.getMonth(),today.getDate());var p=streakStart.split("-");var sOnly=new Date(parseInt(p[0]),parseInt(p[1])-1,parseInt(p[2]));
+    var daysSince=Math.floor((tOnly-sOnly)/86400000)+1;var newlyDone=totalDone-baseline;
+    if(newlyDone>=daysSince-1){var st=Math.min(newlyDone,daysSince);if(st>total)return total;return st;}return 0;
+  }
+};
+
+function renderHome(){
+  var plan=currentTrack==="math"?MATH_TRACK:MAIN_PLAN;var doneCount=Store.getDoneDays();var total=plan.totalDays;var pct=total>0?Math.round(doneCount/total*100):0;var streak=Store.getStreak();
+
+  // Update hero
+  document.getElementById("hero-streak").textContent=streak;
+  document.getElementById("hero-msg").textContent=streak>0?"你已经连续学习了 "+streak+" 天":"开始你的学习之旅吧";
+  var circ=2*Math.PI*25;var dash=circ*(doneCount/total);
+  document.getElementById("progress-ring-arc").setAttribute("stroke-dasharray",dash+" "+(circ-dash));
+  document.getElementById("ring-count").textContent=doneCount;
+  document.getElementById("ring-total").textContent=total;
+  document.getElementById("ring-pct").textContent=pct+"%";
+
+  // Update KPI
+  document.getElementById("kpi-pct").textContent=pct+"%";
+  document.getElementById("kpi-today").textContent="—"; // KPI cards simplified for preview
+
+  // Update topbar
+  document.getElementById("tb-sub").textContent=currentTrack==="math"?"每日20分钟":"每日3小时";
+
+  // Render stage cards
+  var stageList=document.getElementById("stage-list");stageList.innerHTML="";
+  if(currentTrack==="math"){
+    MATH_TRACK.modules.forEach(function(mod){
+      var card=document.createElement("div");card.className="stage-card open";
+      var hdr=document.createElement("div");hdr.className="stage-header";
+      hdr.innerHTML='<div class="stage-header-left"><div class="stage-name">'+mod.name+'</div><div class="stage-sections">'+mod.subtitle+'</div></div><div class="stage-pill">'+mod.daysData.length+'天</div>';
+      hdr.addEventListener("click",function(){card.classList.toggle("open");});
+      card.appendChild(hdr);
+      var body=document.createElement("div");body.className="stage-body";
+      var grid=document.createElement("div");grid.className="mini-grid";
+      mod.daysData.forEach(function(day){
+        var cell=document.createElement("div");cell.className="mini-cell";
+        cell.setAttribute("data-level",Store.getDayLevel(day.globalDay));
+        cell.title="M"+day.globalDay+": "+day.title;
+        cell.addEventListener("click",function(e){e.stopPropagation();goDay(day.globalDay);});
+        grid.appendChild(cell);
+      });
+      body.appendChild(grid);card.appendChild(body);stageList.appendChild(card);
+    });
+  } else {
+    MAIN_PLAN.stages.forEach(function(stage){
+      var card=document.createElement("div");card.className="stage-card open";
+      var secNames=stage.sections.map(function(s){return s.name;}).join(" · ");
+      var hdr=document.createElement("div");hdr.className="stage-header";
+      hdr.innerHTML='<div class="stage-header-left"><div class="stage-name">'+stage.name+'</div><div class="stage-sections">'+secNames+'</div></div><div class="stage-pill">3天</div>';
+      hdr.addEventListener("click",function(){card.classList.toggle("open");});
+      card.appendChild(hdr);
+      var body=document.createElement("div");body.className="stage-body";
+      stage.sections.forEach(function(sec){
+        var grid=document.createElement("div");grid.className="mini-grid";
+        sec.daysData.forEach(function(day){
+          var cell=document.createElement("div");cell.className="mini-cell";
+          cell.setAttribute("data-level",Store.getDayLevel(day.globalDay));
+          cell.title="Day "+day.globalDay+": "+day.title;
+          cell.addEventListener("click",function(e){e.stopPropagation();goDay(day.globalDay);});
+          grid.appendChild(cell);
+        });
+        body.appendChild(grid);
+      });
+      var tags=document.createElement("div");tags.className="section-tags";
+      stage.sections.forEach(function(sec){var t=document.createElement("span");t.textContent=sec.name;tags.appendChild(t);});
+      body.appendChild(tags);
+      card.appendChild(body);stageList.appendChild(card);
+    });
+  }
+}
+
+function renderDay(globalDay){
+  var plan=currentTrack==="math"?MATH_TRACK:MAIN_PLAN;var dayData=plan.getDay(globalDay);
+  if(!dayData){goHome();return;}currentDay=globalDay;
+
+  if(currentTrack==="math"){document.getElementById("day-cat").textContent=dayData.moduleName;}else{document.getElementById("day-cat").textContent=dayData.stageName+" · "+dayData.sectionName;}
+  document.getElementById("day-meta").textContent=dayData.title;
+  document.getElementById("day-num").textContent="Day "+globalDay;
+  document.getElementById("day-desc").textContent=dayData.description;
+  document.getElementById("prompt-content").textContent=dayData.prompt;
+
+  var syncBadge=document.getElementById("sync-badge");
+  if(currentTrack==="math"&&dayData.syncMain){syncBadge.style.display="inline-block";syncBadge.textContent="↗ 同步：Main Day "+dayData.syncMain;syncBadge.onclick=function(){currentTrack="main";switchTrackUI();goDay(dayData.syncMain);};}else{syncBadge.style.display="none";}
+
+  // Task list with custom circles
+  var taskList=document.getElementById("task-list");taskList.innerHTML="";
+  var doneCount=0;
+  dayData.tasks.forEach(function(task,idx){
+    var row=document.createElement("div");row.className="task-row";
+    if(Store.isTaskDone(globalDay,idx)){row.classList.add("done");doneCount++;}
+    var dot=document.createElement("div");dot.className="task-dot";
+    var txt=document.createElement("span");txt.className="task-text";txt.textContent=task;
+    row.appendChild(dot);row.appendChild(txt);
+    row.addEventListener("click",function(){
+      Store.toggleTask(globalDay,idx);renderDay(globalDay);renderHome();
+    });
+    taskList.appendChild(row);
+  });
+
+  // Update task ring
+  var tc=2*Math.PI*16;var td=tc*(doneCount/dayData.tasks.length);
+  document.getElementById("task-ring-arc").setAttribute("stroke-dasharray",td+" "+tc);
+  document.getElementById("task-card-sub").textContent=doneCount+"/"+dayData.tasks.length+" completed";
+
+  // Nav
+  document.getElementById("btn-prev").classList.toggle("hidden",globalDay<=1);
+  document.getElementById("btn-next").classList.toggle("hidden",globalDay>=plan.totalDays);
+  document.getElementById("btn-prev").onclick=function(){if(globalDay>1)goDay(globalDay-1);};
+  document.getElementById("btn-next").onclick=function(){if(globalDay<plan.totalDays)goDay(globalDay+1);};
+  document.getElementById("btn-home").onclick=function(){goHome();};
+  document.getElementById("back-link").onclick=function(){goHome();};
+  document.getElementById("copy-btn").onclick=function(){navigator.clipboard.writeText(dayData.prompt).then(function(){showToast("Prompt 已复制!");}).catch(function(){showToast("复制失败");});};
+
+  // Collapse prompt by default
+  document.getElementById("prompt-wrap").classList.remove("open");
+  document.getElementById("prompt-toggle").onclick=function(){document.getElementById("prompt-wrap").classList.toggle("open");};
+
+  document.getElementById("view-home").classList.remove("active");
+  document.getElementById("view-day").classList.add("active");
+  document.getElementById("done-overlay").classList.remove("show");
+  document.getElementById("app").scrollTop=0;
+}
+
+function goHome(){document.getElementById("view-day").classList.remove("active");document.getElementById("view-home").classList.add("active");document.getElementById("done-overlay").classList.remove("show");renderHome();document.getElementById("app").scrollTop=0;}
+function goDay(d){currentDay=d;renderDay(d);document.getElementById("app").scrollTop=0;}
+function switchTrackUI(){var pills=document.querySelectorAll(".track-pill");pills.forEach(function(p){p.classList.remove("active");});document.querySelector('[data-track="'+currentTrack+'"]').classList.add("active");}
+
+var _toastTimer=null;
+function showToast(msg){var t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");if(_toastTimer)clearTimeout(_toastTimer);_toastTimer=setTimeout(function(){t.classList.remove("show");},2000);}
+
+function initTabs(){
+  document.getElementById("track-pills").addEventListener("click",function(e){if(e.target.classList.contains("track-pill")){var track=e.target.getAttribute("data-track");if(track===currentTrack)return;currentTrack=track;switchTrackUI();goHome();}});
+}
+
+document.addEventListener("DOMContentLoaded",function(){initTabs();renderHome();});
+</script>
+</body>
+</html>
