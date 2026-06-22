@@ -206,12 +206,43 @@ html, body {
 }
 
 .sync-badge {
-  display: inline-block; margin: 8px 0 4px; padding: 3px 10px;
+  display: inline-block; margin: 8px 8px 4px 0; padding: 3px 10px;
   font-size: 11px; font-family: var(--font);
   background: var(--bg3); color: var(--blue); border: 1px solid rgba(88,166,255,0.3);
   border-radius: 20px; cursor: pointer; transition: all 0.15s;
 }
 .sync-badge:hover { background: rgba(88,166,255,0.1); }
+
+/* 数学回想徽章 (NEW) */
+.recall-badge {
+  display: inline-block; margin: 8px 0 4px; padding: 3px 10px;
+  font-size: 11px; font-family: var(--font);
+  background: rgba(210,153,34,0.08); color: var(--orange); border: 1px solid rgba(210,153,34,0.3);
+  border-radius: 20px; cursor: pointer; transition: all 0.15s;
+}
+.recall-badge:hover { background: rgba(210,153,34,0.15); }
+
+/* 快速回顾卡片 (NEW) */
+.review-card {
+  margin: 10px 0; padding: 10px 14px;
+  background: rgba(163,113,247,0.06); border: 1px solid rgba(163,113,247,0.25);
+  border-radius: var(--r); font-size: 12px; line-height: 1.6;
+}
+.review-card-title {
+  font-size: 10px; font-weight: 600; color: var(--purple); text-transform: uppercase;
+  letter-spacing: 0.5px; margin-bottom: 4px;
+}
+.review-line {
+  color: var(--text2); margin-bottom: 3px;
+}
+.review-line strong { color: var(--text); }
+
+/* Pomodoro 分段提示 (NEW) */
+.pomodoro-hint {
+  font-size: 10px; font-weight: 500; color: var(--text3);
+  background: var(--bg); padding: 2px 8px; border-radius: 10px;
+  margin: 0 8px;
+}
 
 /* 提示词区 */
 .prompt-area { padding: 14px 0; border-bottom: 1px solid var(--border); }

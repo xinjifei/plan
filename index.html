@@ -10,11 +10,11 @@
 
   <header class="topbar">
     <span class="topbar-title">量化学习计划追踪</span>
-    <span class="topbar-subtitle">每日3小时</span>
+    <span class="topbar-subtitle">主计划·3h/天 + 数学·25m/天</span>
     <div class="topbar-right">
       <div class="track-tabs" id="track-tabs">
         <button class="track-tab active" data-track="main">主计划</button>
-        <button class="track-tab" data-track="math">数学</button>
+        <button class="track-tab" data-track="math" title="独立数学课程——不追赶主计划节奏">数学</button>
       </div>
       <span id="topbar-streak"></span>
     </div>
@@ -47,10 +47,16 @@
         <div class="breadcrumb" id="day-breadcrumb"></div>
         <div class="day-meta" id="day-meta"></div>
         <button id="sync-badge" class="sync-badge" style="display:none"></button>
+        <div id="review-card" class="review-card" style="display:none">
+          <div class="review-card-title">快速回顾</div>
+          <div id="review-yesterday" class="review-line"></div>
+          <div id="review-contrast" class="review-line" style="display:none"></div>
+        </div>
         <p class="day-description" id="day-description"></p>
         <div class="prompt-area">
           <div class="prompt-header">
             <span>Prompt</span>
+            <span class="pomodoro-hint" id="pomodoro-hint"></span>
             <button id="copy-prompt-btn" class="btn-copy">Copy</button>
           </div>
           <pre class="prompt-content" id="prompt-content"></pre>
@@ -76,6 +82,7 @@
   </div>
 
   <div id="toast" class="toast"></div>
+  <script src="data/concept_map_data.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

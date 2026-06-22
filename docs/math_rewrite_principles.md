@@ -192,3 +192,39 @@ Python + [具体库] 或 纸笔
 
 - CJK 引号：app.js 中中文引号必须用 `""` (U+201C/U+201D)，JS 语法用 `""` (U+0022)。避免 Edit 工具直接操作 app.js，用 Python 脚本批量写入。
 - 项目概述：三文件架构，mine_outline.py + math_outline.py → app.js → index.html + style.css
+
+---
+
+## 七、双轨关系 & syncMain 约束（2026-06-16 修订）
+
+### 核心哲学
+
+Main 轨道和 Math 轨道是两条**互相独立**的学习线。详见 `双轨哲学.md`。
+
+要点：
+- Main 教「怎么用」（工具化），Math 教「为什么」（原理化）
+- 两条轨道不需要在时间上对齐——Main 不等 Math，Math 不追 Main
+- 同一个概念两次接触：先在 Main 当工具用，后在 Math 拆开理解
+
+### syncMain 的含义
+
+`syncMain` = Main 轨道**第一次用到该数学概念**的 globalDay。
+
+它是一个**交叉引用标签**，不是调度命令。允许：
+- `syncMain < mathDay`：Math 还没讲到，Main 先用了（常见于阶段二附加）
+- `syncMain > mathDay`：Math 提前讲了，Main 以后才用（常见于模块三/四）
+
+### 硬约束（机械验证）
+
+对 `validate_sync.py` 中 DEPENDENCIES 表的每对 (main_day, math_day)：
+- `syncMain[math_day] ≤ main_day`
+- 即：syncMain 标签不能比「Main 首次使用」更晚（标签必须诚实）
+- 此约束为机械检查，不接受 AI 判断覆盖
+
+### 关键文件
+- `docs/双轨哲学.md` — 完整哲学说明
+- `scripts/sync_math_to_appjs.py` — SYNC_MAIN_MAP 数据源
+- `学习对齐研究/validate_sync.py` — 验证脚本
+- `学习对齐研究/analysis.md` — 此前对齐问题的根因分析
+- `学习对齐研究/认知科学审计.md` — 认知科学研究与问题诊断
+- `data/concept_map.py` — 概念映射数据源（防幻觉）
