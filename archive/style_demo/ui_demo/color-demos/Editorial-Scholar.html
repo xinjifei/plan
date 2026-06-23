@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>方案D · Editorial Scholar · 学习计划追踪器</title>
+<style>
+/* ================================================================
+   方案D：Editorial Scholar — 暖调学术编辑风格 × 完整学习追踪
+   设计规范参考：ui-ux-pro-max（50+风格、99 UX准则）
+   ================================================================ */
+
+/* ----- Design Tokens ----- */
+:root {
+  --bg:        #fcfaf7;
+  --card:      #ffffff;
+  --hover:     #f7f3ed;
+  --code-bg:   #faf8f5;
+  --text:      #1e1b18;
+  --text2:     #6b6560;
+  --text3:     #9c9590;
+  --accent:    #4b5ecc;
+  --accent2:   #8b5cf6;
+  --success:   #3a8a5c;
+  --border:    #e8e3dc;
+  --border-l:  #f0ece7;
+  --font:      "Inter","Noto Sans SC",-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  --serif:     "Source Serif 4","Noto Serif SC",Georgia,"Times New Roman",serif;
+  --mono:      "JetBrains Mono","Fira Code",ui-monospace,SFMono-Regular,Consolas,monospace;
+  --r: 8px; --r-lg: 14px; --r-full: 9999px;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.06);
+  --ease: cubic-bezier(0.16,1,0.3,1);
+}
+
+/* Heatmap levels */
+:root {
+  --c0: #ede8e2; --c1: #d1ddf0; --c2: #8fabe0; --c3: #5b7fd4; --c4: #4b5ecc;
+}
+
+/* ----- Reset ----- */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14px;line-height:1.6;overflow:hidden;height:100vh}
+
+/* ----- Topbar ----- */
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  height:46px;padding:0 18px;flex-shrink:0;
+  background:rgba(252,250,247,0.84);
+  backdrop-filter:blur(12px) saturate(1.4);
+  -webkit-backdrop-filter:blur(12px) saturate(1.4);
+  border-bottom:1px solid var(--border);z-index:50;
+}
+.tb-left{display:flex;align-items:center;gap:10px}
+.tb-logo{width:26px;height:26px;border-radius:6px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;font-weight:700}
+.tb-title{font-size:13px;font-weight:600;color:var(--text);letter-spacing:-0.01em}
+.tb-badge{font-size:10px;font-weight:600;padding:1px 8px;border-radius:var(--r-full);border:1px solid;transition:all .15s}
+.tb-badge.main{background:rgba(75,94,204,0.08);color:var(--accent);border-color:rgba(75,94,204,0.25)}
+.tb-badge.math{background:rgba(139,92,246,0.08);color:var(--accent2);border-color:rgba(139,92,246,0.25)}
+
+.tb-center{display:flex;align-items:center;gap:0;border:1px solid var(--border);border-radius:6px;overflow:hidden;background:var(--card)}
+.tb-track{
+  padding:4px 16px;font-size:12px;font-weight:500;font-family:var(--font);
+  border:none;cursor:pointer;background:transparent;color:var(--text2);
+  transition:all .15s var(--ease);white-space:nowrap;
+}
+.tb-track:first-child{border-right:1px solid var(--border)}
+.tb-track.active{background:rgba(75,94,204,0.08);color:var(--accent)}
+.tb-track:hover:not(.active){color:var(--text);background:var(--hover)}
+
+.tb-right{display:flex;align-items:center;gap:14px;font-size:11px;color:var(--text2)}
+.tb-stat{display:flex;align-items:center;gap:4px}
+.tb-stat-val{font-weight:600;color:var(--text);font-family:var(--mono);font-size:12px}
+
+/* Progress bar */
+.progress-wrap{height:2px;background:var(--border-l);flex-shrink:0}
+.progress-bar{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .4s var(--ease)}
+
+/* ----- Layout ----- */
+.app-layout{display:flex;height:calc(100vh - 46px - 2px);overflow:hidden}
+
+/* ----- Sidebar ----- */
+.sidebar{
+  width:210px;flex-shrink:0;background:var(--card);border-right:1px solid var(--border);
+  overflow-y:auto;padding:8px 0;display:flex;flex-direction:column;gap:1px;
+  transition:transform .25s var(--ease);
+}
+.sidebar::-webkit-scrollbar{width:4px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+.side-stage{user-select:none}
+.side-stage-hd{
+  display:flex;align-items:center;gap:6px;padding:6px 12px;cursor:pointer;
+  font-size:12px;color:var(--text2);transition:background .1s
+}
+.side-stage-hd:hover{background:var(--hover)}
+.side-arrow{font-size:9px;color:var(--text3);transition:transform .15s;display:inline-block}
+.side-stage.open>.side-stage-hd .side-arrow{transform:rotate(90deg)}
+.side-stage-name{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500}
+.side-stage-info{font-family:var(--mono);font-size:10px;color:var(--text3)}
+
+.side-body{display:none;padding-left:14px}
+.side-stage.open>.side-body{display:block}
+.side-item{
+  display:block;padding:4px 12px 4px 16px;font-size:11px;color:var(--text3);
+  cursor:pointer;transition:all .1s;border-radius:4px;position:relative;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.side-item:hover{background:var(--hover);color:var(--text2)}
+.side-item.active{color:var(--accent);font-weight:600;background:rgba(75,94,204,0.06)}
+.side-item.active::before{content:'';position:absolute;left:4px;top:50%;transform:translateY(-50%);width:3px;height:3px;border-radius:50%;background:var(--accent)}
+.side-item .dot{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:4px;flex-shrink:0}
+.side-item .dot.d0{background:var(--c0);border:1px solid var(--border)}
+.side-item .dot.d1{background:var(--c1)}.side-item .dot.d2{background:var(--c2)}
+.side-item .dot.d3{background:var(--c3)}.side-item .dot.d4{background:var(--c4)}
+
+/* ----- Content ----- */
+.content{flex:1;overflow-y:auto;overflow-x:hidden}
+.content::-webkit-scrollbar{width:4px}
+.content::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+.view{display:none}
+.view.active{display:block}
+
+/* ==================== HOME VIEW ==================== */
+.home{padding:16px 20px 40px;max-width:760px;margin:0 auto}
+
+/* Stats strip */
+.stats-strip{
+  display:flex;justify-content:center;gap:32px;padding:6px 0 18px;
+  border-bottom:1px solid var(--border-l);margin-bottom:16px;font-size:12px;color:var(--text2)
+}
+.stats-strip strong{color:var(--text);font-family:var(--mono);font-size:13px}
+.stat-item{display:flex;align-items:center;gap:4px}
+
+/* Stage card */
+.stage-card{border:1px solid var(--border);border-radius:var(--r-lg);background:var(--card);overflow:hidden;margin-bottom:14px;box-shadow:var(--shadow-sm);transition:box-shadow .25s var(--ease)}
+.stage-card:hover{box-shadow:var(--shadow-md)}
+.stage-card.open .stage-body{display:block}
+.stage-card:not(.open) .stage-body{display:none}
+
+.stage-hd{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 16px;cursor:pointer;user-select:none;transition:background .1s
+}
+.stage-hd:hover{background:var(--hover)}
+.stage-hd-l{display:flex;align-items:center;gap:8px;flex:1;min-width:0}
+.stage-arrow{color:var(--text3);font-size:10px;transition:transform .15s}
+.stage-card.open .stage-arrow{transform:rotate(90deg)}
+.stage-name{font-size:14px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stage-meta{font-family:var(--mono);font-size:10px;color:var(--text3);flex-shrink:0}
+
+.stage-body{padding:10px 16px 16px;border-top:1px solid var(--border-l)}
+
+.sec-title{
+  font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;
+  letter-spacing:.05em;margin:10px 0 6px;display:flex;align-items:center;gap:8px
+}
+.sec-title:first-child{margin-top:0}
+.sec-title::after{content:'';flex:1;height:1px;background:var(--border-l)}
+
+.day-grid{display:flex;flex-wrap:wrap;gap:4px;padding:2px 0}
+.day-cell{
+  width:20px;height:20px;border-radius:4px;cursor:pointer;flex-shrink:0;
+  transition:all .12s var(--ease);position:relative
+}
+.day-cell:hover{outline:2px solid var(--accent);outline-offset:2px;z-index:2;transform:scale(1.15)}
+.day-cell:active{transform:scale(0.88)}
+.day-cell[data-lv="0"]{background:var(--c0);border:1px solid var(--border)}
+.day-cell[data-lv="1"]{background:var(--c1);border:1px solid rgba(232,227,220,0.5)}
+.day-cell[data-lv="2"]{background:var(--c2);border:1px solid rgba(232,227,220,0.3)}
+.day-cell[data-lv="3"]{background:var(--c3);border:1px solid rgba(232,227,220,0.2)}
+.day-cell[data-lv="4"]{background:var(--c4);border:1px solid rgba(232,227,220,0.1)}
+
+.cell-tip{
+  position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);
+  padding:4px 10px;background:var(--text);color:#fff;font-size:11px;
+  border-radius:4px;white-space:nowrap;opacity:0;pointer-events:none;
+  transition:opacity .15s;font-family:var(--font);z-index:20
+}
+.cell-tip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:4px solid transparent;border-top-color:var(--text)}
+.day-cell:hover .cell-tip{opacity:1}
+
+.legend{
+  display:flex;align-items:center;justify-content:center;gap:5px;
+  padding:10px 0 0;font-size:10px;color:var(--text3)
+}
+.legend-sq{display:inline-block;width:10px;height:10px;border-radius:2px}
+
+/* ==================== DAY VIEW ==================== */
+.day-view{padding:0}
+.day-inner{max-width:680px;margin:0 auto;padding:0 20px 40px}
+
+.breadcrumb{
+  display:flex;align-items:center;gap:4px;flex-wrap:wrap;
+  padding:14px 0;border-bottom:1px solid var(--border-l);
+  font-size:12px;color:var(--text3)
+}
+.breadcrumb .cur{color:var(--text);font-weight:600}
+
+.day-hd{padding:16px 0 0}
+.day-label{font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px}
+.day-meta{font-family:var(--serif);font-size:24px;font-weight:700;line-height:1.3;color:var(--text);letter-spacing:-0.02em}
+
+.sync-row{padding:10px 0}
+.sync-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:4px 12px;font-size:11px;font-weight:500;font-family:var(--font);
+  background:rgba(75,94,204,0.06);color:var(--accent);
+  border:1px solid rgba(75,94,204,0.2);border-radius:var(--r-full);
+  cursor:pointer;transition:all .15s var(--ease)
+}
+.sync-badge:hover{background:rgba(75,94,204,0.13);transform:translateY(-1px);box-shadow:0 2px 8px rgba(75,94,204,0.1)}
+
+.day-desc{padding:4px 0 14px;font-size:14px;line-height:1.8;color:var(--text2);border-bottom:1px solid var(--border-l)}
+
+/* Prompt card */
+.prompt-card{
+  margin-top:16px;background:var(--card);border:1px solid var(--border);
+  border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow-sm);
+  transition:box-shadow .25s var(--ease)
+}
+.prompt-card:hover{box-shadow:var(--shadow-md)}
+.prompt-hd{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 16px;background:var(--code-bg);border-bottom:1px solid var(--border-l)
+}
+.prompt-label{display:flex;align-items:center;gap:6px;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.05em}
+.prompt-label::before{content:'';width:7px;height:7px;border-radius:2px;background:var(--accent)}
+.prompt-body{
+  padding:16px;font-size:12.5px;line-height:1.8;color:var(--text2);
+  white-space:pre-wrap;word-break:break-word;font-family:var(--font);
+  max-height:400px;overflow-y:auto
+}
+.prompt-body::-webkit-scrollbar{width:4px}
+.prompt-body::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+/* Task list */
+.task-section{margin-top:16px}
+.task-section-hd{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;padding:0 4px}
+
+.task-item{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:10px 14px;border-radius:var(--r);cursor:pointer;
+  transition:all .15s var(--ease);border:1px solid transparent
+}
+.task-item:hover{background:var(--hover);border-color:var(--border-l)}
+
+.task-chk{
+  width:20px;height:20px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;margin-top:1px;
+  display:flex;align-items:center;justify-content:center;background:var(--card);
+  transition:all .15s var(--ease)
+}
+.task-item:hover .task-chk{border-color:var(--text3)}
+.task-item.done .task-chk{background:var(--success);border-color:var(--success)}
+.task-chk svg{opacity:0;transition:opacity .15s}
+.task-item.done .task-chk svg{opacity:1}
+
+.task-txt{font-size:13px;color:var(--text);flex:1;line-height:1.6;transition:all .15s}
+.task-item.done .task-txt{text-decoration:line-through;color:var(--text3)}
+.task-item.done{opacity:.55}
+
+/* Day footer */
+.day-footer{
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;
+  margin-top:28px;padding-top:16px;border-top:2px solid var(--border-l);
+  font-size:12px;color:var(--text3)
+}
+
+/* Buttons */
+.btn{
+  display:inline-flex;align-items:center;gap:5px;padding:6px 14px;
+  font-size:12px;font-weight:500;font-family:var(--font);
+  border:1px solid var(--border);border-radius:var(--r);
+  background:var(--card);color:var(--text2);cursor:pointer;
+  transition:all .15s var(--ease)
+}
+.btn:hover{background:var(--hover);border-color:var(--text3);color:var(--text)}
+.btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn.primary:hover{background:#3d4fb8;border-color:#3d4fb8}
+.btn.copy.copied{background:rgba(58,138,92,0.08);border-color:var(--success);color:var(--success)}
+.btn-group{display:flex;gap:6px}
+
+/* ===== Overlay ===== */
+.overlay{
+  position:fixed;inset:0;z-index:200;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:rgba(252,250,247,0.94);backdrop-filter:blur(8px);
+  opacity:0;pointer-events:none;transition:opacity .3s
+}
+.overlay.show{opacity:1;pointer-events:auto}
+.ov-icon{
+  width:60px;height:60px;border-radius:50%;background:rgba(58,138,92,0.1);
+  border:2px solid var(--success);display:flex;align-items:center;justify-content:center;
+  animation:ov-pulse 1.6s ease-in-out infinite
+}
+@keyframes ov-pulse{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(58,138,92,0.2)}50%{transform:scale(1.06);box-shadow:0 0 0 14px rgba(58,138,92,0)}}
+.ov-msg{margin-top:14px;font-family:var(--serif);font-size:18px;font-weight:600;color:var(--text)}
+
+/* ===== Toast ===== */
+.toast{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
+  display:flex;align-items:center;gap:6px;
+  padding:8px 18px;background:var(--text);color:#fff;
+  border-radius:var(--r-full);font-size:12px;font-weight:500;
+  opacity:0;pointer-events:none;z-index:300;
+  box-shadow:0 8px 28px rgba(0,0,0,0.14);
+  transition:all .3s var(--ease)
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ===== Sidebar toggle (mobile) ===== */
+.sidebar-toggle{
+  display:none;width:36px;height:36px;align-items:center;justify-content:center;
+  background:var(--card);border:1px solid var(--border);border-radius:var(--r);
+  cursor:pointer;font-size:16px;color:var(--text2)
+}
+
+/* ===== Responsive ===== */
+@media(max-width:768px){
+  .sidebar{position:fixed;left:0;top:47px;bottom:0;z-index:40;transform:translateX(-100%);box-shadow:4px 0 20px rgba(0,0,0,0.1)}
+  .sidebar.open-mobile{transform:translateX(0)}
+  .sidebar-toggle{display:flex}
+  .home{padding:12px 14px 32px}
+  .day-inner{padding:0 14px 32px}
+  .day-meta{font-size:20px}
+  .stats-strip{gap:16px;flex-wrap:wrap;justify-content:flex-start}
+  .tb-center{display:none}
+}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.01ms!important}
+}
+
+@media print{
+  .topbar,.sidebar,.progress-wrap,.toast,.overlay,.btn{display:none!important}
+  body{background:#fff;color:#000;overflow:visible;height:auto}
+  .app-layout{display:block;height:auto}
+  .content{overflow:visible}
+  .prompt-card,.stage-card{border:1px solid #ccc;box-shadow:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ==================== TOPBAR ==================== -->
+<header class="topbar">
+  <div class="tb-left">
+    <div class="tb-logo">∑</div>
+    <span class="tb-title">量化学习计划追踪</span>
+    <span class="tb-badge" id="tb-badge">主计划</span>
+    <button class="sidebar-toggle" id="sidebar-toggle" onclick="toggleSidebar()" aria-label="切换导航">☰</button>
+  </div>
+  <div class="tb-center">
+    <button class="tb-track active" data-track="main" onclick="switchTrack('main')">主计划</button>
+    <button class="tb-track" data-track="math" onclick="switchTrack('math')">数学</button>
+  </div>
+  <div class="tb-right">
+    <div class="tb-stat">完成 <span class="tb-stat-val" id="tb-done">0/8</span></div>
+    <div class="tb-stat">进度 <span class="tb-stat-val" id="tb-pct">0%</span></div>
+    <div class="tb-stat">连续 <span class="tb-stat-val" id="tb-streak">0d</span></div>
+  </div>
+</header>
+<div class="progress-wrap"><div class="progress-bar" id="progress-bar"></div></div>
+
+<!-- ==================== LAYOUT ==================== -->
+<div class="app-layout">
+
+  <!-- Sidebar -->
+  <nav class="sidebar" id="sidebar"></nav>
+
+  <!-- Content -->
+  <main class="content" id="content">
+
+    <!-- HOME VIEW -->
+    <div class="view active" id="view-home">
+      <div class="home">
+        <div class="stats-strip" id="stats-strip"></div>
+        <div id="stage-list"></div>
+        <div class="legend">
+          <span>未开始</span><span class="legend-sq" style="background:var(--c0);border:1px solid var(--border)"></span>
+          <span class="legend-sq" style="background:var(--c1)"></span>
+          <span class="legend-sq" style="background:var(--c2)"></span>
+          <span class="legend-sq" style="background:var(--c3)"></span>
+          <span class="legend-sq" style="background:var(--c4)"></span><span>完成</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- DAY VIEW -->
+    <div class="view day-view" id="view-day">
+      <div class="day-inner">
+        <div class="breadcrumb" id="day-breadcrumb"></div>
+        <div class="day-hd">
+          <div class="day-label">Day <span id="day-num"></span></div>
+          <h1 class="day-meta" id="day-meta"></h1>
+        </div>
+        <div class="sync-row"><button class="sync-badge" id="sync-badge" style="display:none"></button></div>
+        <p class="day-desc" id="day-desc"></p>
+
+        <div class="prompt-card">
+          <div class="prompt-hd">
+            <span class="prompt-label">Prompt</span>
+            <button class="btn copy" id="copy-btn" onclick="copyPrompt()">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              Copy
+            </button>
+          </div>
+          <pre class="prompt-body" id="prompt-body"></pre>
+        </div>
+
+        <div class="task-section">
+          <div class="task-section-hd">练习任务</div>
+          <div id="task-list"></div>
+        </div>
+
+        <div class="day-footer">
+          <span id="footer-status"></span>
+          <div class="btn-group">
+            <button class="btn" id="btn-prev" onclick="navDay(-1)">← Prev</button>
+            <button class="btn" id="btn-home" onclick="goHome()">Home</button>
+            <button class="btn primary" id="btn-next" onclick="navDay(1)">Next →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Overlay -->
+<div class="overlay" id="overlay">
+  <div class="ov-icon">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#3a8a5c" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+  </div>
+  <p class="ov-msg" id="overlay-msg"></p>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<!-- ==================== SCRIPTS ==================== -->
+<script>
+// ================================================================
+// DATA
+// ================================================================
+const MAIN_PLAN = {
+  name:'主计划',
+  stages:[
+    {id:1,name:'阶段一：Python核心概念速览',sections:[
+      {name:'程序是怎么运行的',days:[
+        {d:1,title:'变量、数据类型、输入输出',desc:'变量不是「存储数据」，而是「给数据贴标签」。今天不背语法——让AI生成代码，你逐行理解每一行在做什么。',prompt:'=== 第1天：变量、数据类型与输入输出 ===\n\n【每日学习时长】约3小时\n\n【学习目的】\n建立「变量=给数据贴标签」的核心直觉。理解Python的基本数据类型。\n\n【核心概念】\n- 变量 = 给数据贴标签\n- 基本类型：int/float/str/bool\n- print() 输出 / input() 输入\n\n【练习任务】\n- 让AI写一个程序，你能解释每一行\n- 修改变量值观察输出变化\n- 用自己的话总结四个概念',tasks:['让AI生成代码，逐行理解变量/类型/输入/输出','修改变量值观察输出变化','用自己的话总结四个概念各自的作用']},
+        {d:2,title:'控制流——判断与循环',desc:'if让程序做决策，for/while让程序重复劳动。今天不记精确语法——让AI生成含条件判断和循环的代码，你能口述执行流程。',prompt:'=== 第2天：控制流——判断与循环 ===\n\n【每日学习时长】约3小时\n\n【学习目的】\n建立「程序可以自己做决策」和「程序可以批量处理」两个核心思维。\n\n【核心概念】\n- if/elif/else：条件判断\n- for循环：遍历数据\n- while循环：条件满足就一直做\n\n【练习任务】\n- 让AI生成含if/for/while的代码，口述执行流程\n- 指出分叉点、循环边界、退出条件\n- 修改条件，预测行为，运行验证',tasks:['让AI生成含三种控制流的代码，口述执行流程','指出分叉点、循环边界、退出条件','修改条件，预测行为，运行验证']}
+      ]},
+      {name:'数据结构概念',days:[
+        {d:3,title:'列表与字典——数据的容器',desc:'列表=有序集合，字典=键值对映射。今天不记所有方法名，让AI写代码。你需要的是：看到数据结构，知道怎么描述你想取的数据。',prompt:'=== 第3天：列表与字典 ===\n\n【每日学习时长】约3小时\n\n【学习目的】\n建立「数据容器」的思维模型。列表是有序集合，字典是键值映射。\n\n【核心概念】\n- 列表 = 有序集合 ["股票A","股票B"]\n- 字典 = 键值对 {"name":"茅台","price":1800}\n- 列表嵌套字典是实战中最常见的数据格式\n\n【练习任务】\n- 定义一个股票字典列表，让AI提取字段\n- 描述过滤需求→AI写代码→你验证\n- 故意模糊描述，观察AI理解偏差',tasks:['定义股票字典列表，让AI提取字段，你验证','描述过滤需求→AI写代码→你验证输出','故意模糊描述，观察AI的理解偏差']}
+      ]}
+    ]},
+    {id:2,name:'阶段二：数据处理入门',sections:[
+      {name:'文件与数据读写',days:[
+        {d:4,title:'文件读写基础——open/read/write',desc:'程序只有能读取外部数据才算真正有用。今天学会用Python读写文本文件——这是数据处理的第一步。',prompt:'=== 第4天：文件读写基础 ===\n\n【每日学习时长】约3小时\n\n【学习目的】\n掌握Python文件读写的基本操作。\n\n【核心概念】\n- open() 打开文件\n- read()/readlines() 读取\n- write() 写入\n- with语句自动关闭文件\n\n【练习任务】\n- 创建一个文本文件，写入10行数据\n- 读取文件内容，统计行数和字数\n- 用with语句改写，确保文件正确关闭',tasks:['创建一个文本文件，写入10行数据','读取文件内容，统计行数和字数','用with语句改写，确保文件正确关闭']},
+        {d:5,title:'CSV与JSON——结构化数据格式',desc:'现实世界的数据很少是纯文本——CSV是表格，JSON是嵌套结构。今天学会读写这两种最常用的数据格式。',prompt:'=== 第5天：CSV与JSON ===\n\n【每日学习时长】约2.5小时\n\n【学习目的】\n掌握CSV和JSON两种结构化数据格式的读写。\n\n【核心概念】\n- CSV = 逗号分隔的表格数据\n- JSON = 键值对的嵌套结构\n- csv模块和json模块\n\n【练习任务】\n- 用csv.DictReader读取一个CSV文件\n- 用json.dumps序列化一个字典列表\n- 写一个函数把CSV转换为JSON格式',tasks:['用csv.DictReader读取一个CSV文件','用json.dumps序列化一个字典列表','写一个函数把CSV转换为JSON格式']}
+      ]},
+      {name:'数据分析基础',days:[
+        {d:6,title:'数据清洗——缺失值与异常值',desc:'真实数据从来都不干净。今天学习识别和处理缺失值、异常值，这是任何数据分析的第一步。',prompt:'=== 第6天：数据清洗 ===\n\n【每日学习时长】约2.5小时\n\n【学习目的】\n学会识别和处理数据集中的常见问题。\n\n【核心概念】\n- 缺失值（None/NaN）的识别与处理\n- 异常值的检测（IQR方法）\n- 数据类型转换\n\n【练习任务】\n- 给定一个含缺失值的数据集，统计缺失比例\n- 用中位数填充数值列的缺失值\n- 用IQR方法找出异常值并标记',tasks:['给定含缺失值的数据集，统计缺失比例','用中位数填充数值列的缺失值','用IQR方法找出异常值并标记']},
+        {d:7,title:'数据可视化——matplotlib入门',desc:'一张好图胜过千行数据。今天用matplotlib把数据画成折线图、柱状图、散点图。',prompt:'=== 第7天：数据可视化 ===\n\n【每日学习时长】约3小时\n\n【学习目的】\n用matplotlib创建基本的统计图表。\n\n【核心概念】\n- plt.plot() 折线图\n- plt.bar() 柱状图\n- plt.scatter() 散点图\n- 标题、坐标轴标签、图例\n\n【练习任务】\n- 导入数据集，画一张折线图展示趋势\n- 画分组柱状图比较两个类别\n- 画散点图观察两个变量的关系',tasks:['导入数据集，画一张折线图展示趋势','画分组柱状图比较两个类别','画散点图观察两个变量的关系']},
+        {d:8,title:'数据分析报告——从数据到结论',desc:'分析的终点不是图表，而是结论。今天综合运用前面的技能，完成一份完整的数据分析报告。',prompt:'=== 第8天：数据分析报告 ===\n\n【每日学习时长】约3小时\n\n【学习目的】\n综合运用数据清洗、分析和可视化技能，产出完整的分析报告。\n\n【核心概念】\n- 分析框架：提问→清洗→探索→可视化→结论\n- 报告的叙事结构\n- 用数据支撑论点\n\n【练习任务】\n- 选择一个数据集，提出3个分析问题\n- 进行清洗、分析、可视化\n- 写200字的数据分析结论',tasks:['选择一个数据集，提出3个分析问题','进行清洗、分析、可视化','写300字的数据分析结论']}
+      ]}
+    ]}
+  ],
+  _map:null,
+  get totalDays(){return 8},
+  getDay(n){
+    if(!this._map){this._map={};this.stages.forEach(s=>{s.sections.forEach(sec=>{sec.days.forEach(d=>{this._map[d.d]={...d,stageName:s.name,sectionName:sec.name}})});});}
+    return this._map[n]||null
+  },
+  getPrevDay(n){for(let i=n-1;i>=1;i--)if(this.getDay(i))return i;return null},
+  getNextDay(n){for(let i=n+1;i<=this.totalDays;i++)if(this.getDay(i))return i;return null}
+};
+
+const MATH_TRACK = {
+  name:'数学',
+  modules:[
+    {id:1,name:'数学思维基础',subtitle:'从确定性到随机性',days:[
+      {d:1,sync:39,title:'函数思维——从Python函数到数学函数',desc:'建立「函数 = 确定的映射规则」这一核心直觉。Python 的 def 和数学的 f(x) 本质相同。',prompt:'=== Math Day 1：函数思维 ===\n\n【每日学习时长】约25分钟\n\n【学习目的】\n建立「函数 = 确定的映射规则」这一核心直觉。\n\n【核心概念】\n- 函数 = 确定的映射规则\n- f(x) = 2x + 1：x进去→2x+1出来\n- Python def 和数学函数本质相同\n\n【练习任务】\n- 定义 f(x)=2x+1，生成输出，画折线图\n- 定义 f(x)=x² 和 g(x)=sin(x)，各画一张图\n- 描述三种函数的形状差异',tasks:['定义 f(x)=2x+1，生成输出，画折线图','定义 f(x)=x² 和 g(x)=sin(x)，各画一张图','描述三种函数的形状差异']},
+      {d:2,sync:40,title:'坐标与图形——用眼睛理解关系',desc:'学会用笛卡尔坐标系把数字关系画出来。折线图的本质：把 x 从小到大排列，看 y 跟着怎么变。',prompt:'=== Math Day 2：坐标与图形 ===\n\n【每日学习时长】约25分钟\n\n【学习目的】\n学会用笛卡尔坐标系把数字关系画出来。\n\n【核心概念】\n- 笛卡尔坐标系：x轴 + y轴\n- 折线图 = 把(x,y)点连起来\n- 图上的「趋势」比数字表直观100倍\n\n【练习任务】\n- 用matplotlib画 f(x)=2x+1 的折线图\n- 同一张图画三条线，不同颜色标注\n- 解释每条线的趋势',tasks:['用matplotlib画 f(x)=2x+1 的折线图','同一张图画三条线，不同颜色标注','解释每条线的趋势']},
+      {d:3,sync:41,title:'变化率——斜率的直觉',desc:'斜率 = 变化率 =「x每增加1，y变化多少」。这是导数的前概念，是理解梯度下降的基础。',prompt:'=== Math Day 3：变化率——斜率的直觉 ===\n\n【每日学习时长】约25分钟\n\n【学习目的】\n建立「斜率=变化率」的核心直觉。\n\n【核心概念】\n- 斜率 = Δy/Δx = 变化率\n- 正斜率 = y随x增加而增加\n- 斜率越大 = 变化越快\n\n【练习任务】\n- 计算 f(x)=2x+1 在 x=1到x=3 的斜率\n- 比较三条不同斜率的直线\n- 解释「变化率」在你的生活中意味着什么',tasks:['计算 f(x)=2x+1 的斜率','比较三条不同斜率的直线','解释「变化率」在生活中的含义']}
+    ]},
+    {id:3,name:'模块三：线性代数基础',subtitle:'',days:[
+      {d:24,sync:null,title:'向量是什么——有方向的量',desc:'数学中的向量不仅是二维平面上的箭头——在AI中，一个768维的Embedding也是向量。理解向量的本质是理解后续所有数学工具的前提。',prompt:'=== Math Day 24：向量是什么 ===\n\n【每日学习时长】约25分钟\n\n【学习目的】\n建立「向量=有大小、有方向的量」的直觉，理解向量在AI中的应用场景。\n\n【核心概念】\n- 向量 = 有大小 + 有方向的量\n- 向量的分量表示法\n- 向量在二维/高维空间中的含义\n\n【练习任务】\n- 画出三个二维向量，标注分量\n- 理解 Embedding 为什么也是向量\n- 用自己的话解释：方向和大小分别意味着什么',tasks:['画出三个二维向量，标注分量','借助AI理解Embedding为什么也是向量','用自己的话解释：方向和大小分别意味着什么']},
+      {d:27,sync:42,title:'向量点积——相似度的数学根源',desc:'理解点积=相似度的数学根源，余弦相似度∈[−1,+1]。这是ChromaDB/RAG检索「相似文本」的数学基础——两个Embedding向量的夹角越小，语义越接近。',prompt:'=== Math Day 27：向量点积——相似度的数学根源 ===\n\n【每日学习时长】约25分钟\n\n【与主计划的关联】\n你今天在 Main Day 42 正在学：Embedding 向量检索——用 ChromaDB 做语义相似搜索。\n当你写下 collection.query(query_embeddings=[...]) 时，ChromaDB 内部就在做「查询向量与库存向量的余弦相似度计算」。\n今天这 25 分钟数学，就是让你看清楚那一行代码背后到底发生了什么。\n关联度：对 AI 开发直觉 ★★★ / 对量化实践 ★\n\n【学习目的】\n建立「点积 = 方向一致性度量」的核心直觉。两个向量点积越大，方向越一致；点积为 0，互相垂直；点积为负，方向相反。把点积除以两个向量的长度之积，就得到余弦相似度 ∈ [−1, +1]。这就是所有向量检索（RAG、推荐系统、语义搜索）的数学引擎。不理解点积，Embedding 检索对你来说就是黑盒。\n\n【学习标准】\n- 能口述：点积公式 v·w = v₁w₁ + v₂w₂ = |v||w|cos(θ)，每一项的几何含义\n- 能写代码计算两个给定向量的余弦相似度\n- 能解释：为什么余弦相似度比欧氏距离更适合比较文本语义？\n- 能画图说明：两个向量夹角 0°/90°/180° 时，余弦相似度分别接近 1/0/−1\n\n【学习难度】\n初中数学基础 → 大学一年级线性代数直觉\n前置知识：向量是什么（Day 24）、向量加减法（Day 25）\n不需要理解证明，只需要理解几何含义\n\n【所需工具】\nPython 3.x + numpy + matplotlib\n\n【核心概念】\n- 点积（Dot Product）v·w = v₁w₁ + v₂w₂ + ... = |v| × |w| × cos(θ)\n- 方向一致（θ=0°）→ cos=1 → 点积最大\n- 垂直（θ=90°）→ cos=0 → 点积为 0\n- 方向相反（θ=180°）→ cos=−1 → 点积最小（负值）\n- 余弦相似度 = (v·w) / (|v| × |w|) ∈ [−1, +1]\n\n【练习任务】\n- 定义 v1=[1,2], v2=[2,4], v3=[−2,1]，手算 v1·v2 和 v1·v3\n- 写 cosine_sim(a,b) 函数，验证 v1 和 v2 相似度≈1，v1 和 v3≈0\n- 画三个向量，标注两两之间的夹角和余弦相似度\n- 思考：两篇文章的 Embedding 余弦相似度=0.95 说明什么？=0.02 说明什么？',tasks:['手算 v1·v2 和 v1·v3，验证结果','写 cosine_sim() 函数，计算 v1与v2、v1与v3 的余弦相似度','画图并解释：夹角 0°/90°/180° 分别对应什么余弦相似度？']}
+    ]}
+  ],
+  _map:null,totalDays:5,
+  getDay(n){
+    if(!this._map){this._map={};this.modules.forEach(m=>{m.days.forEach(d=>{this._map[d.d]={...d,moduleName:m.name}})});}
+    return this._map[n]||null
+  },
+  allDays(){let a=[];this.modules.forEach(m=>{m.days.forEach(d=>a.push(d))});return a.sort((x,y)=>x.d-y.d)},
+  getPrevDay(n){let all=this.allDays().map(d=>d.d);let idx=all.indexOf(n);return idx>0?all[idx-1]:null},
+  getNextDay(n){let all=this.allDays().map(d=>d.d);let idx=all.indexOf(n);return idx<all.length-1?all[idx+1]:null}
+};
+
+// ================================================================
+// STATE
+// ================================================================
+var currentTrack = 'main';
+var currentDay = 1;
+const KEY_MAIN = 'demo_d_main';
+const KEY_MATH = 'demo_d_math';
+
+// ================================================================
+// STORE
+// ================================================================
+const Store = {
+  key(){return currentTrack==='math'?KEY_MATH:KEY_MAIN},
+  load(){try{return JSON.parse(localStorage.getItem(this.key()))||{}}catch(e){return{}}},
+  save(d){localStorage.setItem(this.key(),JSON.stringify(d))},
+  toggleTask(day,idx){
+    let d=this.load(),dk='d'+day;
+    if(!d[dk])d[dk]={tasks:[false,false,false]};
+    d[dk].tasks[idx]=!d[dk].tasks[idx];this.save(d)
+  },
+  isTaskDone(day,idx){let d=this.load(),dk='d'+day;return!!(d[dk]&&d[dk].tasks&&d[dk].tasks[idx])},
+  isDayDone(day){let d=this.load(),dk='d'+day;return!!(d[dk]&&d[dk].tasks&&d[dk].tasks.every(t=>t))},
+  getLevel(day){let d=this.load(),dk='d'+day;if(!d[dk]||!d[dk].tasks)return 0;let done=d[dk].tasks.filter(t=>t).length;if(done===3)return 4;if(done===2)return 3;if(done===1)return 2;return 1},
+  getDoneCount(){
+    let plan=currentTrack==='math'?MATH_TRACK:MAIN_PLAN;
+    let d=this.load(),c=0;
+    if(currentTrack==='math'){MATH_TRACK.allDays().forEach(day=>{if(this.isDayDone(day.d))c++})}
+    else{for(let i=1;i<=plan.totalDays;i++){if(this.isDayDone(i))c++}}
+    return c
+  },
+  getStreak(){
+    let plan=currentTrack==='math'?MATH_TRACK:MAIN_PLAN;
+    let total=currentTrack==='math'?MATH_TRACK.allDays().length:plan.totalDays;
+    let data=this.load(),prefix=currentTrack==='math'?'math_d':'main_d';
+    let totalDone=currentTrack==='math'?MATH_TRACK.allDays().filter(day=>this.isDayDone(day.d)).length:0;
+    if(!currentTrack)totalDone=0;for(let i=1;i<=total;i++){if(this.isDayDone(i))totalDone++}// fallback for main
+
+    // simplified: totalDone reflects consecutive completion estimation
+    function fmt(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+    let today=new Date();
+    let ss=localStorage.getItem('streakStart_'+prefix);
+    let baseline=parseInt(localStorage.getItem('streakBaseline_'+prefix))||0;
+    if(!ss){
+      let todayStr=fmt(today);
+      totalDone=this.getDoneCount();
+      if(totalDone>0){let defS=4;let sd=new Date(today.getFullYear(),today.getMonth(),today.getDate()-defS+1);ss=fmt(sd);baseline=Math.max(0,totalDone-defS)}
+      else{ss=todayStr;baseline=0}
+      localStorage.setItem('streakStart_'+prefix,ss);
+      localStorage.setItem('streakBaseline_'+prefix,String(baseline))
+    }
+    let tOnly=new Date(today.getFullYear(),today.getMonth(),today.getDate());
+    let p=ss.split('-');let sOnly=new Date(parseInt(p[0]),parseInt(p[1])-1,parseInt(p[2]));
+    let daysSince=Math.floor((tOnly-sOnly)/86400000)+1;
+    let newlyDone=totalDone-baseline;
+    if(newlyDone>=daysSince-1){let st=Math.min(newlyDone,daysSince);if(currentTrack==='math'){let all=MATH_TRACK.allDays();if(st>all.length)return all.length}if(st>total)return total;return st}
+    return 0
+  }
+};
+
+// ================================================================
+// RENDER
+// ================================================================
+function getPlan(){return currentTrack==='math'?MATH_TRACK:MAIN_PLAN}
+
+function renderAll(){
+  renderHome();
+  renderSidebar();
+  updateStats()
+}
+
+function renderHome(){
+  let plan=getPlan();
+  let stageList=document.getElementById('stage-list');
+  stageList.innerHTML='';
+
+  if(currentTrack==='math'){
+    MATH_TRACK.modules.forEach(mod=>{
+      let card=document.createElement('div');card.className='stage-card open';
+      let hd=document.createElement('div');hd.className='stage-hd';
+      hd.innerHTML='<div class="stage-hd-l"><span class="stage-arrow">▶</span><span class="stage-name">'+mod.name+'</span></div><span class="stage-meta">'+mod.days.length+'天</span>';
+      hd.addEventListener('click',()=>card.classList.toggle('open'));
+      card.appendChild(hd);
+      let body=document.createElement('div');body.className='stage-body';
+      let grid=document.createElement('div');grid.className='day-grid';
+      mod.days.forEach(day=>{
+        let cell=document.createElement('div');cell.className='day-cell';
+        cell.setAttribute('data-lv',Store.getLevel(day.d));
+        let tip=document.createElement('span');tip.className='cell-tip';tip.textContent='M'+day.d+': '+day.title;
+        cell.appendChild(tip);
+        cell.addEventListener('click',()=>goDay(day.d));
+        grid.appendChild(cell)
+      });
+      body.appendChild(grid);card.appendChild(body);stageList.appendChild(card)
+    })
+  } else {
+    MAIN_PLAN.stages.forEach(stage=>{
+      let card=document.createElement('div');card.className='stage-card open';
+      let hd=document.createElement('div');hd.className='stage-hd';
+      hd.innerHTML='<div class="stage-hd-l"><span class="stage-arrow">▶</span><span class="stage-name">'+stage.name+'</span></div>';
+      hd.addEventListener('click',()=>card.classList.toggle('open'));
+      card.appendChild(hd);
+      let body=document.createElement('div');body.className='stage-body';
+      stage.sections.forEach(sec=>{
+        let st=document.createElement('div');st.className='sec-title';st.textContent=sec.name;
+        body.appendChild(st);
+        let grid=document.createElement('div');grid.className='day-grid';
+        sec.days.forEach(day=>{
+          let cell=document.createElement('div');cell.className='day-cell';
+          cell.setAttribute('data-lv',Store.getLevel(day.d));
+          let tip=document.createElement('span');tip.className='cell-tip';tip.textContent='Day '+day.d+': '+day.title;
+          cell.appendChild(tip);
+          cell.addEventListener('click',()=>goDay(day.d));
+          grid.appendChild(cell)
+        });
+        body.appendChild(grid)
+      });
+      card.appendChild(body);stageList.appendChild(card)
+    })
+  }
+}
+
+function renderSidebar(){
+  let sb=document.getElementById('sidebar');
+  sb.innerHTML='';
+  let plan=getPlan();
+
+  if(currentTrack==='math'){
+    MATH_TRACK.modules.forEach(mod=>{
+      let wrap=document.createElement('div');wrap.className='side-stage open';
+      let hd=document.createElement('div');hd.className='side-stage-hd';
+      hd.innerHTML='<span class="side-arrow">▶</span><span class="side-stage-name">'+mod.name+'</span><span class="side-stage-info">'+mod.days.length+'天</span>';
+      hd.addEventListener('click',e=>{e.stopPropagation();wrap.classList.toggle('open')});
+      wrap.appendChild(hd);
+      let bd=document.createElement('div');bd.className='side-body';
+      mod.days.forEach(day=>{
+        let item=document.createElement('div');item.className='side-item';
+        let lv=Store.getLevel(day.d);
+        item.innerHTML='<span class="dot d'+lv+'"></span>M'+day.d+': '+day.title;
+        if(currentDay===day.d)item.classList.add('active');
+        item.addEventListener('click',e=>{e.stopPropagation();goDay(day.d)});
+        bd.appendChild(item)
+      });
+      wrap.appendChild(bd);sb.appendChild(wrap)
+    })
+  } else {
+    MAIN_PLAN.stages.forEach(stage=>{
+      let wrap=document.createElement('div');wrap.className='side-stage open';
+      let hd=document.createElement('div');hd.className='side-stage-hd';
+      hd.innerHTML='<span class="side-arrow">▶</span><span class="side-stage-name">'+stage.name+'</span>';
+      hd.addEventListener('click',e=>{e.stopPropagation();wrap.classList.toggle('open')});
+      wrap.appendChild(hd);
+      let bd=document.createElement('div');bd.className='side-body';
+      stage.sections.forEach(sec=>{
+        sec.days.forEach(day=>{
+          let item=document.createElement('div');item.className='side-item';
+          let lv=Store.getLevel(day.d);
+          item.innerHTML='<span class="dot d'+lv+'"></span>Day '+day.d+': '+day.title;
+          if(currentDay===day.d)item.classList.add('active');
+          item.addEventListener('click',e=>{e.stopPropagation();goDay(day.d)});
+          bd.appendChild(item)
+        })
+      });
+      wrap.appendChild(bd);sb.appendChild(wrap)
+    })
+  }
+}
+
+function renderDay(globalDay){
+  let plan=getPlan();
+  let dayData=plan.getDay(globalDay);
+  if(!dayData){goHome();return}
+  currentDay=globalDay;
+
+  // Breadcrumb
+  let bc=document.getElementById('day-breadcrumb');
+  if(currentTrack==='math'){
+    bc.innerHTML='数学 <span style="color:var(--text3)">›</span> '+dayData.moduleName+' <span style="color:var(--text3)">›</span> <span class="cur">Day '+globalDay+'</span>'
+  } else {
+    bc.innerHTML='主计划 <span style="color:var(--text3)">›</span> '+dayData.stageName+' <span style="color:var(--text3)">›</span> '+dayData.sectionName+' <span style="color:var(--text3)">›</span> <span class="cur">Day '+globalDay+'</span>'
+  }
+
+  document.getElementById('day-num').textContent=globalDay;
+  document.getElementById('day-meta').textContent=dayData.title;
+  document.getElementById('day-desc').textContent=dayData.desc;
+  document.getElementById('prompt-body').textContent=dayData.prompt;
+
+  // Sync badge
+  let sync=document.getElementById('sync-badge');
+  if(currentTrack==='math'&&dayData.sync){
+    sync.style.display='inline-flex';
+    sync.textContent='↗ 同步：Main Day '+dayData.sync+' — Embedding与向量检索';
+    sync.onclick=function(){currentTrack='main';switchTrackUI();goDay(dayData.sync)}
+  } else {sync.style.display='none'}
+
+  // Tasks
+  let tl=document.getElementById('task-list');
+  tl.innerHTML='';
+  dayData.tasks.forEach((task,idx)=>{
+    let label=document.createElement('label');label.className='task-item';
+    if(Store.isTaskDone(globalDay,idx))label.classList.add('done');
+    let chk=document.createElement('div');chk.className='task-chk';
+    chk.innerHTML='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>';
+    let txt=document.createElement('span');txt.className='task-txt';txt.textContent=task;
+    label.appendChild(chk);label.appendChild(txt);
+    label.addEventListener('click',function(){
+      Store.toggleTask(globalDay,idx);
+      label.classList.toggle('done');
+      updateDayFooter(globalDay);
+      renderAll();
+      checkOverlay()
+    });
+    tl.appendChild(label)
+  });
+
+  updateDayFooter(globalDay);
+  checkOverlay();
+
+  // Nav buttons
+  let prevBtn=document.getElementById('btn-prev');
+  let nextBtn=document.getElementById('btn-next');
+  let prevDay=currentTrack==='math'?MATH_TRACK.getPrevDay(globalDay):MAIN_PLAN.getPrevDay(globalDay);
+  let nextDay=currentTrack==='math'?MATH_TRACK.getNextDay(globalDay):MAIN_PLAN.getNextDay(globalDay);
+  prevBtn.style.visibility=prevDay?'visible':'hidden';
+  nextBtn.style.visibility=nextDay?'visible':'hidden';
+  prevBtn.textContent='← '+(currentTrack==='math'?'M':'')+'Day '+(prevDay||'');
+  nextBtn.textContent=(currentTrack==='math'?'M':'')+'Day '+(nextDay||'')+' →';
+
+  // Switch views
+  document.getElementById('view-home').classList.remove('active');
+  document.getElementById('view-day').classList.add('active');
+  document.getElementById('content').scrollTop=0
+}
+
+function updateDayFooter(globalDay){
+  let plan=getPlan();
+  let done=Store.isDayDone(globalDay);
+  let data=Store.load(),dk='d'+globalDay;
+  let doneCount=(data[dk]&&data[dk].tasks)?data[dk].tasks.filter(t=>t).length:0;
+  let dd=plan.getDay(globalDay);let totalTasks=dd?dd.tasks.length:3;
+  let el=document.getElementById('footer-status');
+  if(done){el.textContent='Day '+globalDay+' — COMPLETE ✓';el.style.color='var(--success)'}
+  else{el.textContent='Tasks: '+doneCount+'/'+totalTasks;el.style.color=''}
+}
+
+function updateStats(){
+  let plan=getPlan();
+  let done=Store.getDoneCount();
+  let total=currentTrack==='math'?MATH_TRACK.allDays().length:plan.totalDays;
+  let pct=total>0?Math.round(done/total*100):0;
+  let streak=Store.getStreak();
+
+  // Topbar
+  document.getElementById('tb-done').textContent=done+'/'+total;
+  document.getElementById('tb-pct').textContent=pct+'%';
+  document.getElementById('tb-streak').textContent=streak+'d';
+  document.getElementById('progress-bar').style.width=pct+'%';
+
+  // Badge
+  let badge=document.getElementById('tb-badge');
+  badge.textContent=plan.name;
+  badge.className='tb-badge '+(currentTrack==='math'?'math':'main');
+
+  // Track tabs
+  document.querySelectorAll('.tb-track').forEach(t=>{
+    t.classList.toggle('active',t.getAttribute('data-track')===currentTrack)
+  });
+
+  // Stats strip (home)
+  let ss=document.getElementById('stats-strip');
+  if(ss){
+    ss.innerHTML=
+      '<div class="stat-item">已完成 <strong>'+done+'/'+total+'</strong></div>'+
+      '<div class="stat-item">进度 <strong>'+pct+'%</strong></div>'+
+      '<div class="stat-item">连续学习 <strong>'+streak+' 天</strong></div>'
+  }
+}
+
+function checkOverlay(){
+  let plan=getPlan();
+  let total=currentTrack==='math'?MATH_TRACK.allDays().length:plan.totalDays;
+  let allDone=true;
+  if(currentTrack==='math'){
+    MATH_TRACK.allDays().forEach(day=>{if(!Store.isDayDone(day.d))allDone=false})
+  } else {
+    for(let i=1;i<=total;i++){if(!Store.isDayDone(i)){allDone=false;break}}
+  }
+  let ov=document.getElementById('overlay');
+  if(allDone&&total>0){
+    ov.classList.add('show');
+    document.getElementById('overlay-msg').textContent=(currentTrack==='math'?'Math Track':'Main Plan')+' Complete! 🎉'
+  } else {ov.classList.remove('show')}
+}
+
+// ================================================================
+// NAVIGATION
+// ================================================================
+function goHome(){
+  document.getElementById('view-day').classList.remove('active');
+  document.getElementById('view-home').classList.add('active');
+  document.getElementById('overlay').classList.remove('show');
+  currentDay=null;
+  renderAll()
+}
+
+function goDay(d){
+  currentDay=d;
+  renderDay(d);
+  renderSidebar();
+  updateStats()
+}
+
+function navDay(dir){
+  let plan=getPlan();
+  let next=dir>0?(currentTrack==='math'?MATH_TRACK.getNextDay(currentDay):plan.getNextDay(currentDay)):(currentTrack==='math'?MATH_TRACK.getPrevDay(currentDay):plan.getPrevDay(currentDay));
+  if(next)goDay(next)
+}
+
+function switchTrack(track){
+  if(track===currentTrack)return;
+  currentTrack=track;
+  goHome()
+}
+
+function switchTrackUI(){
+  // handled by updateStats
+}
+
+// ================================================================
+// TOAST
+// ================================================================
+var _toastTimer=null;
+function showToast(msg){
+  let t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  if(_toastTimer)clearTimeout(_toastTimer);
+  _toastTimer=setTimeout(()=>t.classList.remove('show'),2200)
+}
+
+// ================================================================
+// COPY PROMPT
+// ================================================================
+function copyPrompt(){
+  let text=document.getElementById('prompt-body').textContent;
+  navigator.clipboard.writeText(text).then(()=>{
+    let btn=document.getElementById('copy-btn');
+    btn.classList.add('copied');
+    btn.innerHTML='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+    showToast('✓ Prompt copied to clipboard');
+    setTimeout(()=>{
+      btn.classList.remove('copied');
+      btn.innerHTML='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy'
+    },1800)
+  }).catch(()=>showToast('Copy failed'))
+}
+
+// ================================================================
+// SIDEBAR TOGGLE (mobile)
+// ================================================================
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('open-mobile')
+}
+
+// ================================================================
+// KEYBOARD
+// ================================================================
+document.addEventListener('keydown',function(e){
+  if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){
+    e.preventDefault();
+    let plan=getPlan();let dayData=plan.getDay(currentDay);
+    if(dayData){
+      for(let i=0;i<dayData.tasks.length;i++){
+        if(!Store.isTaskDone(currentDay,i)){
+          document.querySelectorAll('#task-list .task-item')[i]?.click();
+          break
+        }
+      }
+    }
+  }
+  if(e.key==='Escape')goHome()
+});
+
+// ================================================================
+// INIT
+// ================================================================
+document.addEventListener('DOMContentLoaded',function(){
+  renderAll();
+  goDay(1)
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Single Page Scroll · 学习计划追踪器</title>
+<style>
+/* ===== Glassmorphism-Bento 配色 + 单页滚动布局 ===== */
+:root {
+  --bg1:#0f0c29;--bg2:#302b63;--bg3:#24243e;
+  --glass:rgba(255,255,255,0.06);--glass2:rgba(255,255,255,0.10);--glass3:rgba(255,255,255,0.15);
+  --g-border:rgba(255,255,255,0.10);--g-border2:rgba(255,255,255,0.16);
+  --text:#e8e6f0;--text2:#a09cb8;--text3:#6e6a85;
+  --accent:#a78bfa;--accent2:#67e8f9;--success:#6ee7b7;
+  --c0:rgba(255,255,255,0.04);--c1:rgba(167,139,250,0.25);--c2:rgba(167,139,250,0.45);--c3:rgba(167,139,250,0.65);--c4:rgba(167,139,250,0.9);
+  --font:"Inter","Noto Sans SC",-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  --mono:"JetBrains Mono","Fira Code",ui-monospace,Consolas,monospace;
+  --r:10px;--r-lg:16px;--r-full:9999px;--ease:cubic-bezier(0.16,1,0.3,1);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:100px}
+body{font-family:var(--font);font-size:14px;line-height:1.6;background:linear-gradient(135deg,var(--bg1),var(--bg2),var(--bg3));color:var(--text);min-height:100vh}
+body::before,body::after{content:'';position:fixed;border-radius:50%;pointer-events:none;z-index:0}
+body::before{width:400px;height:400px;top:-80px;right:-80px;background:radial-gradient(circle,rgba(167,139,250,0.1),transparent 70%)}
+body::after{width:300px;height:300px;bottom:-60px;left:-60px;background:radial-gradient(circle,rgba(103,232,249,0.08),transparent 70%)}
+
+/* Sticky topbar */
+.topbar{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;height:46px;padding:0 18px;background:rgba(15,12,41,0.85);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--g-border)}
+.tb-l{display:flex;align-items:center;gap:8px}
+.tb-logo{width:26px;height:26px;border-radius:6px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff}
+.tb-title{font-size:13px;font-weight:600}.tb-badge{font-size:9px;font-weight:600;padding:2px 8px;border-radius:var(--r-full);background:rgba(167,139,250,0.12);color:var(--accent);border:1px solid rgba(167,139,250,0.2)}
+.tb-r{display:flex;align-items:center;gap:12px;font-size:10px;color:var(--text2)}
+.tb-stat{display:flex;align-items:center;gap:3px}.tb-stat-v{font-weight:600;color:var(--text);font-family:var(--mono);font-size:11px}
+.tb-track{border:1px solid var(--g-border2);border-radius:var(--r);overflow:hidden;display:flex;background:var(--glass)}
+.tb-track button{padding:4px 14px;font-size:10px;font-weight:600;border:none;cursor:pointer;background:transparent;color:var(--text2);transition:all .2s var(--ease)}
+.tb-track button:first-child{border-right:1px solid var(--g-border)}
+.tb-track button.active{background:rgba(167,139,250,0.2);color:var(--accent)}
+
+/* Progress bar */
+.progress-line{position:fixed;top:46px;left:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent2));z-index:99;transition:width .4s var(--ease)}
+
+/* Hero */
+.hero{padding:60px 24px 50px;text-align:center;position:relative;z-index:1}
+.hero-title{font-size:clamp(30px,6vw,50px);font-weight:800;line-height:1.1;letter-spacing:-0.02em}
+.hero-title span{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{font-size:15px;color:var(--text2);margin-top:8px}
+
+.hero-stats{display:flex;justify-content:center;gap:36px;margin-top:28px}
+.hero-stat{text-align:center}
+.hero-stat-v{font-size:44px;font-weight:900;font-family:var(--mono);background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1}
+.hero-stat-l{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-top:4px}
+
+/* Page sections */
+.page{max-width:780px;margin:0 auto;padding:0 24px 60px;position:relative;z-index:1}
+
+.section{margin-bottom:40px;scroll-margin-top:80px}
+.section-hd{display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--g-border)}
+.section-num{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--accent);background:var(--glass2);padding:4px 10px;border-radius:var(--r)}
+.section-name{font-size:18px;font-weight:700;color:var(--text);flex:1}
+.section-meta{font-size:10px;color:var(--text3)}
+
+.subsection{margin-bottom:24px}
+.subsection-title{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
+
+.day-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.day-card{background:var(--glass);backdrop-filter:blur(8px);border:1px solid var(--g-border);border-radius:var(--r);padding:14px 16px;cursor:pointer;transition:all .2s var(--ease)}
+.day-card:hover{background:var(--glass3);border-color:var(--g-border2);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.2)}
+
+.card-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.card-day{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--accent)}
+.card-level{display:flex;gap:2px}
+.card-dot{width:6px;height:6px;border-radius:50%}
+.card-dot.d0{background:rgba(255,255,255,0.1)}.card-dot.d1{background:var(--c1)}.card-dot.d2{background:var(--c2)}.card-dot.d3{background:var(--accent)}
+.card-title{font-size:13px;font-weight:600;color:var(--text);line-height:1.3}
+
+/* Inline expanded detail */
+.detail-inline{display:none;margin:12px 0;background:var(--glass2);border:1px solid var(--g-border2);border-radius:var(--r-lg);overflow:hidden;scroll-margin-top:80px}
+.detail-inline.open{display:block}
+.detail-inner{padding:20px 24px}
+.detail-close{float:right;width:30px;height:30px;border-radius:50%;border:1px solid var(--g-border2);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text2);font-size:14px;background:var(--glass);transition:all .2s var(--ease)}
+.detail-close:hover{background:var(--glass3);color:var(--text)}
+.detail-day{font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.06em}
+.detail-title{font-size:22px;font-weight:700;color:var(--text);margin:6px 0 12px}
+.detail-desc{font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--g-border)}
+
+.prompt-block{background:var(--glass);border:1px solid var(--g-border);border-radius:var(--r);overflow:hidden;margin-bottom:14px}
+.prompt-hd{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--glass2);border-bottom:1px solid var(--g-border)}
+.prompt-hd span{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.05em}
+.prompt-body{padding:14px;font-size:12px;line-height:1.7;color:var(--text2);white-space:pre-wrap;word-break:break-word;max-height:250px;overflow-y:auto}
+
+.task-item{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;border-radius:var(--r);cursor:pointer;transition:all .2s var(--ease);background:var(--glass);border:1px solid transparent;margin-bottom:6px}
+.task-item:hover{background:var(--glass2);border-color:var(--g-border2)}
+.task-chk{width:20px;height:20px;border-radius:50%;border:2px solid var(--g-border2);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s var(--ease)}
+.task-item.done .task-chk{background:var(--success);border-color:var(--success);box-shadow:0 0 10px rgba(110,231,183,0.3)}
+.task-chk svg{opacity:0}.task-item.done .task-chk svg{opacity:1}
+.task-txt{font-size:13px;color:var(--text);flex:1}.task-item.done .task-txt{text-decoration:line-through;color:var(--text3)}.task-item.done{opacity:.55}
+
+.btn{display:inline-flex;align-items:center;gap:5px;padding:6px 14px;font-size:11px;font-weight:500;font-family:var(--font);border:1px solid var(--g-border2);border-radius:var(--r);background:var(--glass2);color:var(--text2);cursor:pointer;transition:all .2s var(--ease)}
+.btn:hover{background:var(--glass3);color:var(--text)}
+.btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-color:transparent}
+.btn.copy.copied{background:rgba(110,231,183,0.15);border-color:var(--success);color:var(--success)}
+
+/* Floating nav dots (right side) */
+.floating-nav{position:fixed;right:16px;top:50%;transform:translateY(-50%);z-index:50;display:flex;flex-direction:column;gap:8px}
+.floating-nav a{width:8px;height:8px;border-radius:50%;background:var(--g-border2);transition:all .2s var(--ease);display:block}
+.floating-nav a:hover,.floating-nav a.active{background:var(--accent);box-shadow:0 0 8px rgba(167,139,250,0.4)}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);padding:10px 20px;background:rgba(15,12,41,0.95);color:#fff;border-radius:var(--r-full);font-size:12px;font-weight:500;opacity:0;pointer-events:none;z-index:300;border:1px solid var(--g-border2);transition:all .3s var(--ease)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media(max-width:768px){
+  .hero{padding:40px 16px 30px}.hero-stats{gap:20px}.hero-stat-v{font-size:32px}
+  .page{padding:0 14px 40px}.day-cards{grid-template-columns:1fr}
+  .floating-nav{display:none}.tb-r .tb-stat{display:none}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="tb-l"><div class="tb-logo">◆</div><span class="tb-title">量化学习计划追踪</span><span class="tb-badge" id="tb-badge">主计划</span></div>
+  <div class="tb-r">
+    <div class="tb-track"><button class="active" data-track="main" onclick="switchTrack('main')">主计划</button><button data-track="math" onclick="switchTrack('math')">数学</button></div>
+    <div class="tb-stat">完成 <span class="tb-stat-v" id="tb-done">0/8</span></div>
+    <div class="tb-stat">进度 <span class="tb-stat-v" id="tb-pct">0%</span></div>
+    <div class="tb-stat">连续 <span class="tb-stat-v" id="tb-streak">0d</span></div>
+  </div>
+</div>
+<div class="progress-line" id="progress-line"></div>
+
+<nav class="floating-nav" id="floating-nav"></nav>
+
+<!-- Hero -->
+<section class="hero" id="hero">
+  <h1 class="hero-title">量化<span>学习</span>计划</h1>
+  <p class="hero-sub" id="hero-sub"></p>
+  <div class="hero-stats" id="hero-stats"></div>
+</section>
+
+<!-- Page content -->
+<div class="page" id="page-content"></div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+var MAIN_PLAN={name:'主计划',stages:[{id:1,name:'阶段一：Python核心概念速览',sections:[{name:'程序是怎么运行的',days:[{d:1,title:'变量、数据类型、输入输出',desc:'变量不是「存储数据」，而是「给数据贴标签」。',prompt:'=== 第1天：变量、数据类型与输入输出 ===\n\n【学习时长】约3小时\n【学习目的】变量=给数据贴标签\n【练习任务】让AI生成代码/修改变量/总结概念',tasks:['让AI生成代码，逐行理解','修改变量值观察输出变化','总结概念']},{d:2,title:'控制流——判断与循环',desc:'if让程序做决策，for/while让程序重复劳动。',prompt:'=== 第2天：控制流 ===\n\n【学习时长】约3小时\n【核心概念】if/for/while\n【练习任务】口述流程/分叉点/修改验证',tasks:['口述代码执行流程','指出分叉点/循环边界','修改条件预测行为']}]},{name:'数据结构概念',days:[{d:3,title:'列表与字典——数据的容器',desc:'列表=有序集合，字典=键值对映射。',prompt:'=== 第3天：列表与字典 ===\n\n【学习时长】约3小时\n【练习任务】定义股票字典/过滤需求/模糊描述',tasks:['定义股票字典列表','描述过滤需求→AI验证','故意模糊描述']}]}]},{id:2,name:'阶段二：数据处理入门',sections:[{name:'文件与数据读写',days:[{d:4,title:'文件读写基础',desc:'程序只有能读取外部数据才算有用。',prompt:'=== 第4天：文件读写 ===\n\n【学习时长】约3小时\n【练习任务】创建/读取/with改写',tasks:['创建文件写入10行','读取统计行数和字数','with语句改写']},{d:5,title:'CSV与JSON',desc:'CSV是表格，JSON是嵌套结构。',prompt:'=== 第5天：CSV与JSON ===\n\n【学习时长】约2.5小时\n【练习任务】DictReader/dumps/转换',tasks:['csv.DictReader读取','json序列化','CSV→JSON转换']}]},{name:'数据分析基础',days:[{d:6,title:'数据清洗',desc:'真实数据从来都不干净。',prompt:'=== 第6天：数据清洗 ===\n\n【练习任务】统计缺失/中位数/IQR',tasks:['统计缺失比例','中位数填充','IQR检测异常值']},{d:7,title:'数据可视化',desc:'一张好图胜过千行数据。',prompt:'=== 第7天：数据可视化 ===\n\n【练习任务】折线图/柱状图/散点图',tasks:['画折线图','画柱状图','画散点图']},{d:8,title:'数据分析报告',desc:'分析的终点是结论。',prompt:'=== 第8天：数据分析报告 ===\n\n【练习任务】提问/清洗/写结论',tasks:['提出3个问题','清洗+可视化','写结论']}]}]}],_map:null,totalDays:8,getDay(n){if(!this._map){this._map={};this.stages.forEach(s=>{s.sections.forEach(sec=>{sec.days.forEach(d=>{this._map[d.d]={...d,stageName:s.name,sectionName:sec.name}})})})}return this._map[n]||null}};
+var MATH_TRACK={name:'数学',modules:[{id:1,name:'数学思维基础',days:[{d:1,sync:39,title:'函数思维',desc:'建立函数=映射的直觉。',prompt:'=== MATH DAY 1：函数思维 ===\n\n【学习时长】约25分钟\n【练习任务】f(x)=2x+1/x²/sin(x)',tasks:['f(x)=2x+1画折线图','f(x)=x²和g(x)=sin(x)','描述形状差异']},{d:2,sync:40,title:'坐标与图形',desc:'用坐标系把数字关系画出来。',prompt:'=== MATH DAY 2：坐标与图形 ===\n\n【学习时长】约25分钟',tasks:['matplotlib画折线图','三条线不同颜色','解释趋势']},{d:3,sync:41,title:'变化率——斜率',desc:'斜率=x每增加1，y变化多少。',prompt:'=== MATH DAY 3：斜率 ===\n\n【学习时长】约25分钟',tasks:['计算斜率','比较不同斜率','解释含义']}]},{id:3,name:'模块三：线性代数基础',days:[{d:24,sync:null,title:'向量是什么',desc:'在AI中768维Embedding也是向量。',prompt:'=== MATH DAY 24：向量 ===\n\n【学习时长】约25分钟',tasks:['画出二维向量','理解Embedding','解释方向和大小']},{d:27,sync:42,title:'向量点积——相似度的根源',desc:'ChromaDB/RAG的数学基础。夹角越小语义越接近。',prompt:'=== MATH DAY 27：向量点积 ===\n\n【学习时长】约25分钟\n【关联】Main Day 42\n【学习目的】点积=方向一致性度量\n【核心概念】v·w=|v||w|cos(θ)，余弦相似度∈[-1,+1]\n【练习任务】v1=[1,2],v2=[2,4],v3=[-2,1]/cosine_sim()/画图',tasks:['手算 v1·v2 和 v1·v3','写 cosine_sim() 函数','画图解释夹角']}]}],_map:null,getDay(n){if(!this._map){this._map={};this.modules.forEach(m=>{m.days.forEach(d=>{this._map[d.d]={...d,moduleName:m.name}})})}return this._map[n]||null},allDays(){let a=[];this.modules.forEach(m=>{m.days.forEach(d=>a.push(d))});return a.sort((x,y)=>x.d-y.d)}};
+var currentTrack='main',KEY_MAIN='sp_main',KEY_MATH='sp_math';
+var Store={key(){return currentTrack==='math'?KEY_MATH:KEY_MAIN},load(){try{return JSON.parse(localStorage.getItem(this.key()))||{}}catch(e){return{}}},save(d){localStorage.setItem(this.key(),JSON.stringify(d))},toggleTask(day,idx){let d=this.load(),dk='d'+day;if(!d[dk])d[dk]={tasks:[false,false,false]};d[dk].tasks[idx]=!d[dk].tasks[idx];this.save(d)},isTaskDone(day,idx){return!!(this.load()['d'+day]&&this.load()['d'+day].tasks&&this.load()['d'+day].tasks[idx])},isDayDone(day){return!!(this.load()['d'+day]&&this.load()['d'+day].tasks&&this.load()['d'+day].tasks.every(t=>t))},getLevel(day){let d=this.load(),dk='d'+day;if(!d[dk]||!d[dk].tasks)return 0;let done=d[dk].tasks.filter(t=>t).length;if(done===3)return 4;if(done===2)return 3;if(done===1)return 2;return 1},getDoneCount(){let c=0;if(currentTrack==='math'){MATH_TRACK.allDays().forEach(d=>{if(this.isDayDone(d.d))c++})}else{for(let i=1;i<=MAIN_PLAN.totalDays;i++){if(this.isDayDone(i))c++}}return c},getStreak(){let doneCount=this.getDoneCount(),prefix=currentTrack==='math'?'sp_ms':'sp_ms2';function fmt(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}let today=new Date(),ss=localStorage.getItem('ss_'+prefix),baseline=parseInt(localStorage.getItem('bl_'+prefix))||0;if(!ss){if(doneCount>0){let defS=4,sd=new Date(today.getFullYear(),today.getMonth(),today.getDate()-defS+1);ss=fmt(sd);baseline=Math.max(0,doneCount-defS)}else{ss=fmt(today);baseline=0}localStorage.setItem('ss_'+prefix,ss);localStorage.setItem('bl_'+prefix,String(baseline))}let tOnly=new Date(today.getFullYear(),today.getMonth(),today.getDate()),p=ss.split('-'),sOnly=new Date(parseInt(p[0]),parseInt(p[1])-1,parseInt(p[2])),daysSince=Math.floor((tOnly-sOnly)/86400000)+1,newlyDone=doneCount-baseline;if(newlyDone>=daysSince-1)return Math.min(newlyDone,daysSince);return 0}};
+function getPlan(){return currentTrack==='math'?MATH_TRACK:MAIN_PLAN}
+
+function buildAll(){
+  let plan=getPlan(),done=Store.getDoneCount(),total=currentTrack==='math'?MATH_TRACK.allDays().length:plan.totalDays,pct=total>0?Math.round(done/total*100):0,streak=Store.getStreak();
+  // Topbar
+  document.getElementById('tb-done').textContent=done+'/'+total;document.getElementById('tb-pct').textContent=pct+'%';document.getElementById('tb-streak').textContent=streak+'d';
+  document.getElementById('tb-badge').textContent=plan.name;
+  document.getElementById('progress-line').style.width=pct+'%';
+  document.querySelectorAll('.tb-track button').forEach(b=>b.classList.toggle('active',b.getAttribute('data-track')===currentTrack));
+  // Hero
+  document.getElementById('hero-sub').textContent=plan.name+' · '+done+'/'+total+' 天完成 · 连续 '+streak+' 天';
+  document.getElementById('hero-stats').innerHTML='<div class="hero-stat"><div class="hero-stat-v">'+done+'</div><div class="hero-stat-l">已完成</div></div><div class="hero-stat"><div class="hero-stat-v">'+pct+'%</div><div class="hero-stat-l">进度</div></div><div class="hero-stat"><div class="hero-stat-v">'+streak+'</div><div class="hero-stat-l">连续天数</div></div>';
+  // Sections
+  let page=document.getElementById('page-content'),html='',navDots='';
+  if(currentTrack==='math'){
+    MATH_TRACK.modules.forEach((mod,mi)=>{
+      let sid='sec-'+mi;html+='<section class="section" id="'+sid+'"><div class="section-hd"><span class="section-num">'+(mi+1)+'</span><span class="section-name">'+mod.name+'</span><span class="section-meta">'+mod.days.length+'天</span></div><div class="day-cards">';
+      mod.days.forEach(day=>{
+        let lv=Store.getLevel(day.d),dots='';for(let i=0;i<3;i++)dots+='<span class="card-dot d'+(i<lv?Math.min(i+1,3):0)+'"></span>';
+        html+='<div class="day-card" onclick="expandDay('+day.d+',\''+sid+'\')"><div class="card-hd"><span class="card-day">M'+day.d+'</span><span class="card-level">'+dots+'</span></div><div class="card-title">'+day.title+'</div></div>';
+      });
+      html+='</div><div class="detail-inline" id="detail-'+sid+'"></div></section>';
+      navDots+='<a href="#'+sid+'" title="'+mod.name+'"></a>';
+    })
+  } else {
+    MAIN_PLAN.stages.forEach((stage,si)=>{
+      let sid='sec-'+si;html+='<section class="section" id="'+sid+'"><div class="section-hd"><span class="section-num">'+(si+1)+'</span><span class="section-name">'+stage.name+'</span></div>';
+      stage.sections.forEach(sec=>{
+        html+='<div class="subsection"><div class="subsection-title">'+sec.name+'</div><div class="day-cards">';
+        sec.days.forEach(day=>{
+          let lv=Store.getLevel(day.d),dots='';for(let i=0;i<3;i++)dots+='<span class="card-dot d'+(i<lv?Math.min(i+1,3):0)+'"></span>';
+          html+='<div class="day-card" onclick="expandDay('+day.d+',\''+sid+'\')"><div class="card-hd"><span class="card-day">Day '+day.d+'</span><span class="card-level">'+dots+'</span></div><div class="card-title">'+day.title+'</div></div>';
+        });
+        html+='</div></div>';
+      });
+      html+='<div class="detail-inline" id="detail-'+sid+'"></div></section>';
+      navDots+='<a href="#'+sid+'" title="'+stage.name+'"></a>';
+    })
+  }
+  page.innerHTML=html;
+  document.getElementById('floating-nav').innerHTML=navDots;
+  // Active nav dot on scroll
+  window.addEventListener('scroll',()=>{
+    let sections=document.querySelectorAll('.section'),dots=document.querySelectorAll('.floating-nav a');
+    sections.forEach((sec,i)=>{let rect=sec.getBoundingClientRect();if(rect.top<200&&rect.bottom>200&&dots[i])dots[i].classList.add('active');else if(dots[i])dots[i].classList.remove('active')});
+  });
+}
+
+function expandDay(day,sid){
+  let plan=getPlan(),dd=plan.getDay(day);if(!dd)return;
+  let detailEl=document.getElementById('detail-'+sid);
+  if(!detailEl)return;
+  let html='<div class="detail-inner"><div class="detail-close" onclick="this.closest(\'.detail-inline\').classList.remove(\'open\')">×</div><div class="detail-day">Day '+day+'</div><h3 class="detail-title">'+dd.title+'</h3>';
+  if(currentTrack==='math'&&dd.sync)html+='<button class="btn" style="font-size:10px;margin-bottom:10px" onclick="currentTrack=\'math\';switchTrack(\'main\');setTimeout(()=>expandDay('+dd.sync+',\'sec-0\'),100)">↗ Sync: Main Day '+dd.sync+'</button>';
+  html+='<p class="detail-desc">'+dd.desc+'</p><div class="prompt-block"><div class="prompt-hd"><span>Prompt</span><button class="btn copy" onclick="copyPrompt(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div><pre class="prompt-body">'+dd.prompt+'</pre></div>';
+  dd.tasks.forEach((task,idx)=>{let done=Store.isTaskDone(day,idx);html+='<label class="task-item'+(done?' done':'')+'" data-day="'+day+'" data-tidx="'+idx+'"><div class="task-chk"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span class="task-txt">'+task+'</span></label>'});
+  html+='</div>';
+  detailEl.innerHTML=html;detailEl.classList.add('open');
+  detailEl.scrollIntoView({behavior:'smooth',block:'center'});
+  setTimeout(()=>{detailEl.querySelectorAll('.task-item').forEach(item=>{item.addEventListener('click',function(){let d=parseInt(this.getAttribute('data-day')),idx=parseInt(this.getAttribute('data-tidx'));Store.toggleTask(d,idx);this.classList.toggle('done');buildAll();showToast('Task updated')})})},100);
+}
+
+function switchTrack(track){if(track===currentTrack)return;currentTrack=track;buildAll();window.scrollTo({top:0,behavior:'smooth'})}
+var _toastTimer=null;function showToast(msg){let t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');if(_toastTimer)clearTimeout(_toastTimer);_toastTimer=setTimeout(()=>t.classList.remove('show'),2000)}
+function copyPrompt(el){let text=el.closest('.prompt-block').querySelector('.prompt-body').textContent;navigator.clipboard.writeText(text).then(()=>{el.classList.add('copied');el.innerHTML='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Copied!';showToast('✓ Copied!')}).catch(()=>showToast('Copy failed'))}
+document.addEventListener('DOMContentLoaded',function(){buildAll()});
+</script>
+</body>
+</html>

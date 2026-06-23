@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neon Cyberpunk · 学习计划追踪器</title>
+<style>
+/* ================================================================
+   Neon Cyberpunk — 暗黑+霓虹发光+高对比+故障风
+   参考: banner-sizes-and-styles.md §Neon/Cyberpunk
+   特征: #0a0a0f底色 · 霓虹cyan/magenta · 发光阴影 · 粗字体 · 扫描线
+   ================================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap');
+:root {
+  --bg:#0a0a0f;--bg2:#0f0f18;--bg3:#161625;--border:#1e1e35;--border2:#2a2a48;
+  --text:#e0dfff;--text2:#8a8ab0;--text3:#505070;
+  --cyan:#00f0ff;--magenta:#ff00aa;--yellow:#ffe600;--green:#00ff88;
+  --cyan-glow:0 0 10px rgba(0,240,255,0.4),0 0 30px rgba(0,240,255,0.15);
+  --magenta-glow:0 0 10px rgba(255,0,170,0.4),0 0 30px rgba(255,0,170,0.15);
+  --c0:#0f0f18;--c1:rgba(0,240,255,0.1);--c2:rgba(0,240,255,0.25);--c3:rgba(0,240,255,0.5);--c4:var(--cyan);
+  --font:"Inter","Noto Sans SC",-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  --tech:"Orbitron","JetBrains Mono",monospace;
+  --r-sm:2px;--r-md:4px;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden;font-family:var(--font);font-size:14px;line-height:1.5;background:var(--bg);color:var(--text)}
+/* Scanline overlay */
+html::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:999;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);opacity:0.5}
+
+.topbar{display:flex;align-items:center;justify-content:space-between;height:48px;padding:0 18px;flex-shrink:0;background:var(--bg2);border-bottom:1px solid var(--border);z-index:50}
+.tb-l{display:flex;align-items:center;gap:10px}
+.tb-logo{font-family:var(--tech);font-size:18px;font-weight:900;color:var(--cyan);text-shadow:var(--cyan-glow);letter-spacing:0.04em}
+.tb-title{font-size:13px;font-weight:600;color:var(--text);letter-spacing:0.02em}
+.tb-badge{font-size:9px;font-weight:700;padding:2px 8px;font-family:var(--tech);color:var(--cyan);border:1px solid rgba(0,240,255,0.3);background:rgba(0,240,255,0.05);letter-spacing:0.06em;text-transform:uppercase}
+
+.tb-center{display:flex;border:1px solid var(--border2);background:var(--bg3)}
+.tb-track{padding:5px 18px;font-size:11px;font-weight:600;font-family:var(--tech);border:none;cursor:pointer;background:transparent;color:var(--text2);letter-spacing:0.05em;transition:all .15s}
+.tb-track:first-child{border-right:1px solid var(--border)}
+.tb-track.active{background:rgba(0,240,255,0.08);color:var(--cyan);text-shadow:0 0 8px rgba(0,240,255,0.3)}
+.tb-track:hover:not(.active){color:var(--text);background:var(--bg2)}
+
+.tb-r{display:flex;align-items:center;gap:16px;font-size:10px;font-family:var(--tech);color:var(--text2);letter-spacing:0.04em}
+.tb-stat{display:flex;align-items:center;gap:4px}
+.tb-stat-v{font-weight:700;color:var(--cyan);font-size:13px;text-shadow:0 0 6px rgba(0,240,255,0.3)}
+
+.progress-wrap{height:2px;background:var(--bg3);flex-shrink:0}
+.progress-bar{height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--magenta));transition:width .4s;box-shadow:var(--cyan-glow)}
+
+.app-layout{display:flex;height:calc(100vh - 48px - 2px)}
+
+.sidebar{width:210px;flex-shrink:0;overflow-y:auto;padding:6px 0;background:var(--bg2);border-right:1px solid var(--border);transition:transform .2s}
+.sidebar::-webkit-scrollbar{width:4px}.sidebar::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.side-stage{user-select:none}
+.side-stage-hd{display:flex;align-items:center;gap:6px;padding:7px 12px;cursor:pointer;font-size:11px;font-family:var(--tech);color:var(--text2);letter-spacing:0.04em;transition:all .1s}
+.side-stage-hd:hover{background:var(--bg3);color:var(--cyan)}
+.side-arrow{font-size:8px;color:var(--cyan);transition:transform .15s;display:inline-block}
+.side-stage.open>.side-stage-hd .side-arrow{transform:rotate(90deg)}
+.side-stage-name{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.side-stage-n{font-size:9px;color:var(--text3)}
+.side-body{display:none;padding-left:12px}
+.side-stage.open>.side-body{display:block}
+.side-item{display:flex;align-items:center;gap:6px;padding:4px 10px 4px 16px;font-size:10px;color:var(--text3);cursor:pointer;transition:all .1s;font-family:var(--font);position:relative}
+.side-item:hover{background:var(--bg3);color:var(--text2)}
+.side-item.active{color:var(--cyan);background:rgba(0,240,255,0.05);border-right:2px solid var(--cyan)}
+.side-dot{display:inline-block;width:5px;height:5px;border-radius:1px;flex-shrink:0}
+.side-dot.d0{background:var(--text3)}.side-dot.d1{background:var(--c1)}.side-dot.d2{background:var(--c2)}.side-dot.d3{background:var(--c3)}.side-dot.d4{background:var(--cyan);box-shadow:0 0 4px var(--cyan)}
+
+.content{flex:1;overflow-y:auto;overflow-x:hidden}
+.content::-webkit-scrollbar{width:4px}.content::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.view{display:none}.view.active{display:block}
+
+.home{padding:18px 22px 40px;max-width:800px;margin:0 auto}
+
+.kpi-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px}
+.kpi{background:var(--bg2);border:1px solid var(--border);padding:16px 18px;position:relative;overflow:hidden}
+.kpi::before{content:'';position:absolute;top:-1px;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--cyan),var(--magenta));opacity:0.6}
+.kpi-lbl{font-family:var(--tech);font-size:9px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
+.kpi-val{font-family:var(--tech);font-size:30px;font-weight:900;color:var(--cyan);text-shadow:var(--cyan-glow);line-height:1}
+.kpi-sub{font-size:9px;color:var(--text3);margin-top:3px;font-family:var(--tech)}
+
+.stage-card{background:var(--bg2);border:1px solid var(--border);margin-bottom:12px;overflow:hidden}
+.stage-card.open .stage-body{display:block}
+.stage-card:not(.open) .stage-body{display:none}
+.stage-hd{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;cursor:pointer;user-select:none;transition:background .1s}
+.stage-hd:hover{background:var(--bg3)}
+.stage-hd-l{display:flex;align-items:center;gap:8px;flex:1;min-width:0}
+.stage-arrow{color:var(--cyan);font-size:10px;transition:transform .15s}
+.stage-card.open .stage-arrow{transform:rotate(90deg)}
+.stage-name{font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stage-meta{font-family:var(--tech);font-size:9px;color:var(--text3)}
+
+.stage-body{padding:12px 16px;border-top:1px solid var(--border)}
+.sec-title{font-family:var(--tech);font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin:12px 0 8px;display:flex;align-items:center;gap:8px}
+.sec-title:first-child{margin-top:0}
+.sec-title::after{content:'';flex:1;height:1px;background:var(--border)}
+
+.day-grid{display:flex;flex-wrap:wrap;gap:4px;padding:2px 0}
+.day-cell{width:20px;height:20px;cursor:pointer;flex-shrink:0;transition:all .1s;position:relative}
+.day-cell:hover{outline:2px solid var(--cyan);outline-offset:2px;z-index:2;transform:scale(1.15);box-shadow:var(--cyan-glow)}
+.day-cell:active{transform:scale(0.85)}
+.day-cell[data-lv="0"]{background:var(--bg3);border:1px solid var(--border)}
+.day-cell[data-lv="1"]{background:rgba(0,240,255,0.08);border:1px solid rgba(0,240,255,0.12)}
+.day-cell[data-lv="2"]{background:rgba(0,240,255,0.18);border:1px solid rgba(0,240,255,0.25)}
+.day-cell[data-lv="3"]{background:rgba(0,240,255,0.35);border:1px solid rgba(0,240,255,0.45)}
+.day-cell[data-lv="4"]{background:var(--cyan);border:1px solid var(--cyan);box-shadow:0 0 8px rgba(0,240,255,0.5)}
+
+.cell-tip{position:absolute;bottom:calc(100%+8px);left:50%;transform:translateX(-50%);padding:4px 10px;background:var(--bg3);color:var(--cyan);font-size:10px;border:1px solid var(--border2);white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s;z-index:20;font-family:var(--tech);letter-spacing:.04em}
+.cell-tip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:4px solid transparent;border-top-color:var(--border2)}
+.day-cell:hover .cell-tip{opacity:1}
+
+.legend{display:flex;align-items:center;justify-content:center;gap:5px;padding:10px 0 0;font-size:9px;font-family:var(--tech);color:var(--text3);letter-spacing:.04em}
+
+.day-view{padding:0}
+.day-inner{max-width:680px;margin:0 auto;padding:0 20px 40px}
+.breadcrumb{display:flex;align-items:center;gap:4px;flex-wrap:wrap;padding:14px 0;border-bottom:1px solid var(--border);font-size:11px;font-family:var(--tech);color:var(--text3);letter-spacing:.04em}
+.breadcrumb .cur{color:var(--cyan);text-shadow:0 0 6px rgba(0,240,255,0.3)}
+
+.day-hd{padding:16px 0 0}
+.day-label{font-family:var(--tech);font-size:10px;font-weight:700;color:var(--cyan);text-transform:uppercase;letter-spacing:.1em;text-shadow:0 0 6px rgba(0,240,255,0.2)}
+.day-meta{font-size:26px;font-weight:700;line-height:1.25;color:var(--text);margin-top:4px}
+
+.sync-row{padding:10px 0}
+.sync-badge{display:inline-flex;align-items:center;gap:5px;padding:5px 14px;font-size:10px;font-family:var(--tech);font-weight:600;background:rgba(0,240,255,0.05);color:var(--cyan);border:1px solid rgba(0,240,255,0.25);cursor:pointer;transition:all .15s;letter-spacing:.04em}
+.sync-badge:hover{background:rgba(0,240,255,0.12);box-shadow:var(--cyan-glow)}
+
+.day-desc{padding:6px 0 16px;font-size:13px;line-height:1.7;color:var(--text2);border-bottom:1px solid var(--border)}
+
+.prompt-card{margin-top:16px;background:var(--bg2);border:1px solid var(--border);overflow:hidden}
+.prompt-hd{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:var(--bg3);border-bottom:1px solid var(--border)}
+.prompt-label{display:flex;align-items:center;gap:6px;font-family:var(--tech);font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.1em}
+.prompt-label::before{content:'>_';color:var(--cyan);text-shadow:0 0 6px rgba(0,240,255,0.4)}
+.prompt-body{padding:16px;font-size:12px;line-height:1.8;color:var(--text2);white-space:pre-wrap;word-break:break-word;font-family:var(--font);max-height:400px;overflow-y:auto;background:var(--bg)}
+.prompt-body::-webkit-scrollbar{width:4px}.prompt-body::-webkit-scrollbar-thumb{background:var(--border)}
+
+.task-section{margin-top:16px}
+.task-section-hd{font-family:var(--tech);font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px}
+.task-item{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;cursor:pointer;transition:all .1s;border:1px solid transparent}
+.task-item:hover{background:var(--bg2);border-color:var(--border)}
+.task-chk{width:18px;height:18px;border:2px solid var(--border2);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;background:transparent;transition:all .1s}
+.task-item:hover .task-chk{border-color:var(--cyan);box-shadow:0 0 6px rgba(0,240,255,0.2)}
+.task-item.done .task-chk{background:var(--cyan);border-color:var(--cyan);box-shadow:0 0 8px rgba(0,240,255,0.4)}
+.task-chk svg{opacity:0}.task-item.done .task-chk svg{opacity:1}
+.task-txt{font-size:13px;color:var(--text);flex:1;line-height:1.5;transition:all .1s}
+.task-item.done .task-txt{text-decoration:line-through;color:var(--text3)}
+.task-item.done{opacity:.5}
+
+.day-footer{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-top:28px;padding-top:14px;border-top:1px solid var(--border);font-size:11px;font-family:var(--tech);color:var(--text3);letter-spacing:.04em}
+
+.btn{display:inline-flex;align-items:center;gap:5px;padding:6px 14px;font-size:10px;font-family:var(--tech);font-weight:600;letter-spacing:.05em;border:1px solid var(--border2);background:var(--bg2);color:var(--text2);cursor:pointer;transition:all .15s}
+.btn:hover{background:var(--bg3);border-color:var(--cyan);color:var(--cyan);box-shadow:0 0 10px rgba(0,240,255,0.15)}
+.btn:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+.btn.primary{background:var(--cyan);color:#000;border-color:var(--cyan);box-shadow:var(--cyan-glow)}
+.btn.primary:hover{background:#00e0f0;box-shadow:0 0 20px rgba(0,240,255,0.5)}
+.btn.copy.copied{background:rgba(0,240,255,0.15);border-color:var(--cyan);color:var(--cyan)}
+.btn-group{display:flex;gap:6px}
+
+.overlay{position:fixed;inset:0;z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(10,10,15,0.95);opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(8px)}
+.overlay.show{opacity:1;pointer-events:auto}
+.ov-icon{width:60px;height:60px;border:2px solid var(--cyan);display:flex;align-items:center;justify-content:center;background:rgba(0,240,255,0.05);box-shadow:var(--cyan-glow)}
+.ov-msg{margin-top:14px;font-family:var(--tech);font-size:18px;font-weight:700;color:var(--cyan);text-shadow:var(--cyan-glow)}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);display:flex;align-items:center;gap:6px;padding:10px 20px;background:var(--bg2);color:var(--cyan);border:1px solid var(--border2);font-family:var(--tech);font-size:10px;font-weight:600;letter-spacing:.04em;opacity:0;pointer-events:none;z-index:300;transition:all .25s;box-shadow:0 0 20px rgba(0,240,255,0.1)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+.sidebar-toggle{display:none;width:36px;height:36px;align-items:center;justify-content:center;background:var(--bg2);border:1px solid var(--border2);cursor:pointer;font-family:var(--tech);font-size:16px;color:var(--cyan)}
+
+@media(max-width:768px){.sidebar{position:fixed;left:0;top:48px;bottom:0;z-index:40;transform:translateX(-100%)}.sidebar.open-mobile{transform:translateX(0)}.sidebar-toggle{display:flex}.home{padding:12px 12px 32px}.day-inner{padding:0 12px 32px}.day-meta{font-size:21px}.kpi-row{grid-template-columns:1fr 1fr}.tb-center{display:none}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.01ms!important}html::after{display:none}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="tb-l"><div class="tb-logo">◈</div><span class="tb-title">量化学习计划追踪</span><span class="tb-badge" id="tb-badge">MAIN</span><button class="sidebar-toggle" onclick="toggleSidebar()">≡</button></div>
+  <div class="tb-center"><button class="tb-track active" data-track="main" onclick="switchTrack('main')">主计划</button><button class="tb-track" data-track="math" onclick="switchTrack('math')">数学</button></div>
+  <div class="tb-r"><div class="tb-stat">DONE <span class="tb-stat-v" id="tb-done">0/8</span></div><div class="tb-stat">PROG <span class="tb-stat-v" id="tb-pct">0%</span></div><div class="tb-stat">STREAK <span class="tb-stat-v" id="tb-streak">0d</span></div></div>
+</header>
+<div class="progress-wrap"><div class="progress-bar" id="progress-bar"></div></div>
+<div class="app-layout">
+  <nav class="sidebar" id="sidebar"></nav>
+  <main class="content" id="content">
+    <div class="view active" id="view-home"><div class="home"><div class="kpi-row" id="kpi-row"></div><div id="stage-list"></div><div class="legend">[ 未开始 ▏▎▌▋█ 完成 ]</div></div></div>
+    <div class="view day-view" id="view-day"><div class="day-inner"><div class="breadcrumb" id="day-breadcrumb"></div><div class="day-hd"><div class="day-label">DAY <span id="day-num"></span></div><h1 class="day-meta" id="day-meta"></h1></div><div class="sync-row"><button class="sync-badge" id="sync-badge" style="display:none"></button></div><p class="day-desc" id="day-desc"></p><div class="prompt-card"><div class="prompt-hd"><span class="prompt-label">PROMPT</span><button class="btn copy" id="copy-btn" onclick="copyPrompt()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> COPY</button></div><pre class="prompt-body" id="prompt-body"></pre></div><div class="task-section"><div class="task-section-hd">TASKS</div><div id="task-list"></div></div><div class="day-footer"><span id="footer-status"></span><div class="btn-group"><button class="btn" id="btn-prev" onclick="navDay(-1)">◀ PREV</button><button class="btn" id="btn-home" onclick="goHome()">HOME</button><button class="btn primary" id="btn-next" onclick="navDay(1)">NEXT ▶</button></div></div></div></div>
+  </main>
+</div>
+<div class="overlay" id="overlay"><div class="ov-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#00f0ff" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div><p class="ov-msg" id="overlay-msg"></p></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+var MAIN_PLAN={name:'主计划',stages:[{id:1,name:'阶段一：Python核心概念速览',sections:[{name:'程序是怎么运行的',days:[{d:1,title:'变量、数据类型、输入输出',desc:'变量不是「存储数据」，而是「给数据贴标签」。',prompt:'=== 第1天：变量、数据类型与输入输出 ===\n\n【学习时长】约3小时\n【学习目的】建立「变量=给数据贴标签」的核心直觉。\n【核心概念】\n- 变量 = 给数据贴标签\n- 基本类型：int/float/str/bool\n- print()输出 / input()输入\n【练习任务】\n- 让AI写一个程序，你能解释每一行\n- 修改变量值观察输出变化\n- 用自己的话总结四个概念',tasks:['让AI生成代码，逐行理解','修改变量值观察输出变化','用自己的话总结四个概念']},{d:2,title:'控制流——判断与循环',desc:'if让程序做决策，for/while让程序重复劳动。',prompt:'=== 第2天：控制流 ===\n\n【学习时长】约3小时\n【学习目的】建立程序自主决策和批量处理的思维。\n【核心概念】\n- if/elif/else：条件判断\n- for循环：遍历数据\n- while循环：条件满足就一直做\n【练习任务】\n- 口述代码执行流程\n- 指出分叉点、循环边界、退出条件\n- 修改条件，预测行为，运行验证',tasks:['口述含三种控制流的代码执行流程','指出分叉点、循环边界、退出条件','修改条件，预测行为，运行验证']}]},{name:'数据结构概念',days:[{d:3,title:'列表与字典——数据的容器',desc:'列表=有序集合，字典=键值对映射。',prompt:'=== 第3天：列表与字典 ===\n\n【学习时长】约3小时\n【学习目的】建立数据容器的思维模型。\n【核心概念】\n- 列表 = 有序集合\n- 字典 = 键值映射\n- 列表嵌套字典是最常见的数据格式\n【练习任务】\n- 定义股票字典列表，让AI提取字段\n- 描述过滤需求→AI写代码→你验证\n- 故意模糊描述，观察AI理解偏差',tasks:['定义股票字典列表，让AI提取字段','描述过滤需求→AI写代码→验证','故意模糊描述，观察AI理解偏差']}]}]},{id:2,name:'阶段二：数据处理入门',sections:[{name:'文件与数据读写',days:[{d:4,title:'文件读写基础',desc:'程序只有能读取外部数据才算真正有用。',prompt:'=== 第4天：文件读写基础 ===\n\n【学习时长】约3小时\n【学习目的】掌握Python文件读写基本操作。\n【核心概念】\n- open()/read()/write()\n- with语句自动关闭文件\n【练习任务】\n- 创建文本文件，写入10行数据\n- 读取并统计行数和字数\n- 用with语句改写',tasks:['创建文本文件，写入10行数据','读取并统计行数和字数','用with语句改写']},{d:5,title:'CSV与JSON',desc:'CSV是表格，JSON是嵌套结构。',prompt:'=== 第5天：CSV与JSON ===\n\n【学习时长】约2.5小时\n【学习目的】掌握两种结构化数据格式。\n【核心概念】\n- CSV = 逗号分隔表格\n- JSON = 键值对嵌套\n【练习任务】\n- csv.DictReader读取CSV\n- json.dumps序列化\n- CSV→JSON转换函数',tasks:['csv.DictReader读取CSV','json.dumps序列化字典列表','CSV→JSON转换函数']}]},{name:'数据分析基础',days:[{d:6,title:'数据清洗',desc:'真实数据从来都不干净。',prompt:'=== 第6天：数据清洗 ===\n\n【学习时长】约2.5小时\n【学习目的】识别和处理缺失值、异常值。\n【练习任务】\n- 统计缺失比例\n- 中位数填充缺失值\n- IQR检测异常值',tasks:['统计缺失比例','中位数填充缺失值','IQR检测异常值']},{d:7,title:'数据可视化',desc:'一张好图胜过千行数据。',prompt:'=== 第7天：数据可视化 ===\n\n【学习时长】约3小时\n【学习目的】用matplotlib创建统计图表。\n【练习任务】\n- 折线图展示趋势\n- 分组柱状图比较\n- 散点图观察关系',tasks:['画折线图展示趋势','画分组柱状图比较','画散点图观察关系']},{d:8,title:'数据分析报告',desc:'分析的终点是结论。',prompt:'=== 第8天：数据分析报告 ===\n\n【学习时长】约3小时\n【学习目的】综合技能产出分析报告。\n【练习任务】\n- 选择数据集提3个问题\n- 清洗+分析+可视化\n- 写结论',tasks:['选择数据集提出3个问题','清洗、分析、可视化','写数据分析结论']}]}]}],_map:null,totalDays:8,getDay(n){if(!this._map){this._map={};this.stages.forEach(s=>{s.sections.forEach(sec=>{sec.days.forEach(d=>{this._map[d.d]={...d,stageName:s.name,sectionName:sec.name}})})})}return this._map[n]||null},getPrevDay(n){for(let i=n-1;i>=1;i--)if(this.getDay(i))return i;return null},getNextDay(n){for(let i=n+1;i<=this.totalDays;i++)if(this.getDay(i))return i;return null}};
+var MATH_TRACK={name:'数学',modules:[{id:1,name:'数学思维基础',days:[{d:1,sync:39,title:'函数思维——从Python到数学',desc:'建立「函数 = 确定的映射规则」的直觉。',prompt:'=== MATH DAY 1：函数思维 ===\n\n【学习时长】约25分钟\n【学习目的】建立函数=映射的核心直觉。\n【练习任务】\n- f(x)=2x+1，画折线图\n- f(x)=x²和g(x)=sin(x)\n- 描述形状差异',tasks:['f(x)=2x+1，画折线图','f(x)=x²和g(x)=sin(x)','描述形状差异']},{d:2,sync:40,title:'坐标与图形',desc:'学会用笛卡尔坐标系把数字关系画出来。',prompt:'=== MATH DAY 2：坐标与图形 ===\n\n【学习时长】约25分钟\n【学习目的】坐标系可视化。\n【练习任务】\n- matplotlib画折线图\n- 三条线不同颜色\n- 解释趋势',tasks:['matplotlib画折线图','三条线不同颜色','解释趋势']},{d:3,sync:41,title:'变化率——斜率的直觉',desc:'斜率 = x每增加1，y变化多少。',prompt:'=== MATH DAY 3：斜率 ===\n\n【学习时长】约25分钟\n【学习目的】建立斜率=变化率的直觉。\n【练习任务】\n- 计算斜率\n- 比较不同斜率\n- 解释生活含义',tasks:['计算斜率','比较不同斜率直线','解释变化率']}]},{id:3,name:'模块三：线性代数基础',days:[{d:24,sync:null,title:'向量是什么',desc:'在AI中，768维Embedding也是向量。',prompt:'=== MATH DAY 24：向量 ===\n\n【学习时长】约25分钟\n【学习目的】建立向量的直觉。\n【练习任务】\n- 画出二维向量\n- 理解Embedding\n- 解释方向和大小',tasks:['画出二维向量','理解Embedding','解释方向和大小']},{d:27,sync:42,title:'向量点积——相似度的数学根源',desc:'ChromaDB/RAG的数学基础。夹角越小，语义越接近。',prompt:'=== MATH DAY 27：向量点积 ===\n\n【学习时长】约25分钟\n【关联】Main Day 42：Embedding向量检索\n【学习目的】点积=方向一致性度量。余弦相似度∈[-1,+1]\n【核心概念】\n- 点积 v·w = |v||w|cos(θ)\n- θ=0°→cos=1→最大\n- θ=90°→cos=0\n- θ=180°→cos=-1→负值\n- 余弦相似度 = (v·w)/(|v|×|w|)\n【练习任务】\n- v1=[1,2],v2=[2,4],v3=[-2,1]，手算点积\n- 写cosine_sim()函数\n- 画图解释夹角对应余弦值\n- 思考：0.95 vs 0.02各说明什么？',tasks:['手算 v1·v2 和 v1·v3','写 cosine_sim() 函数','画图解释夹角对应余弦值']}]}],_map:null,totalDays:5,getDay(n){if(!this._map){this._map={};this.modules.forEach(m=>{m.days.forEach(d=>{this._map[d.d]={...d,moduleName:m.name}})})}return this._map[n]||null},allDays(){let a=[];this.modules.forEach(m=>{m.days.forEach(d=>a.push(d))});return a.sort((x,y)=>x.d-y.d)},getPrevDay(n){let all=this.allDays().map(d=>d.d);let idx=all.indexOf(n);return idx>0?all[idx-1]:null},getNextDay(n){let all=this.allDays().map(d=>d.d);let idx=all.indexOf(n);return idx<all.length-1?all[idx+1]:null}};
+var currentTrack='main',currentDay=1,KEY_MAIN='nc_main',KEY_MATH='nc_math';
+var Store={key(){return currentTrack==='math'?KEY_MATH:KEY_MAIN},load(){try{return JSON.parse(localStorage.getItem(this.key()))||{}}catch(e){return{}}},save(d){localStorage.setItem(this.key(),JSON.stringify(d))},toggleTask(day,idx){let d=this.load(),dk='d'+day;if(!d[dk])d[dk]={tasks:[false,false,false]};d[dk].tasks[idx]=!d[dk].tasks[idx];this.save(d)},isTaskDone(day,idx){let d=this.load(),dk='d'+day;return!!(d[dk]&&d[dk].tasks&&d[dk].tasks[idx])},isDayDone(day){return!!(this.load()['d'+day]&&this.load()['d'+day].tasks&&this.load()['d'+day].tasks.every(t=>t))},getLevel(day){let d=this.load(),dk='d'+day;if(!d[dk]||!d[dk].tasks)return 0;let done=d[dk].tasks.filter(t=>t).length;if(done===3)return 4;if(done===2)return 3;if(done===1)return 2;return 1},getDoneCount(){let c=0;if(currentTrack==='math'){MATH_TRACK.allDays().forEach(day=>{if(this.isDayDone(day.d))c++})}else{for(let i=1;i<=MAIN_PLAN.totalDays;i++){if(this.isDayDone(i))c++}}return c},getStreak(){let doneCount=this.getDoneCount(),prefix=currentTrack==='math'?'nc_ms':'nc_ms2';function fmt(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}let today=new Date(),ss=localStorage.getItem('ss_'+prefix),baseline=parseInt(localStorage.getItem('bl_'+prefix))||0;if(!ss){if(doneCount>0){let defS=4,sd=new Date(today.getFullYear(),today.getMonth(),today.getDate()-defS+1);ss=fmt(sd);baseline=Math.max(0,doneCount-defS)}else{ss=fmt(today);baseline=0}localStorage.setItem('ss_'+prefix,ss);localStorage.setItem('bl_'+prefix,String(baseline))}let tOnly=new Date(today.getFullYear(),today.getMonth(),today.getDate()),p=ss.split('-'),sOnly=new Date(parseInt(p[0]),parseInt(p[1])-1,parseInt(p[2])),daysSince=Math.floor((tOnly-sOnly)/86400000)+1,newlyDone=doneCount-baseline;if(newlyDone>=daysSince-1)return Math.min(newlyDone,daysSince);return 0}};
+function getPlan(){return currentTrack==='math'?MATH_TRACK:MAIN_PLAN}
+function renderAll(){renderHome();renderSidebar();updateStats()}
+function renderHome(){let plan=getPlan(),stageList=document.getElementById('stage-list');stageList.innerHTML='';if(currentTrack==='math'){MATH_TRACK.modules.forEach(mod=>{let card=document.createElement('div');card.className='stage-card open';let hd=document.createElement('div');hd.className='stage-hd';hd.innerHTML='<div class="stage-hd-l"><span class="stage-arrow">▶</span><span class="stage-name">'+mod.name+'</span></div><span class="stage-meta">['+mod.days.length+'D]</span>';hd.addEventListener('click',()=>card.classList.toggle('open'));card.appendChild(hd);let body=document.createElement('div');body.className='stage-body';let grid=document.createElement('div');grid.className='day-grid';mod.days.forEach(day=>{let cell=document.createElement('div');cell.className='day-cell';cell.setAttribute('data-lv',Store.getLevel(day.d));let tip=document.createElement('span');tip.className='cell-tip';tip.textContent='M'+day.d;cell.appendChild(tip);cell.addEventListener('click',()=>goDay(day.d));grid.appendChild(cell)});body.appendChild(grid);card.appendChild(body);stageList.appendChild(card)})}else{MAIN_PLAN.stages.forEach(stage=>{let card=document.createElement('div');card.className='stage-card open';let hd=document.createElement('div');hd.className='stage-hd';hd.innerHTML='<div class="stage-hd-l"><span class="stage-arrow">▶</span><span class="stage-name">'+stage.name+'</span></div>';hd.addEventListener('click',()=>card.classList.toggle('open'));card.appendChild(hd);let body=document.createElement('div');body.className='stage-body';stage.sections.forEach(sec=>{let st=document.createElement('div');st.className='sec-title';st.textContent=sec.name;body.appendChild(st);let grid=document.createElement('div');grid.className='day-grid';sec.days.forEach(day=>{let cell=document.createElement('div');cell.className='day-cell';cell.setAttribute('data-lv',Store.getLevel(day.d));let tip=document.createElement('span');tip.className='cell-tip';tip.textContent='D'+day.d;cell.appendChild(tip);cell.addEventListener('click',()=>goDay(day.d));grid.appendChild(cell)});body.appendChild(grid)});card.appendChild(body);stageList.appendChild(card)})}}
+function renderSidebar(){let sb=document.getElementById('sidebar');sb.innerHTML='';if(currentTrack==='math'){MATH_TRACK.modules.forEach(mod=>{let wrap=document.createElement('div');wrap.className='side-stage open';let hd=document.createElement('div');hd.className='side-stage-hd';hd.innerHTML='<span class="side-arrow">▶</span><span class="side-stage-name">'+mod.name+'</span><span class="side-stage-n">'+mod.days.length+'d</span>';hd.addEventListener('click',e=>{e.stopPropagation();wrap.classList.toggle('open')});wrap.appendChild(hd);let bd=document.createElement('div');bd.className='side-body';mod.days.forEach(day=>{let item=document.createElement('div');item.className='side-item';let lv=Store.getLevel(day.d);item.innerHTML='<span class="side-dot d'+lv+'"></span>M'+day.d+': '+day.title;if(currentDay===day.d)item.classList.add('active');item.addEventListener('click',e=>{e.stopPropagation();goDay(day.d)});bd.appendChild(item)});wrap.appendChild(bd);sb.appendChild(wrap)})}else{MAIN_PLAN.stages.forEach(stage=>{let wrap=document.createElement('div');wrap.className='side-stage open';let hd=document.createElement('div');hd.className='side-stage-hd';hd.innerHTML='<span class="side-arrow">▶</span><span class="side-stage-name">'+stage.name+'</span>';hd.addEventListener('click',e=>{e.stopPropagation();wrap.classList.toggle('open')});wrap.appendChild(hd);let bd=document.createElement('div');bd.className='side-body';stage.sections.forEach(sec=>{sec.days.forEach(day=>{let item=document.createElement('div');item.className='side-item';let lv=Store.getLevel(day.d);item.innerHTML='<span class="side-dot d'+lv+'"></span>D'+day.d+': '+day.title;if(currentDay===day.d)item.classList.add('active');item.addEventListener('click',e=>{e.stopPropagation();goDay(day.d)});bd.appendChild(item)})});wrap.appendChild(bd);sb.appendChild(wrap)})}}
+function renderDay(globalDay){let plan=getPlan(),dayData=plan.getDay(globalDay);if(!dayData){goHome();return}currentDay=globalDay;document.getElementById('day-breadcrumb').innerHTML=currentTrack==='math'?'MATH / '+dayData.moduleName+' / <span class="cur">DAY '+globalDay+'</span>':'MAIN / '+dayData.stageName+' / '+dayData.sectionName+' / <span class="cur">DAY '+globalDay+'</span>';document.getElementById('day-num').textContent=globalDay;document.getElementById('day-meta').textContent=dayData.title;document.getElementById('day-desc').textContent=dayData.desc;document.getElementById('prompt-body').textContent=dayData.prompt;let sync=document.getElementById('sync-badge');if(currentTrack==='math'&&dayData.sync){sync.style.display='inline-flex';sync.textContent='↗ SYNC: MAIN DAY '+dayData.sync;sync.onclick=function(){currentTrack='main';goDay(dayData.sync)}}else{sync.style.display='none'}let tl=document.getElementById('task-list');tl.innerHTML='';dayData.tasks.forEach((task,idx)=>{let label=document.createElement('label');label.className='task-item';if(Store.isTaskDone(globalDay,idx))label.classList.add('done');let chk=document.createElement('div');chk.className='task-chk';chk.innerHTML='<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg>';let txt=document.createElement('span');txt.className='task-txt';txt.textContent=task;label.appendChild(chk);label.appendChild(txt);label.addEventListener('click',function(){Store.toggleTask(globalDay,idx);label.classList.toggle('done');updateDayFooter(globalDay);renderAll();checkOverlay()});tl.appendChild(label)});updateDayFooter(globalDay);checkOverlay();let prevDay=currentTrack==='math'?MATH_TRACK.getPrevDay(globalDay):MAIN_PLAN.getPrevDay(globalDay),nextDay=currentTrack==='math'?MATH_TRACK.getNextDay(globalDay):MAIN_PLAN.getNextDay(globalDay);document.getElementById('btn-prev').style.visibility=prevDay?'visible':'hidden';document.getElementById('btn-next').style.visibility=nextDay?'visible':'hidden';document.getElementById('btn-prev').textContent='◀ '+(prevDay||'');document.getElementById('btn-next').textContent=(nextDay||'')+' ▶';document.getElementById('view-home').classList.remove('active');document.getElementById('view-day').classList.add('active');document.getElementById('content').scrollTop=0}
+function updateDayFooter(d){let plan=getPlan(),done=Store.isDayDone(d),data=Store.load(),dk='d'+d,doneCount=(data[dk]&&data[dk].tasks)?data[dk].tasks.filter(t=>t).length:0,dd=plan.getDay(d),totalTasks=dd?dd.tasks.length:3,el=document.getElementById('footer-status');if(done){el.textContent='DAY '+d+' COMPLETE ✓';el.style.color='var(--cyan)'}else{el.textContent='TASKS: '+doneCount+'/'+totalTasks;el.style.color=''}}
+function updateStats(){let plan=getPlan(),done=Store.getDoneCount(),total=currentTrack==='math'?MATH_TRACK.allDays().length:plan.totalDays,pct=total>0?Math.round(done/total*100):0,streak=Store.getStreak();document.getElementById('tb-done').textContent=done+'/'+total;document.getElementById('tb-pct').textContent=pct+'%';document.getElementById('tb-streak').textContent=streak+'d';document.getElementById('progress-bar').style.width=pct+'%';document.querySelectorAll('.tb-track').forEach(t=>t.classList.toggle('active',t.getAttribute('data-track')===currentTrack));let kr=document.getElementById('kpi-row');if(kr)kr.innerHTML='<div class="kpi"><div class="kpi-lbl">DONE</div><div class="kpi-val">'+done+'/'+total+'</div></div><div class="kpi"><div class="kpi-lbl">PROGRESS</div><div class="kpi-val">'+pct+'%</div></div><div class="kpi"><div class="kpi-lbl">STREAK</div><div class="kpi-val">'+streak+'</div><div class="kpi-sub">DAYS</div></div>'}
+function checkOverlay(){let total=currentTrack==='math'?MATH_TRACK.allDays().length:MAIN_PLAN.totalDays,allDone=true;if(currentTrack==='math'){MATH_TRACK.allDays().forEach(d=>{if(!Store.isDayDone(d.d))allDone=false})}else{for(let i=1;i<=total;i++){if(!Store.isDayDone(i)){allDone=false;break}}}let ov=document.getElementById('overlay');if(allDone&&total>0){ov.classList.add('show');document.getElementById('overlay-msg').textContent=(currentTrack==='math'?'MATH TRACK':'MAIN PLAN')+' COMPLETE! ◈'}else{ov.classList.remove('show')}}
+function goHome(){document.getElementById('view-day').classList.remove('active');document.getElementById('view-home').classList.add('active');document.getElementById('overlay').classList.remove('show');currentDay=null;renderAll()}
+function goDay(d){currentDay=d;renderDay(d);renderSidebar();updateStats()}
+function navDay(dir){let plan=getPlan(),next=dir>0?(currentTrack==='math'?MATH_TRACK.getNextDay(currentDay):plan.getNextDay(currentDay)):(currentTrack==='math'?MATH_TRACK.getPrevDay(currentDay):plan.getPrevDay(currentDay));if(next)goDay(next)}
+function switchTrack(track){if(track===currentTrack)return;currentTrack=track;goHome()}
+var _toastTimer=null;function showToast(msg){let t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');if(_toastTimer)clearTimeout(_toastTimer);_toastTimer=setTimeout(()=>t.classList.remove('show'),2500)}
+function copyPrompt(){let text=document.getElementById('prompt-body').textContent;navigator.clipboard.writeText(text).then(()=>{let btn=document.getElementById('copy-btn');btn.classList.add('copied');btn.innerHTML='COPIED ✓';showToast('[ OK ] COPIED');setTimeout(()=>{btn.classList.remove('copied');btn.innerHTML='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> COPY'},2000)}).catch(()=>showToast('[ FAIL ] COPY FAILED'))}
+function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open-mobile')}
+document.addEventListener('keydown',function(e){if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();let dd=getPlan().getDay(currentDay);if(dd){for(let i=0;i<dd.tasks.length;i++){if(!Store.isTaskDone(currentDay,i)){document.querySelectorAll('#task-list .task-item')[i]?.click();break}}}}if(e.key==='Escape')goHome()});
+document.addEventListener('DOMContentLoaded',function(){renderAll();goDay(1)});
+</script>
+</body>
+</html>
