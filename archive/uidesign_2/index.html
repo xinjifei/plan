@@ -6,10 +6,11 @@
 <title>Glassmorphism · 学习计划追踪器</title>
 <style>
 /* ================================================================
-   Liquid Glass Design System — 2025 Apple Liquid Glass 风格
-   技术栈: backdrop-filter多层 + saturate色彩增强 + 镜面高光
-          + 物理弹簧动画 + GPU加速 + 厚度层级体系
-   参考: Apple WWDC 2025 / Galileo Glass UI / 2026 Best Practices
+   Liquid Glass Design System — Apple Liquid Glass 风格
+   技术: 4层高光(specular-top/glow/bottom/edge)
+        + ::after液态光泽层 + 5级玻璃厚度 + 物理弹簧动画
+   参考: Apple WWDC 2025 / kevinbism/liquid-glass-effect
+        / lucasromerodb/liquid-glass-effect-macos
    ================================================================ */
 
 /* ===== Design Tokens（配色来自 Glassmorphism-Bento 原版）===== */
@@ -32,9 +33,13 @@
   --glass-border-md: rgba(255,255,255,0.16);
   --glass-border-lg: rgba(255,255,255,0.22);
 
-  /* 镜面高光 (Apple Liquid Glass 核心技术) */
-  --highlight: inset 0 1px 0 rgba(255,255,255,0.15);
-  --highlight-strong: inset 0 1px 0 rgba(255,255,255,0.25);
+  /* 镜面高光 — 微妙折射感，非刺眼白线 */
+  --specular-top: inset 0 1px 0 rgba(255,255,255,0.12);
+  --specular-top-strong: inset 0 2px 0 rgba(255,255,255,0.18);
+  --specular-glow: inset 0 0 20px rgba(255,255,255,0.04);
+  --specular-glow-strong: inset 0 0 30px rgba(255,255,255,0.07);
+  --specular-bottom: inset 0 -1px 0 rgba(0,0,0,0.12);
+  --edge-glow: 0 0 0 1px rgba(255,255,255,0.04);
 
   /* 文字 — 原版 */
   --text: #e8e6f0;
@@ -86,6 +91,10 @@
   --blur-md: 16px;
   --blur-lg: 24px;
   --blur-xl: 32px;
+
+  /* 思维导图连线 */
+  --mm-line: rgba(255,255,255,0.20);
+  --mm-line2: rgba(255,255,255,0.14);
 }
 
 /* ===== Reset ===== */
@@ -118,10 +127,17 @@ body::after{
   backdrop-filter: blur(var(--blur-lg)) ;
   -webkit-backdrop-filter: blur(var(--blur-lg)) ;
   border-bottom: 1px solid var(--glass-border-sm);
-  box-shadow: var(--highlight), 0 2px 12px rgba(0,0,0,0.1);
+  box-shadow: var(--specular-top), var(--specular-glow), var(--specular-bottom), 0 2px 12px rgba(0,0,0,0.1);
   will-change: transform;transform: translateZ(0);
 }
 .tb-l{display:flex;align-items:center;gap:10px}
+.tb-back{
+  width:28px;height:28px;border-radius:50%;border:1px solid var(--glass-border-sm);
+  background:var(--glass-xs);color:var(--text2);font-size:12px;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:all var(--dur-fast) var(--spring-smooth);
+}
+.tb-back:hover{background:var(--glass-sm);color:var(--accent);border-color:var(--glass-border-md)}
 .tb-logo{
   width:28px;height:28px;border-radius:8px;
   background: linear-gradient(135deg, var(--accent), var(--accent2));
@@ -134,13 +150,13 @@ body::after{
   font-size:10px;font-weight:600;padding:3px 10px;border-radius:var(--r-full);
   background: var(--glass-xs);color:var(--accent);
   border:1px solid rgba(167,139,250,0.2);
-  box-shadow: var(--highlight);
+  box-shadow: var(--specular-top), var(--edge-glow);
 }
 
-.tb-center{display:flex;border:1px solid var(--glass-border-sm);border-radius:var(--r-sm);overflow:hidden;background:var(--glass-sm);backdrop-filter:blur(var(--blur-sm)) ;box-shadow:var(--highlight)}
+.tb-center{display:flex;border:1px solid var(--glass-border-sm);border-radius:var(--r-sm);overflow:hidden;background:var(--glass-sm);backdrop-filter:blur(var(--blur-sm));box-shadow:var(--specular-top),var(--specular-glow)}
 .tb-track{padding:6px 18px;font-size:12px;font-weight:500;font-family:var(--font);border:none;cursor:pointer;background:transparent;color:var(--text2);transition:all var(--dur-fast) var(--spring-smooth)}
 .tb-track:first-child{border-right:1px solid var(--glass-border-xs)}
-.tb-track.active{background:rgba(167,139,250,0.18);color:var(--accent);box-shadow:var(--highlight)}
+.tb-track.active{background:rgba(167,139,250,0.18);color:var(--accent);box-shadow:var(--specular-top)}
 .tb-track:hover:not(.active){color:var(--text);background:var(--glass-xs)}
 
 .tb-r{display:flex;align-items:center;gap:18px;font-size:11px;color:var(--text2)}
@@ -165,7 +181,7 @@ body::after{
   backdrop-filter: blur(var(--blur-md)) ;
   -webkit-backdrop-filter: blur(var(--blur-md)) ;
   border-right:1px solid var(--glass-border-sm);
-  box-shadow: var(--highlight);
+  box-shadow: var(--specular-top), var(--specular-glow);
   transition:transform var(--dur-normal) var(--spring-smooth);
   will-change:transform;transform:translateZ(0);
 }
@@ -196,7 +212,7 @@ body::after{
 .side-item:hover{background:var(--glass-xs);color:var(--text2)}
 .side-item.active{
   background:rgba(167,139,250,0.1);color:var(--accent);font-weight:600;
-  box-shadow: var(--highlight);
+  box-shadow: var(--specular-top), var(--specular-glow);
 }
 .side-item.active::before{content:'';position:absolute;left:6px;width:3px;height:3px;border-radius:50%;background:var(--accent);box-shadow:0 0 6px var(--accent-glow)}
 .side-dot{display:inline-block;width:6px;height:6px;border-radius:50%;flex-shrink:0}
@@ -226,7 +242,7 @@ body::after{
   -webkit-backdrop-filter: blur(var(--blur-md)) ;
   border:1px solid var(--glass-border-md);
   border-radius:var(--r-lg);padding:20px 22px;
-  box-shadow: var(--highlight), var(--shadow-sm);
+  box-shadow: var(--specular-top), var(--specular-glow), var(--shadow-sm);
   transition:all var(--dur-normal) var(--spring-smooth);
   will-change:transform;transform:translateZ(0);
 }
@@ -234,7 +250,7 @@ body::after{
   transform:translateY(-3px);
   background:var(--glass-lg);
   border-color:var(--glass-border-lg);
-  box-shadow:var(--highlight-strong),var(--shadow-md),var(--shadow-glow-accent);
+  box-shadow:var(--specular-top-strong), var(--specular-glow-strong),var(--shadow-md),var(--shadow-glow-accent);
 }
 .stat-label{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
 .stat-val{
@@ -245,6 +261,16 @@ body::after{
 }
 .stat-sub{font-size:10px;color:var(--text3);margin-top:4px}
 
+/* 液态光泽层 — ::after 模拟玻璃表面高光 */
+.stat-card::after{
+  content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(135deg,rgba(255,255,255,0.08) 0%,transparent 40%,transparent 60%,rgba(0,0,0,0.04) 100%);
+  box-shadow:var(--specular-top),var(--specular-bottom);
+  z-index:0;
+}
+.stat-card{position:relative}
+.stat-card > *{position:relative;z-index:1}
+
 /* Stage card */
 .stage-card{
   background:var(--glass-sm);
@@ -252,16 +278,26 @@ body::after{
   -webkit-backdrop-filter:blur(var(--blur-md)) ;
   border:1px solid var(--glass-border-sm);
   border-radius:var(--r-lg);overflow:hidden;margin-bottom:14px;
-  box-shadow:var(--highlight),var(--shadow-sm);
+  box-shadow:var(--specular-top), var(--specular-glow),var(--shadow-sm);
   transition:all var(--dur-normal) var(--spring-smooth);
   will-change:transform;transform:translateZ(0);
 }
 .stage-card:hover{
   border-color:var(--glass-border-md);
-  box-shadow:var(--highlight-strong),var(--shadow-md);
+  box-shadow:var(--specular-top-strong), var(--specular-glow-strong),var(--shadow-md);
 }
 .stage-card.open .stage-body{display:block}
 .stage-card:not(.open) .stage-body{display:none}
+
+/* 液态光泽层 */
+.stage-card::after{
+  content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(180deg,rgba(255,255,255,0.06) 0%,transparent 50%);
+  box-shadow:var(--specular-top);
+  z-index:0;
+}
+.stage-card{position:relative}
+.stage-card > *{position:relative;z-index:1}
 
 .stage-hd{
   display:flex;align-items:center;justify-content:space-between;
@@ -305,15 +341,29 @@ body::after{
 .day-cell[data-lv="4"]{background:var(--c4);border:1px solid rgba(167,139,250,0.4);box-shadow:0 0 10px var(--accent-glow)}
 
 .cell-tip{
-  position:absolute;bottom:calc(100% + 10px);left:50%;transform:translateX(-50%);
+  position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);
   padding:6px 12px;
-  background:var(--glass-lg);backdrop-filter:blur(var(--blur-lg)) ;
+  background:var(--glass-lg);backdrop-filter:blur(var(--blur-lg));
   border:1px solid var(--glass-border-md);border-radius:var(--r-sm);
   font-size:11px;color:var(--text);white-space:nowrap;opacity:0;pointer-events:none;
   transition:opacity var(--dur-fast) var(--spring-smooth);
-  z-index:20;box-shadow:var(--highlight-strong),var(--shadow-md);
+  z-index:100;box-shadow:var(--specular-top-strong),var(--specular-glow-strong),var(--shadow-md);
 }
-.cell-tip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--glass-border-md)}
+.cell-tip::after{content:'';position:absolute;bottom:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-bottom-color:var(--glass-border-md)}
+
+/* 全局浮动 tooltip — 不受 overflow:hidden 限制 */
+.float-tip{
+  position:fixed;z-index:999;pointer-events:none;
+  padding:6px 12px;
+  background:var(--glass-lg);backdrop-filter:blur(var(--blur-lg));
+  -webkit-backdrop-filter:blur(var(--blur-lg));
+  border:1px solid var(--glass-border-md);border-radius:var(--r-sm);
+  font-size:11px;color:var(--text);white-space:nowrap;
+  box-shadow:var(--specular-top-strong),var(--specular-glow-strong),var(--shadow-md);
+  opacity:0;transition:opacity 0.15s;
+}
+.float-tip.show{opacity:1}
+.float-tip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--glass-border-md)}
 .day-cell:hover .cell-tip{opacity:1}
 
 .legend{display:flex;align-items:center;justify-content:center;gap:5px;padding:12px 0 0;font-size:10px;color:var(--text3)}
@@ -323,7 +373,7 @@ body::after{
    DAY DETAIL VIEW
    ================================================================ */
 .day-view{padding:0}
-.day-inner{max-width:680px;margin:0 auto;padding:0 22px 40px}
+.day-inner{max-width:880px;margin:0 auto;padding:0 22px 40px}
 
 .breadcrumb{
   display:flex;align-items:center;gap:6px;flex-wrap:wrap;
@@ -342,9 +392,9 @@ body::after{
   background:rgba(103,232,249,0.08);color:var(--accent2);
   border:1px solid rgba(103,232,249,0.2);border-radius:var(--r-full);
   cursor:pointer;transition:all var(--dur-fast) var(--spring-smooth);
-  box-shadow:var(--highlight);
+  box-shadow:var(--specular-top), var(--specular-glow);
 }
-.sync-badge:hover{background:rgba(103,232,249,0.14);transform:translateY(-2px);box-shadow:var(--highlight-strong),var(--shadow-glow-accent)}
+.sync-badge:hover{background:rgba(103,232,249,0.14);transform:translateY(-2px);box-shadow:var(--specular-top-strong), var(--specular-glow-strong),var(--shadow-glow-accent)}
 
 .day-desc{padding:6px 0 16px;font-size:14px;line-height:1.85;color:var(--text2);border-bottom:1px solid var(--glass-border-xs)}
 
@@ -355,13 +405,22 @@ body::after{
   backdrop-filter:blur(var(--blur-md)) ;
   border:1px solid var(--glass-border-sm);
   border-radius:var(--r-lg);overflow:hidden;
-  box-shadow:var(--highlight),var(--shadow-sm);
+  box-shadow:var(--specular-top), var(--specular-glow),var(--shadow-sm);
   transition:all var(--dur-normal) var(--spring-smooth);
 }
 .prompt-card:hover{
   border-color:var(--glass-border-md);
-  box-shadow:var(--highlight-strong),var(--shadow-md);
+  box-shadow:var(--specular-top-strong), var(--specular-glow-strong),var(--shadow-md);
 }
+/* 液态光泽 */
+.prompt-card::after{
+  content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(180deg,rgba(255,255,255,0.05) 0%,transparent 40%);
+  box-shadow:var(--specular-top);
+  z-index:0;
+}
+.prompt-card{position:relative}
+.prompt-card > *{position:relative;z-index:1}
 .prompt-hd{
   display:flex;align-items:center;justify-content:space-between;
   padding:11px 18px;
@@ -372,9 +431,10 @@ body::after{
 .prompt-label::before{content:'';width:6px;height:6px;border-radius:2px;background:var(--accent);box-shadow:0 0 6px var(--accent-glow)}
 
 .prompt-body{
-  padding:18px;font-size:12.5px;line-height:1.8;color:var(--text2);
+  padding:18px;font-size:12.5px;line-height:1.8;color:#f5f2fc;
   white-space:pre-wrap;word-break:break-word;font-family:var(--font);
   max-height:400px;overflow-y:auto;
+  background:rgba(0,0,0,0.18);
 }
 .prompt-body::-webkit-scrollbar{width:4px}
 .prompt-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.06);border-radius:6px}
@@ -387,7 +447,7 @@ body::after{
   display:flex;align-items:flex-start;gap:12px;padding:12px 16px;border-radius:var(--r-md);
   cursor:pointer;transition:all var(--dur-fast) var(--spring-smooth);
   background:var(--glass-xs);border:1px solid transparent;
-  box-shadow:var(--highlight);
+  box-shadow:var(--specular-top), var(--specular-glow);
   margin-bottom:6px;
 }
 .task-item:hover{background:var(--glass-sm);border-color:var(--glass-border-sm);transform:translateX(3px)}
@@ -428,13 +488,13 @@ body::after{
   background:var(--glass-sm);color:var(--text2);
   cursor:pointer;transition:all var(--dur-fast) var(--spring-smooth);
   backdrop-filter:blur(var(--blur-sm)) ;
-  box-shadow:var(--highlight);
+  box-shadow:var(--specular-top), var(--specular-glow);
   will-change:transform;transform:translateZ(0);
 }
 .btn:hover{
   background:var(--glass-md);border-color:var(--glass-border-md);
   color:var(--text);transform:translateY(-1px);
-  box-shadow:var(--highlight-strong),var(--shadow-sm);
+  box-shadow:var(--specular-top-strong), var(--specular-glow-strong),var(--shadow-sm);
 }
 .btn:active{transform:scale(0.97)}
 .btn:focus-visible{outline:2px solid var(--accent);outline-offset:3px;box-shadow:var(--shadow-glow-accent)}
@@ -494,7 +554,7 @@ body::after{
   border:1px solid var(--glass-border-md);border-radius:var(--r-full);
   font-size:12px;font-weight:500;color:var(--text);
   opacity:0;pointer-events:none;z-index:300;
-  box-shadow:var(--highlight-strong),var(--shadow-lg);
+  box-shadow:var(--specular-top-strong), var(--specular-glow-strong),var(--shadow-lg);
   transition:all var(--dur-normal) var(--spring-bounce);
 }
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -502,12 +562,132 @@ body::after{
 /* ================================================================
    SIDEBAR TOGGLE (mobile)
    ================================================================ */
-.sidebar-toggle{display:none;width:36px;height:36px;border-radius:var(--r-sm);align-items:center;justify-content:center;background:var(--glass-sm);border:1px solid var(--glass-border-sm);cursor:pointer;font-size:16px;color:var(--text2);box-shadow:var(--highlight);transition:all var(--dur-fast) var(--spring-smooth)}
+.sidebar-toggle{display:none;width:36px;height:36px;border-radius:var(--r-sm);align-items:center;justify-content:center;background:var(--glass-sm);border:1px solid var(--glass-border-sm);cursor:pointer;font-size:16px;color:var(--text2);box-shadow:var(--specular-top), var(--specular-glow);transition:all var(--dur-fast) var(--spring-smooth)}
 .sidebar-toggle:hover{background:var(--glass-md);color:var(--text)}
 
 /* ================================================================
-   RESPONSIVE
+   OVERVIEW PAGE
    ================================================================ */
+.ov-content{max-width:860px;margin:0 auto;padding:32px 24px 40px}
+
+/* 上半区：双环(左) + 卡片区(右) 横向排列 */
+.ov-top{display:flex;align-items:flex-start;gap:36px;margin-bottom:28px}
+.ov-hero{flex-shrink:0}
+.ov-rings{width:220px;height:220px}
+.ov-ring-labels{display:flex;gap:12px;margin-top:10px;justify-content:center}
+.ov-cards-area{flex:1;min-width:0;display:flex;flex-direction:column;gap:12px}
+.ov-ring-lbl{font-size:10px;font-weight:600;display:flex;align-items:center;gap:5px}
+.ov-ring-lbl::before{content:'';width:8px;height:8px;border-radius:50%}
+.ov-ring-lbl.main{color:var(--accent)}.ov-ring-lbl.main::before{background:linear-gradient(135deg,var(--accent),var(--accent2))}
+.ov-ring-lbl.math{color:#f472b6}.ov-ring-lbl.math::before{background:linear-gradient(135deg,#f472b6,var(--accent))}
+.ov-continue{display:flex;flex-direction:column;gap:12px}
+.ov-browse{display:flex;gap:10px}
+.ov-browse .ov-card{flex:1}
+.ov-card{
+  background:var(--glass-sm);backdrop-filter:blur(var(--blur-md));
+  -webkit-backdrop-filter:blur(var(--blur-md));
+  border:1px solid var(--glass-border-sm);border-radius:var(--r-lg);
+  cursor:pointer;position:relative;overflow:hidden;
+  box-shadow:var(--specular-top),var(--specular-glow);
+  transition:all var(--dur-fast) var(--spring-smooth);
+}
+.ov-card::after{
+  content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(135deg,rgba(255,255,255,0.04) 0%,transparent 50%);
+}
+.ov-card:hover{transform:translateY(-2px);border-color:var(--glass-border-md);box-shadow:var(--specular-top-strong),var(--specular-glow-strong)}
+/* 大卡片 — 继续学习 */
+.ov-card--big{padding:24px 26px}
+.ov-card--big .ov-card-title{font-size:17px}
+/* 小卡片 — 浏览 */
+.ov-card--sm{padding:14px 18px;opacity:0.7}
+.ov-card--sm:hover{opacity:1}
+.ov-card--sm .ov-card-title{font-size:13px}
+.ov-browse{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+.ov-card-badge{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;color:var(--accent)}
+.ov-card-badge.math{color:#f472b6}
+.ov-card-title{font-size:16px;font-weight:700;color:var(--text);line-height:1.3;margin-bottom:4px}
+.ov-card-meta{font-size:11px;color:var(--text3)}
+
+/* ===== 思维导图/树形图 ===== */
+.ov-outline-hd{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:20px;text-align:center}
+
+/* 根容器 */
+.mindmap{position:relative;padding:10px 0}
+/* 纵向主脊 */
+.mindmap::before{
+  content:'';position:absolute;left:50%;top:0;bottom:0;width:2px;
+  background:linear-gradient(180deg,var(--accent),var(--accent2),#f472b6);
+  transform:translateX(-50%);border-radius:1px;
+}
+
+/* 每一行：左(主线) + 中心点 + 右(数学) */
+.mm-row{display:flex;align-items:flex-start;position:relative;margin-bottom:40px}
+/* 中心圆点 */
+.mm-dot{
+  position:absolute;left:50%;top:16px;transform:translate(-50%,-50%);
+  width:10px;height:10px;border-radius:50%;z-index:2;flex-shrink:0;
+}
+.mm-dot.main{background:var(--accent);box-shadow:0 0 10px var(--accent-glow)}
+.mm-dot.math{background:#f472b6;box-shadow:0 0 10px rgba(244,114,182,0.3)}
+
+/* 左列 / 右列 */
+.mm-left{flex:1;padding-right:32px;text-align:right}
+.mm-right{flex:1;padding-left:32px;text-align:left}
+
+/* 父节点 */
+.mm-parent{
+  font-size:13px;font-weight:700;color:var(--text);cursor:pointer;
+  padding:10px 0 14px;transition:color var(--dur-fast);position:relative;
+}
+.mm-parent:hover{color:var(--accent)}
+.mm-right .mm-parent:hover{color:#f472b6}
+.mm-parent-meta{font-size:10px;font-weight:400;color:var(--text3)}
+
+/* ===== 树形连线 — 左列(right对齐) ===== */
+.mm-left .mm-l2{position:relative;padding:6px 32px 6px 0}
+.mm-left .mm-l2::before{content:'';position:absolute;right:0;top:4px;bottom:12px;width:2px;background:var(--mm-line);border-radius:1px}
+.mm-left .mm-l2-item{font-size:11px;font-weight:600;color:var(--text2);cursor:pointer;padding:6px 24px 6px 0;position:relative;transition:color var(--dur-fast)}
+.mm-left .mm-l2-item::before{content:'';position:absolute;right:0;top:50%;width:16px;height:2px;background:var(--mm-line);border-radius:1px}
+.mm-left .mm-l2-item:hover{color:var(--accent)}
+/* L3 */
+.mm-left .mm-l3{position:relative;padding:4px 48px 4px 0}
+.mm-left .mm-l3::before{content:'';position:absolute;right:28px;top:4px;bottom:12px;width:2px;background:var(--mm-line2);border-radius:1px}
+.mm-left .mm-l3-item{font-size:10px;color:var(--text3);cursor:pointer;padding:5px 24px 5px 0;position:relative;transition:color var(--dur-fast)}
+.mm-left .mm-l3-item::before{content:'';position:absolute;right:0;top:50%;width:16px;height:1.5px;background:var(--mm-line2);border-radius:1px}
+.mm-left .mm-l3-item.st0{color:var(--text3)}.mm-left .mm-l3-item.st1{color:var(--text2)}.mm-left .mm-l3-item.st2{color:var(--accent)}
+.mm-left .mm-l3-item:hover{opacity:0.8}
+
+/* ===== 树形连线 — 右列(left对齐) ===== */
+.mm-right .mm-children{position:relative;padding:6px 0 6px 32px}
+.mm-right .mm-children::before{content:'';position:absolute;left:0;top:4px;bottom:14px;width:2px;background:var(--mm-line);border-radius:1px}
+.mm-right .mm-child{font-size:10px;color:var(--text3);cursor:pointer;padding:6px 0 6px 24px;position:relative;transition:color var(--dur-fast)}
+.mm-right .mm-child::before{content:'';position:absolute;left:0;top:50%;width:16px;height:2px;background:var(--mm-line);border-radius:1px}
+.mm-right .mm-child.st0{color:var(--text3)}.mm-right .mm-child.st1{color:var(--text2)}.mm-right .mm-child.st2{color:#f472b6}
+.mm-right .mm-child:hover{opacity:0.8}
+
+/* 衔接桥 */
+.mm-bridge{display:flex;align-items:flex-start;padding:8px 0 24px;position:relative}
+.mm-bridge-l{flex:1;text-align:right;padding-right:32px}
+.mm-bridge-r{flex:1;text-align:left;padding-left:32px}
+.mm-bridge-text{display:inline-block;font-size:10px;color:var(--text3);font-style:italic;padding:4px 12px;border-radius:var(--r-full);background:rgba(255,255,255,0.03);border:1px dashed var(--glass-border-xs);max-width:260px;line-height:1.5}
+
+@media(max-width:768px){
+  .ov-top{flex-direction:column;align-items:center;gap:20px}
+  .ov-rings{width:180px;height:180px}
+  .ov-browse{flex-direction:column}
+  .ov-content{padding:20px 14px 32px}
+  .mm-left{padding-right:14px}
+  .mm-right{padding-left:14px}
+  .mm-left .mm-l2{padding-right:16px}.mm-left .mm-l3{padding-right:26px}
+  .mm-right .mm-children{padding-left:16px}
+  .mm-parent{font-size:12px}
+  .mm-child{font-size:10px}
+  .mm-bridge-l{padding-right:10px}.mm-bridge-r{padding-left:10px}
+  .mm-bridge-text{max-width:140px;font-size:9px}
+}
+
 @media(max-width:768px){
   .sidebar{position:fixed;left:0;top:48px;bottom:0;z-index:40;transform:translateX(-100%);box-shadow:4px 0 24px rgba(0,0,0,0.3)}
   .sidebar.open-mobile{transform:translateX(0)}
@@ -544,6 +724,7 @@ body::after{
 <!-- ==================== TOPBAR ==================== -->
 <header class="topbar">
   <div class="tb-l">
+    <button class="tb-back" onclick="setHash('overview')" title="返回总览">←</button>
     <div class="tb-logo">◆</div>
     <span class="tb-title">量化学习计划追踪</span>
     <span class="tb-badge" id="tb-badge">主计划</span>
@@ -609,6 +790,67 @@ body::after{
       </div>
     </div>
 
+    <!-- OVERVIEW VIEW -->
+    <div class="view" id="view-overview">
+      <div class="ov-content">
+        <!-- 上半区：双环(左) + 卡片区(右) 横向 -->
+        <div class="ov-top">
+          <div class="ov-hero">
+            <svg class="ov-rings" viewBox="0 0 240 240" id="ov-rings-svg">
+              <circle cx="120" cy="120" r="100" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="20"/>
+              <circle cx="120" cy="120" r="100" fill="none" stroke="url(#gradMain)" stroke-width="20"
+                stroke-linecap="round" stroke-dasharray="628" stroke-dashoffset="628" id="ov-ring-main"
+                transform="rotate(-90 120 120)" style="transition:stroke-dashoffset 0.8s var(--spring-smooth)"/>
+              <circle cx="120" cy="120" r="70" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="16"/>
+              <circle cx="120" cy="120" r="70" fill="none" stroke="url(#gradMath)" stroke-width="16"
+                stroke-linecap="round" stroke-dasharray="440" stroke-dashoffset="440" id="ov-ring-math"
+                transform="rotate(-90 120 120)" style="transition:stroke-dashoffset 0.8s var(--spring-smooth)"/>
+              <text x="120" y="112" text-anchor="middle" fill="var(--text)" font-family="var(--mono)" font-size="28" font-weight="800" id="ov-ring-pct">0%</text>
+              <text x="120" y="132" text-anchor="middle" fill="var(--text3)" font-size="10" font-weight="600" letter-spacing="0.06em">总进度</text>
+              <defs>
+                <linearGradient id="gradMain" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="var(--accent)"/><stop offset="100%" stop-color="var(--accent2)"/></linearGradient>
+                <linearGradient id="gradMath" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f472b6"/><stop offset="100%" stop-color="var(--accent)"/></linearGradient>
+              </defs>
+            </svg>
+            <div class="ov-ring-labels">
+              <span class="ov-ring-lbl main">主计划</span>
+              <span class="ov-ring-lbl math">数学</span>
+            </div>
+          </div>
+
+          <div class="ov-cards-area">
+            <!-- 继续学习 — 大卡片 -->
+            <div class="ov-continue">
+              <div class="ov-card ov-card--big" id="ov-card-main" onclick="goNextDay('main')">
+                <div class="ov-card-badge">主计划 · 继续学习</div>
+                <div class="ov-card-title" id="ov-main-title"></div>
+                <div class="ov-card-meta" id="ov-main-meta"></div>
+              </div>
+              <div class="ov-card ov-card--big" id="ov-card-math" onclick="goNextDay('math')">
+                <div class="ov-card-badge math">数学 · 继续学习</div>
+                <div class="ov-card-title" id="ov-math-title"></div>
+                <div class="ov-card-meta" id="ov-math-meta"></div>
+              </div>
+            </div>
+            <!-- 浏览科目 — 小卡片 -->
+            <div class="ov-browse">
+              <div class="ov-card ov-card--sm" onclick="goTrack('main')">
+                <div class="ov-card-badge">主计划</div>
+                <div class="ov-card-title">浏览全部</div>
+              </div>
+              <div class="ov-card ov-card--sm" onclick="goTrack('math')">
+                <div class="ov-card-badge math">数学</div>
+                <div class="ov-card-title">浏览全部</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 下半区：课程大纲 -->
+        <div class="ov-outline" id="ov-outline"></div>
+      </div>
+    </div>
+
   </main>
 </div>
 
@@ -620,6 +862,9 @@ body::after{
 
 <!-- Toast -->
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<!-- Floating Tooltip (全局，不受任何 overflow:hidden 裁剪) -->
+<div class="float-tip" id="float-tip"></div>
 
 <!-- ==================== SCRIPTS ==================== -->
 <script>
@@ -705,8 +950,8 @@ function renderHome(){
       let grid=document.createElement('div');grid.className='day-grid';
       mod.days.forEach(day=>{
         let cell=document.createElement('div');cell.className='day-cell';cell.setAttribute('data-lv',Store.getLevel(day.d));
-        let tip=document.createElement('span');tip.className='cell-tip';tip.textContent='M'+day.d+': '+day.title;
-        cell.appendChild(tip);cell.addEventListener('click',()=>goDay(day.d));grid.appendChild(cell);
+        cell.setAttribute('data-tip','M'+day.d+': '+day.title);
+        cell.addEventListener('click',()=>goDay(day.d));grid.appendChild(cell);
       });
       body.appendChild(grid);card.appendChild(body);stageList.appendChild(card);
     })
@@ -722,8 +967,8 @@ function renderHome(){
         let grid=document.createElement('div');grid.className='day-grid';
         sec.days.forEach(day=>{
           let cell=document.createElement('div');cell.className='day-cell';cell.setAttribute('data-lv',Store.getLevel(day.d));
-          let tip=document.createElement('span');tip.className='cell-tip';tip.textContent='Day '+day.d+': '+day.title;
-          cell.appendChild(tip);cell.addEventListener('click',()=>goDay(day.d));grid.appendChild(cell);
+          cell.setAttribute('data-tip','Day '+day.d+': '+day.title);
+          cell.addEventListener('click',()=>goDay(day.d));grid.appendChild(cell);
         });
         body.appendChild(grid);
       });
@@ -853,23 +1098,210 @@ function checkOverlay(){
 }
 
 // ================================================================
-// NAVIGATION
+// HASH ROUTING
 // ================================================================
-function goHome(){
-  document.getElementById('view-day').classList.remove('active');
-  document.getElementById('view-home').classList.add('active');
+function getHash(){return location.hash.replace('#','')||'overview'}
+function setHash(h){if(location.hash!=='#'+h)location.hash=h}
+
+function route(){
+  var h=getHash();
+  var isOverview=(h==='overview');
+  // Toggle chrome: overview = clean page, others = full app
+  document.getElementById('sidebar').style.display=isOverview?'none':'';
+  document.querySelector('.tb-center').style.display=isOverview?'none':'';
+  document.querySelector('.tb-r').style.display=isOverview?'none':'';
+  document.querySelector('.tb-back').style.display=isOverview?'none':'';
+  if(isOverview){document.getElementById('tb-badge').textContent='总览'}
+  // Hide all views
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   document.getElementById('overlay').classList.remove('show');
-  currentDay=null;renderAll();
+
+  if(isOverview){
+    document.getElementById('view-overview').classList.add('active');
+    currentDay=null;renderOverview();
+  } else if(h==='main'){
+    currentTrack='main';currentDay=null;
+    document.getElementById('view-home').classList.add('active');
+    renderAll();
+  } else if(h==='math'){
+    currentTrack='math';currentDay=null;
+    document.getElementById('view-home').classList.add('active');
+    renderAll();
+  } else if(h.startsWith('main-')){
+    currentTrack='main';
+    var d=parseInt(h.replace('main-',''));
+    if(MAIN_PLAN.getDay(d)){currentDay=d;renderDay(d);renderSidebar();updateStats();document.getElementById('view-day').classList.add('active')}
+    else{setHash('main')}
+  } else if(h.startsWith('math-')){
+    currentTrack='math';
+    var d=parseInt(h.replace('math-',''));
+    if(MATH_TRACK.getDay(d)){currentDay=d;renderDay(d);renderSidebar();updateStats();document.getElementById('view-day').classList.add('active')}
+    else{setHash('math')}
+  // Clean reading mode — no chrome
+  } else if(h.startsWith('read-')){
+    var parts=h.split('-'); // read-main-5 or read-math-27
+    currentTrack=parts[1];
+    var d=parseInt(parts[2]);
+    var dd=currentTrack==='math'?MATH_TRACK.getDay(d):MAIN_PLAN.getDay(d);
+    if(dd){
+      currentDay=d;
+      // Hide chrome
+      document.getElementById('sidebar').style.display='none';
+      document.querySelector('.tb-center').style.display='none';
+      document.querySelector('.tb-r').style.display='none';
+      document.querySelector('.tb-back').style.display='';
+      document.getElementById('tb-badge').textContent='阅读';
+      renderDay(d);renderSidebar();updateStats();
+      document.getElementById('view-day').classList.add('active');
+      document.getElementById('btn-home').onclick=function(){setHash('overview')};
+    } else {setHash('overview')}
+  } else {
+    setHash('overview');
+  }
+  updateStats();
 }
-function goDay(d){currentDay=d;renderDay(d);renderSidebar();updateStats()}
+
+window.addEventListener('hashchange',route);
+
+function goHome(){
+  var h=getHash();
+  if(h.startsWith('read-')){setHash('overview')}
+  else{setHash(currentTrack)}
+}
+function goDay(d){
+  var h=getHash();
+  var prefix=h.startsWith('read-')?'read-'+currentTrack+'-':currentTrack+'-';
+  setHash(prefix+d);
+}
 function navDay(dir){
-  let plan=getPlan();
-  let next=dir>0?(currentTrack==='math'?MATH_TRACK.getNextDay(currentDay):plan.getNextDay(currentDay))
+  var plan=getPlan();
+  var next=dir>0?(currentTrack==='math'?MATH_TRACK.getNextDay(currentDay):plan.getNextDay(currentDay))
     :(currentTrack==='math'?MATH_TRACK.getPrevDay(currentDay):plan.getPrevDay(currentDay));
   if(next)goDay(next);
 }
-function switchTrack(track){if(track===currentTrack)return;currentTrack=track;goHome()}
+function switchTrack(track){if(track===currentTrack)return;setHash(track)}
 function switchTrackUI(){updateStats()}
+
+// 总览页 → 跳转科目
+function goTrack(track){setHash(track)}
+// 总览页 → 直通下一课
+function goNextDay(track){
+  var prevTrack=currentTrack;currentTrack=track;
+  var plan=getPlan(),nextDay=1;
+  if(track==='math'){
+    var all=MATH_TRACK.allDays();
+    for(var i=0;i<all.length;i++){if(!Store.isDayDone(all[i].d)){nextDay=all[i].d;break}else nextDay=all[i].d}
+  } else {
+    for(var i=1;i<=plan.totalDays;i++){if(!Store.isDayDone(i)){nextDay=i;break}else nextDay=i}
+    if(nextDay>plan.totalDays)nextDay=plan.totalDays;
+  }
+  currentTrack=prevTrack;
+  setHash(track+'-'+nextDay);
+}
+
+// ================================================================
+// OVERVIEW RENDER
+// ================================================================
+function renderOverview(){
+  // Stats for both tracks
+  var tempTrack=currentTrack;
+
+  // Main stats
+  currentTrack='main';
+  var mainDone=Store.getDoneCount(),mainTotal=MAIN_PLAN.totalDays;
+  var mainPct=mainTotal>0?Math.round(mainDone/mainTotal*100):0;
+
+  // Math stats
+  currentTrack='math';
+  var mathDone=Store.getDoneCount(),mathTotal=MATH_TRACK.allDays().length;
+  var mathPct=mathTotal>0?Math.round(mathDone/mathTotal*100):0;
+
+  // Combined
+  var totalDone=mainDone+mathDone,totalAll=mainTotal+mathTotal;
+  var combinedPct=totalAll>0?Math.round(totalDone/totalAll*100):0;
+
+  currentTrack=tempTrack;
+
+  // Dual rings
+  var mainRing=document.getElementById('ov-ring-main');
+  var mathRing=document.getElementById('ov-ring-math');
+  if(mainRing)mainRing.style.strokeDashoffset=628-(628*mainPct/100);
+  if(mathRing)mathRing.style.strokeDashoffset=440-(440*mathPct/100);
+  var pctEl=document.getElementById('ov-ring-pct');
+  if(pctEl)pctEl.textContent=combinedPct+'%';
+
+  // Continue cards — find last incomplete day (next to learn)
+  var mainNext=1;currentTrack='main';
+  for(var i=1;i<=mainTotal;i++){if(!Store.isDayDone(i)){mainNext=i;break}else mainNext=i+1}
+  if(mainNext>mainTotal)mainNext=mainTotal;
+  var mainDayData=MAIN_PLAN.getDay(mainNext)||MAIN_PLAN.getDay(mainTotal);
+  var mainCard=document.getElementById('ov-main-title');
+  if(mainCard)mainCard.textContent=(mainDayData?'Day '+mainNext+': '+mainDayData.title:'暂无数据');
+  var mainMeta=document.getElementById('ov-main-meta');
+  if(mainMeta)mainMeta.textContent='已完成 '+mainDone+'/'+mainTotal+' · 进度 '+mainPct+'% · '+(mainNext<=mainTotal&&Store.isDayDone(mainNext)?'已全部完成':(Store.isDayDone(mainNext-1)||mainNext===1?'继续学习 →':'下一课 →'));
+
+  var mathNext=1;currentTrack='math';var mathAll=MATH_TRACK.allDays();
+  for(var i=0;i<mathAll.length;i++){var md=mathAll[i].d;if(!Store.isDayDone(md)){mathNext=md;break}else mathNext=md}
+  if(mathAll.length>0&&mathNext<mathAll[0].d)mathNext=mathAll[0].d;
+  var mathDayData=MATH_TRACK.getDay(mathNext);
+  var mathCard=document.getElementById('ov-math-title');
+  if(mathCard)mathCard.textContent=(mathDayData?'Day '+mathNext+': '+mathDayData.title:'暂无数据');
+  var mathMeta=document.getElementById('ov-math-meta');
+  if(mathMeta)mathMeta.textContent='已完成 '+mathDone+'/'+mathTotal+' · 进度 '+mathPct+'% · 继续学习 →';
+
+  currentTrack=tempTrack;
+
+  // Mind map — Main left, Math right, tree lines
+  var ol=document.getElementById('ov-outline');
+  if(!ol)return;
+  var html='<div class="ov-outline-hd">课程大纲</div><div class="mindmap">';
+  // 阶段衔接标注（参考完整137天+61天计划的真实关系）
+  var bridges={
+    main:['↓ 会写代码了，怎么处理真实金融数据？','↓ 管道通了，工程稳了，补上金融数学基础','↓ 技术有了，但做什么产品？AI怎么帮你？','↓ 会用AI了，回到量化：策略怎么评估？','↓ 策略有了，怎么让它每天自动跑？','↓ 部署好了，能不能让AI自己管？'],
+    math:['↓ 有了描述不确定性的语言，如何从数据推断规律？','↓ 数据在高维空间长什么样？AI内部算什么？','↓ 数学地基打好，回到量化：那些数字的本质是什么？','↓ 工具箱齐全。还有些高阶概念需要知道它们存在。']
+  };
+  var bridgeIdx=0;
+  var maxRows=Math.max(MAIN_PLAN.stages.length,MATH_TRACK.modules.length);
+  for(var i=0;i<maxRows;i++){
+    html+='<div class="mm-row">';
+    // 左：主线 — 3级树: Stage → Section → Days
+    if(i<MAIN_PLAN.stages.length){
+      var stage=MAIN_PLAN.stages[i],totalDays=0,l2='';
+      stage.sections.forEach(function(sec){
+        var secDays=0,l3='';
+        sec.days.forEach(function(day){totalDays++;secDays++;
+          var st=Store.isDayDone(day.d)?'st2':(Store.isTaskDone(day.d,0)?'st1':'st0');
+          l3+='<div class="mm-l3-item '+st+'" onclick="event.stopPropagation();setHash(\'read-main-'+day.d+'\')">D'+day.d+': '+day.title+'</div>';
+        });
+        l2+='<div class="mm-l2-item" onclick="event.stopPropagation();setHash(\'read-main-'+sec.days[0].d+'\')">'+sec.name+' ('+secDays+'天)</div><div class="mm-l3">'+l3+'</div>';
+      });
+      html+='<div class="mm-left"><div class="mm-parent" onclick="goTrack(\'main\')">'+stage.name+'<span class="mm-parent-meta">'+totalDays+'天</span></div><div class="mm-l2">'+l2+'</div></div>';
+    } else {html+='<div class="mm-left"></div>'}
+    // 中心点
+    html+='<div class="mm-dot '+(i<MAIN_PLAN.stages.length?'main':'math')+'"></div>';
+    // 右：数学 — 2级: Module → Days
+    if(i<MATH_TRACK.modules.length){
+      var mod=MATH_TRACK.modules[i],children='';
+      mod.days.forEach(function(day){
+        var st=Store.isDayDone(day.d)?'st2':(Store.isTaskDone(day.d,0)?'st1':'st0');
+        children+='<div class="mm-child '+st+'" onclick="event.stopPropagation();setHash(\'read-math-'+day.d+'\')">M'+day.d+': '+day.title+'</div>';
+      });
+      html+='<div class="mm-right"><div class="mm-parent" onclick="goTrack(\'math\')">'+mod.name+'<span class="mm-parent-meta">'+mod.days.length+'天</span></div><div class="mm-children">'+children+'</div></div>';
+    } else {html+='<div class="mm-right"></div>'}
+    html+='</div>';
+    // 在非最后一对行之后插入衔接桥（主线左，数学右）
+    if(i<maxRows-1){
+      var bm=bridges.main[bridgeIdx]||'',bmt=bridges.math[bridgeIdx]||'';
+      html+='<div class="mm-bridge">';
+      html+='<div class="mm-bridge-l">'+(bm?'<span class="mm-bridge-text">'+bm+'</span>':'')+'</div>';
+      html+='<div class="mm-bridge-r">'+(bmt?'<span class="mm-bridge-text">'+bmt+'</span>':'')+'</div>';
+      html+='</div>';
+      bridgeIdx++;
+    }
+  }
+  html+='</div>';
+  ol.innerHTML=html;
+}
 
 // ================================================================
 // TOAST
@@ -910,7 +1342,30 @@ document.addEventListener('keydown',function(e){
 // ================================================================
 // INIT
 // ================================================================
-document.addEventListener('DOMContentLoaded',function(){renderAll();goDay(1)});
+// ===== 全局浮动 Tooltip（不受 overflow:hidden 限制） =====
+var _tipEl=document.getElementById('float-tip');
+document.addEventListener('mouseover',function(e){
+  var cell=e.target.closest('.day-cell');
+  if(!cell)return;
+  var tip=cell.getAttribute('data-tip');
+  if(!tip)return;
+  _tipEl.textContent=tip;_tipEl.classList.add('show');
+});
+document.addEventListener('mousemove',function(e){
+  if(!_tipEl.classList.contains('show'))return;
+  _tipEl.style.left=(e.clientX+16)+'px';
+  _tipEl.style.top=(e.clientY-40)+'px';
+});
+document.addEventListener('mouseout',function(e){
+  var cell=e.target.closest('.day-cell');
+  if(cell&&e.relatedTarget&&cell.contains(e.relatedTarget))return;
+  _tipEl.classList.remove('show');
+});
+
+document.addEventListener('DOMContentLoaded',function(){
+  if(!location.hash)location.hash='overview';
+  route();
+});
 </script>
 </body>
 </html>
