@@ -1,0 +1,76 @@
+/* ===== Overview Page ===== */
+.ov-content{max-width:1200px;margin:0 auto;padding:40px 28px 48px}
+.ov-top{display:flex;align-items:flex-start;gap:48px;margin-bottom:32px}
+.ov-hero{flex-shrink:0}
+.ov-rings{width:280px;height:280px}
+.ov-ring-labels{display:flex;gap:14px;margin-top:12px;justify-content:center}
+.ov-cards-area{flex:1;min-width:0;display:flex;flex-direction:column;gap:14px}
+.ov-ring-lbl{font-size:12px;font-weight:600;display:flex;align-items:center;gap:6px}
+.ov-ring-lbl::before{content:'';width:10px;height:10px;border-radius:50%}
+.ov-ring-lbl.main{color:var(--accent)}.ov-ring-lbl.main::before{background:linear-gradient(135deg,var(--accent),var(--accent2))}
+.ov-ring-lbl.math{color:#f472b6}.ov-ring-lbl.math::before{background:linear-gradient(135deg,#f472b6,var(--accent))}
+.ov-continue{display:flex;flex-direction:column;gap:14px}
+.ov-browse{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ov-card{background:var(--glass-sm);backdrop-filter:blur(var(--blur-md));-webkit-backdrop-filter:blur(var(--blur-md));border:1px solid var(--glass-border-sm);border-radius:var(--r-lg);cursor:pointer;position:relative;overflow:hidden;box-shadow:var(--specular-top),var(--specular-glow);transition:all var(--dur-fast) var(--spring-smooth);}
+.ov-card::after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(135deg,rgba(255,255,255,0.04) 0%,transparent 50%);}
+.ov-card:hover{transform:translateY(-2px);border-color:var(--glass-border-md);box-shadow:var(--specular-top-strong),var(--specular-glow-strong)}
+.ov-card--big{padding:28px 30px}.ov-card--big .ov-card-title{font-size:20px}
+.ov-card--sm{padding:18px 22px;opacity:0.7}.ov-card--sm:hover{opacity:1}.ov-card--sm .ov-card-title{font-size:15px}
+.ov-card-badge{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;color:var(--accent)}
+.ov-card-badge.math{color:#f472b6}
+.ov-card-title{font-size:18px;font-weight:700;color:var(--text);line-height:1.3;margin-bottom:4px}
+.ov-card-meta{font-size:12px;color:var(--text3)}
+
+/* ===== Mind Map ===== */
+.ov-outline-hd{font-size:13px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:24px;text-align:center}
+.mindmap{position:relative;padding:12px 0}
+.mindmap::before{content:'';position:absolute;left:50%;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--accent),var(--accent2),#f472b6);transform:translateX(-50%);border-radius:1px;}
+.mm-row{display:flex;align-items:flex-start;position:relative;margin-bottom:44px}
+.mm-dot{position:absolute;left:50%;top:18px;transform:translate(-50%,-50%);width:12px;height:12px;border-radius:50%;z-index:2;flex-shrink:0;}
+.mm-dot.main{background:var(--accent);box-shadow:0 0 12px var(--accent-glow)}
+.mm-dot.math{background:#f472b6;box-shadow:0 0 12px rgba(244,114,182,0.3)}
+.mm-left{flex:1;padding-right:56px;text-align:right}
+.mm-right{flex:1;padding-left:56px;text-align:left}
+.mm-parent{font-size:15px;font-weight:700;color:var(--text);cursor:pointer;padding:12px 0 16px;position:relative;}
+.mm-parent:hover{color:var(--accent)}.mm-right .mm-parent:hover{color:#f472b6}
+.mm-parent-meta{font-size:11px;font-weight:400;color:var(--text3)}
+
+/* 树形连线 — 左侧 */
+.mm-left .mm-l2{position:relative;padding:7px 48px 7px 0}
+.mm-left .mm-l2::before{content:'';position:absolute;right:0;top:5px;bottom:14px;width:2px;background:var(--mm-line);border-radius:1px}
+.mm-left .mm-l2-item{font-size:13px;font-weight:600;color:var(--text2);cursor:pointer;padding:7px 32px 7px 0;position:relative;transition:color var(--dur-fast)}
+.mm-left .mm-l2-item::before{content:'';position:absolute;right:0;top:50%;width:18px;height:2px;background:var(--mm-line);border-radius:1px}
+.mm-left .mm-l2-item:hover{color:var(--accent)}
+.mm-left .mm-l3{position:relative;padding:5px 54px 5px 0}
+.mm-left .mm-l3::before{content:'';position:absolute;right:32px;top:5px;bottom:14px;width:2px;background:var(--mm-line2);border-radius:1px}
+.mm-left .mm-l3-item{font-size:12px;color:var(--text3);cursor:pointer;padding:6px 28px 6px 0;position:relative;transition:color var(--dur-fast)}
+.mm-left .mm-l3-item::before{content:'';position:absolute;right:0;top:50%;width:18px;height:1.5px;background:var(--mm-line2);border-radius:1px}
+.mm-left .mm-l3-item.st0{color:var(--text3)}.mm-left .mm-l3-item.st1{color:var(--text2)}.mm-left .mm-l3-item.st2{color:var(--accent)}
+.mm-left .mm-l3-item:hover{opacity:0.8}
+
+/* 树形连线 — 右侧 */
+.mm-right .mm-children{position:relative;padding:7px 0 7px 36px}
+.mm-right .mm-children::before{content:'';position:absolute;left:0;top:5px;bottom:16px;width:2px;background:var(--mm-line);border-radius:1px}
+.mm-right .mm-child{font-size:12px;color:var(--text3);cursor:pointer;padding:7px 0 7px 28px;position:relative;transition:color var(--dur-fast)}
+.mm-right .mm-child::before{content:'';position:absolute;left:0;top:50%;width:18px;height:2px;background:var(--mm-line);border-radius:1px}
+.mm-right .mm-child.st0{color:var(--text3)}.mm-right .mm-child.st1{color:var(--text2)}.mm-right .mm-child.st2{color:#f472b6}
+.mm-right .mm-child:hover{opacity:0.8}
+
+/* 衔接桥 */
+.mm-bridge{display:flex;align-items:flex-start;padding:10px 0 28px;position:relative}
+.mm-bridge-l{flex:1;text-align:right;padding-right:56px}
+.mm-bridge-r{flex:1;text-align:left;padding-left:56px}
+.mm-bridge-text{display:inline-block;font-size:11px;color:var(--text3);font-style:italic;padding:5px 14px;border-radius:var(--r-full);background:rgba(255,255,255,0.03);border:1px dashed var(--glass-border-xs);max-width:280px;line-height:1.5}
+
+@media(max-width:768px){
+  .ov-top{flex-direction:column;align-items:center;gap:20px}
+  .ov-rings{width:200px;height:200px}
+  .ov-browse{grid-template-columns:1fr}
+  .ov-content{padding:20px 14px 32px}
+  .mm-left{padding-right:14px}.mm-right{padding-left:14px}
+  .mm-left .mm-l2{padding-right:18px}.mm-left .mm-l3{padding-right:28px}
+  .mm-right .mm-children{padding-left:18px}
+  .mm-parent{font-size:13px}.mm-child{font-size:11px}
+  .mm-bridge-l{padding-right:10px}.mm-bridge-r{padding-left:10px}
+  .mm-bridge-text{max-width:150px;font-size:10px}
+}
