@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>量化学习计划追踪</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="topbar">
+    <span class="topbar-title">量化学习计划追踪</span>
+    <span class="topbar-subtitle">主计划·3h/天 + 数学·25m/天</span>
+    <div class="topbar-right">
+      <div class="track-tabs" id="track-tabs">
+        <button class="track-tab active" data-track="main">主计划</button>
+        <button class="track-tab" data-track="math" title="独立数学课程——不追赶主计划节奏">数学</button>
+      </div>
+      <span id="topbar-streak"></span>
+    </div>
+  </header>
+
+  <div id="app">
+    <!-- 主界面 -->
+    <main id="view-home" class="view view--home active">
+      <div class="progress-wrap" id="progress-wrap">
+        <div class="progress-bar" id="progress-bar"></div>
+      </div>
+      <div class="stats-bar" id="stats-bar">
+        <span>Done: <strong id="stat-done">0/137</strong></span>
+        <span>Progress: <strong id="stat-pct">0%</strong></span>
+        <span>Streak: <strong id="stat-streak">0 days</strong></span>
+      </div>
+      <div class="stage-list" id="stage-list"></div>
+      <div class="legend">
+        <span>未开始</span><i class="legend-sq" style="background:#161b22"></i>
+        <i class="legend-sq" style="background:#0e4429"></i>
+        <i class="legend-sq" style="background:#006d32"></i>
+        <i class="legend-sq" style="background:#26a641"></i>
+        <i class="legend-sq" style="background:#39d353"></i><span>已完成</span>
+      </div>
+    </main>
+
+    <!-- 每日详情 -->
+    <main id="view-day" class="view view--day">
+      <div class="day-content">
+        <div class="breadcrumb" id="day-breadcrumb"></div>
+        <div class="day-meta" id="day-meta"></div>
+        <button id="sync-badge" class="sync-badge" style="display:none"></button>
+        <div id="review-card" class="review-card" style="display:none">
+          <div class="review-card-title">快速回顾</div>
+          <div id="review-yesterday" class="review-line"></div>
+          <div id="review-contrast" class="review-line" style="display:none"></div>
+        </div>
+        <p class="day-description" id="day-description"></p>
+        <div class="prompt-area">
+          <div class="prompt-header">
+            <span>Prompt</span>
+            <span class="pomodoro-hint" id="pomodoro-hint"></span>
+            <button id="copy-prompt-btn" class="btn-copy">Copy</button>
+          </div>
+          <pre class="prompt-content" id="prompt-content"></pre>
+        </div>
+        <div class="task-list" id="task-list"></div>
+        <div class="day-footer">
+          <span id="day-footer-status"></span>
+          <div class="day-nav">
+            <button id="btn-prev" class="btn-nav">Prev</button>
+            <button id="btn-home" class="btn-nav">Home</button>
+            <button id="btn-next" class="btn-nav">Next</button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <div id="done-overlay" class="done-overlay">
+      <div class="done-icon">
+        <svg width="36" height="36" viewBox="0 0 16 16" fill="none"><path d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z" fill="#3fb950"/></svg>
+      </div>
+      <p id="done-msg"></p>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+  <script src="data/concept_map_data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

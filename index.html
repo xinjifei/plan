@@ -1,88 +1,109 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>量化学习计划追踪</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Glassmorphism · 学习计划追踪器</title>
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/overview.css">
 </head>
 <body>
 
-  <header class="topbar">
-    <span class="topbar-title">量化学习计划追踪</span>
-    <span class="topbar-subtitle">主计划·3h/天 + 数学·25m/天</span>
-    <div class="topbar-right">
-      <div class="track-tabs" id="track-tabs">
-        <button class="track-tab active" data-track="main">主计划</button>
-        <button class="track-tab" data-track="math" title="独立数学课程——不追赶主计划节奏">数学</button>
-      </div>
-      <span id="topbar-streak"></span>
-    </div>
-  </header>
-
-  <div id="app">
-    <!-- 主界面 -->
-    <main id="view-home" class="view view--home active">
-      <div class="progress-wrap" id="progress-wrap">
-        <div class="progress-bar" id="progress-bar"></div>
-      </div>
-      <div class="stats-bar" id="stats-bar">
-        <span>Done: <strong id="stat-done">0/137</strong></span>
-        <span>Progress: <strong id="stat-pct">0%</strong></span>
-        <span>Streak: <strong id="stat-streak">0 days</strong></span>
-      </div>
-      <div class="stage-list" id="stage-list"></div>
-      <div class="legend">
-        <span>未开始</span><i class="legend-sq" style="background:#161b22"></i>
-        <i class="legend-sq" style="background:#0e4429"></i>
-        <i class="legend-sq" style="background:#006d32"></i>
-        <i class="legend-sq" style="background:#26a641"></i>
-        <i class="legend-sq" style="background:#39d353"></i><span>已完成</span>
-      </div>
-    </main>
-
-    <!-- 每日详情 -->
-    <main id="view-day" class="view view--day">
-      <div class="day-content">
-        <div class="breadcrumb" id="day-breadcrumb"></div>
-        <div class="day-meta" id="day-meta"></div>
-        <button id="sync-badge" class="sync-badge" style="display:none"></button>
-        <div id="review-card" class="review-card" style="display:none">
-          <div class="review-card-title">快速回顾</div>
-          <div id="review-yesterday" class="review-line"></div>
-          <div id="review-contrast" class="review-line" style="display:none"></div>
-        </div>
-        <p class="day-description" id="day-description"></p>
-        <div class="prompt-area">
-          <div class="prompt-header">
-            <span>Prompt</span>
-            <span class="pomodoro-hint" id="pomodoro-hint"></span>
-            <button id="copy-prompt-btn" class="btn-copy">Copy</button>
-          </div>
-          <pre class="prompt-content" id="prompt-content"></pre>
-        </div>
-        <div class="task-list" id="task-list"></div>
-        <div class="day-footer">
-          <span id="day-footer-status"></span>
-          <div class="day-nav">
-            <button id="btn-prev" class="btn-nav">Prev</button>
-            <button id="btn-home" class="btn-nav">Home</button>
-            <button id="btn-next" class="btn-nav">Next</button>
-          </div>
-        </div>
-      </div>
-    </main>
-
-    <div id="done-overlay" class="done-overlay">
-      <div class="done-icon">
-        <svg width="36" height="36" viewBox="0 0 16 16" fill="none"><path d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z" fill="#3fb950"/></svg>
-      </div>
-      <p id="done-msg"></p>
-    </div>
+<header class="topbar">
+  <div class="tb-l">
+    <button class="tb-back" onclick="setHash('overview')" title="返回总览">←</button>
+    <div class="tb-logo">◆</div>
+    <span class="tb-title">量化学习计划追踪</span>
+    <span class="tb-badge" id="tb-badge">主计划</span>
+    <button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="导航菜单">☰</button>
   </div>
+  <div class="tb-center">
+    <button class="tb-track active" data-track="main" onclick="switchTrack('main')">主计划</button>
+    <button class="tb-track" data-track="math" onclick="switchTrack('math')">数学</button>
+  </div>
+  <div class="tb-r">
+    <div class="tb-stat">完成 <span class="tb-stat-v" id="tb-done">0/8</span></div>
+    <div class="tb-stat">进度 <span class="tb-stat-v" id="tb-pct">0%</span></div>
+    <div class="tb-stat">连续 <span class="tb-stat-v" id="tb-streak">0d</span></div>
+  </div>
+</header>
+<div class="progress-wrap"><div class="progress-bar" id="progress-bar"></div></div>
 
-  <div id="toast" class="toast"></div>
-  <script src="data/concept_map_data.js"></script>
-  <script src="app.js"></script>
+<div class="app-layout">
+  <nav class="sidebar" id="sidebar"></nav>
+  <main class="content" id="content">
+
+    <div class="view active" id="view-home">
+      <div class="home">
+        <div class="stats-row" id="stats-row"></div>
+        <div id="stage-list"></div>
+        <div class="legend"><span>未开始</span><span class="legend-sq" style="background:var(--c0);border:1px solid var(--glass-border-xs)"></span><span class="legend-sq" style="background:var(--c1)"></span><span class="legend-sq" style="background:var(--c2)"></span><span class="legend-sq" style="background:var(--c3)"></span><span class="legend-sq" style="background:var(--c4)"></span><span>完成</span></div>
+      </div>
+    </div>
+
+    <div class="view day-view" id="view-day">
+      <div class="day-inner">
+        <div class="breadcrumb" id="day-breadcrumb"></div>
+        <div class="day-hd"><div class="day-label">Day <span id="day-num"></span></div><h1 class="day-meta" id="day-meta"></h1></div>
+        <div class="sync-row"><button class="sync-badge" id="sync-badge" style="display:none"></button></div>
+        <p class="day-desc" id="day-desc"></p>
+        <div class="prompt-card">
+          <div class="prompt-hd"><span class="prompt-label">Prompt</span><button class="btn copy" id="copy-btn" onclick="copyPrompt()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div>
+          <pre class="prompt-body" id="prompt-body"></pre>
+        </div>
+        <div class="task-section"><div class="task-section-hd">练习任务</div><div id="task-list"></div></div>
+        <div class="day-footer"><span id="footer-status"></span><div class="btn-group"><button class="btn" id="btn-prev" onclick="navDay(-1)">← Prev</button><button class="btn" id="btn-home" onclick="goHome()">Home</button><button class="btn primary" id="btn-next" onclick="navDay(1)">Next →</button></div></div>
+      </div>
+    </div>
+
+    <div class="view" id="view-overview">
+      <div class="ov-content">
+        <div class="ov-top">
+          <div class="ov-hero">
+            <svg class="ov-rings" viewBox="0 0 240 240" id="ov-rings-svg">
+              <circle cx="120" cy="120" r="100" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="20"/>
+              <circle cx="120" cy="120" r="100" fill="none" stroke="url(#gradMain)" stroke-width="20" stroke-linecap="round" stroke-dasharray="628" stroke-dashoffset="628" id="ov-ring-main" transform="rotate(-90 120 120)" style="transition:stroke-dashoffset 0.8s var(--spring-smooth)"/>
+              <circle cx="120" cy="120" r="70" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="16"/>
+              <circle cx="120" cy="120" r="70" fill="none" stroke="url(#gradMath)" stroke-width="16" stroke-linecap="round" stroke-dasharray="440" stroke-dashoffset="440" id="ov-ring-math" transform="rotate(-90 120 120)" style="transition:stroke-dashoffset 0.8s var(--spring-smooth)"/>
+              <text x="120" y="112" text-anchor="middle" fill="var(--text)" font-family="var(--mono)" font-size="28" font-weight="800" id="ov-ring-pct">0%</text>
+              <text x="120" y="132" text-anchor="middle" fill="var(--text3)" font-size="10" font-weight="600" letter-spacing="0.06em">总进度</text>
+              <defs>
+                <linearGradient id="gradMain" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="var(--accent)"/><stop offset="100%" stop-color="var(--accent2)"/></linearGradient>
+                <linearGradient id="gradMath" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f472b6"/><stop offset="100%" stop-color="var(--accent)"/></linearGradient>
+              </defs>
+            </svg>
+            <div class="ov-ring-labels"><span class="ov-ring-lbl main">主计划</span><span class="ov-ring-lbl math">数学</span></div>
+          </div>
+          <div class="ov-cards-area">
+            <div class="ov-continue">
+              <div class="ov-card ov-card--big" id="ov-card-main" onclick="goNextDay('main')"><div class="ov-card-badge">主计划 · 继续学习</div><div class="ov-card-title" id="ov-main-title"></div><div class="ov-card-meta" id="ov-main-meta"></div></div>
+              <div class="ov-card ov-card--big" id="ov-card-math" onclick="goNextDay('math')"><div class="ov-card-badge math">数学 · 继续学习</div><div class="ov-card-title" id="ov-math-title"></div><div class="ov-card-meta" id="ov-math-meta"></div></div>
+            </div>
+            <div class="ov-browse">
+              <div class="ov-card ov-card--sm" onclick="goTrack('main')"><div class="ov-card-badge">主计划</div><div class="ov-card-title">浏览全部</div></div>
+              <div class="ov-card ov-card--sm" onclick="goTrack('math')"><div class="ov-card-badge math">数学</div><div class="ov-card-title">浏览全部</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="ov-outline" id="ov-outline"></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="ov-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#6ee7b7" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>
+  <p class="ov-msg" id="overlay-msg"></p>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="float-tip" id="float-tip"></div>
+
+<script src="js/data.js"></script>
+<script src="js/store.js"></script>
+<script src="js/router.js"></script>
+<script src="js/render.js"></script>
+<script src="js/app.js"></script>
 </body>
 </html>
