@@ -177,6 +177,11 @@ function renderOverview(){
   var mathDayData=MATH_TRACK.getDay(mathNext);
   var mtc=document.getElementById('ov-math-title');if(mtc)mtc.textContent=(mathDayData?'Day '+mathNext+': '+mathDayData.title:'暂无数据');
   var mtm=document.getElementById('ov-math-meta');if(mtm)mtm.textContent='';
+  // Streak banner
+  var mainStreak=Store.getStreak();currentTrack='math';var mathStreak=Store.getStreak();currentTrack=tempTrack;
+  document.getElementById('ov-streak-main-num').textContent=mainStreak;
+  document.getElementById('ov-streak-math-num').textContent=mathStreak;
+
   // Mind map — 分轨渲染
   var ol=document.getElementById('ov-outline');if(!ol)return;
   var bridges={main:['↓ 会写代码了，怎么处理真实金融数据？','↓ 管道通了，工程稳了，补上金融数学基础','↓ 技术有了，但做什么产品？AI怎么帮你？','↓ 会用AI了，回到量化：策略怎么评估？','↓ 策略有了，怎么让它每天自动跑？','↓ 部署好了，能不能让AI自己管？'],math:['↓ 有了描述不确定性的语言，如何从数据推断规律？','↓ 数据在高维空间长什么样？AI内部算什么？','↓ 数学地基打好，回到量化：那些数字的本质是什么？','↓ 工具箱齐全。还有些高阶概念需要知道它们存在。']};

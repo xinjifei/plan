@@ -3826,7 +3826,15 @@ Python 3.x + pandas
   ],
   _map: null,
   get totalDays() {
-    return this.stages.reduce((sum, s) => sum + s.sections.reduce((ss, sec) => ss + sec.daysData.length, 0), 0);
+    var days = {};
+    this.stages.forEach(function(s) {
+      s.sections.forEach(function(sec) {
+        sec.daysData.forEach(function(d) {
+          days[d.globalDay] = true;
+        });
+      });
+    });
+    return Object.keys(days).length;
   },
   getDay(n) {
     if (!this._map) {
@@ -6053,7 +6061,14 @@ const Store = {
   toggleTask(globalDay, taskIndex) {
     const data = this.load();
     const dk = "d" + globalDay;
-    if (!data[dk]) data[dk] = { tasks: [false, false, false] };
+    if (!data[dk]) {
+      var plan = currentTrack === "math" ? MATH_TRACK : MAIN_PLAN;
+      var dayData = plan.getDay(globalDay);
+      var taskCount = (dayData && dayData.tasks) ? dayData.tasks.length : 0;
+      var tasks = [];
+      for (var i = 0; i < Math.max(taskCount, 0); i++) tasks.push(false);
+      data[dk] = { tasks: tasks };
+    }
     data[dk].tasks[taskIndex] = !data[dk].tasks[taskIndex];
     this.save(data);
   },
@@ -6067,29 +6082,39 @@ const Store = {
   isDayDone(globalDay) {
     const data = this.load();
     const dk = "d" + globalDay;
-    return !!(data[dk] && data[dk].tasks && data[dk].tasks.every(function(t) { return t; }));
+    if (!data[dk] || !data[dk].tasks) return false;
+    var plan = currentTrack === "math" ? MATH_TRACK : MAIN_PLAN;
+    var dayData = plan.getDay(globalDay);
+    var taskCount = (dayData && dayData.tasks) ? dayData.tasks.length : 0;
+    if (taskCount === 0) return false;
+    for (var i = 0; i < taskCount; i++) {
+      if (!data[dk].tasks[i]) return false;
+    }
+    return true;
   },
 
   getDayLevel(globalDay) {
     const data = this.load();
     const dk = "d" + globalDay;
     if (!data[dk] || !data[dk].tasks) return 0;
-    const done = data[dk].tasks.filter(function(t) { return t; }).length;
-    if (done === 3) return 4;
-    if (done === 2) return 3;
-    if (done === 1) return 2;
-    return 1;
+    var plan = currentTrack === "math" ? MATH_TRACK : MAIN_PLAN;
+    var dayData = plan.getDay(globalDay);
+    var taskCount = (dayData && dayData.tasks) ? dayData.tasks.length : 0;
+    if (taskCount === 0) return 0;
+    var done = 0;
+    for (var i = 0; i < taskCount; i++) {
+      if (data[dk].tasks[i]) done++;
+    }
+    if (done === 0) return 1;
+    if (done === taskCount) return 4;
+    return Math.floor((done / taskCount) * 2) + 2;
   },
 
   getDoneDays() {
     const plan = currentTrack === "math" ? MATH_TRACK : MAIN_PLAN;
-    const data = this.load();
     let count = 0;
     for (var i = 1; i <= plan.totalDays; i++) {
-      const dk = "d" + i;
-      if (data[dk] && data[dk].tasks && data[dk].tasks.every(function(t) { return t; })) {
-        count++;
-      }
+      if (this.isDayDone(i)) count++;
     }
     return count;
   },
@@ -6104,14 +6129,7 @@ const Store = {
     const data = this.load();
     const prefix = currentTrack === "math" ? "math" : "main";
 
-    // 统计当前总完成天数（全部任务打勾才算一天完成）
-    var totalDone = 0;
-    for (var i = 1; i <= total; i++) {
-      const dk = "d" + i;
-      if (data[dk] && data[dk].tasks && data[dk].tasks.every(function(t) { return t; })) {
-        totalDone++;
-      }
-    }
+    var totalDone = this.getDoneDays();
 
     // 读取 streak 基准：开始日期 + 当时的已完成天数
     var streakStart = localStorage.getItem("streakStart_" + prefix);

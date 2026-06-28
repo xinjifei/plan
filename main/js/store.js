@@ -16,7 +16,22 @@ var Store={
   getStreak(){
     var doneCount=this.getDoneCount(),prefix=currentTrack==='math'?'math':'main';
     function fmt(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
-    var today=new Date(),ss=localStorage.getItem('streakStart_'+prefix),baseline=parseInt(localStorage.getItem('streakBaseline_'+prefix))||0;
+    var today=new Date();
+
+    // ── 从 streak-data.js 读取配置 ──────────────────────
+    if(typeof STREAK_CONFIG!=='undefined'){
+      var cfg=STREAK_CONFIG[prefix];
+      if(cfg && STREAK_CONFIG.forceOverride){
+        localStorage.setItem('streakStart_'+prefix, cfg.streakStart);
+        localStorage.setItem('streakBaseline_'+prefix, String(cfg.baseline));
+      } else if(cfg && !localStorage.getItem('streakStart_'+prefix)){
+        // 首次初始化时使用配置值
+        localStorage.setItem('streakStart_'+prefix, cfg.streakStart);
+        localStorage.setItem('streakBaseline_'+prefix, String(cfg.baseline));
+      }
+    }
+
+    var ss=localStorage.getItem('streakStart_'+prefix),baseline=parseInt(localStorage.getItem('streakBaseline_'+prefix))||0;
     if(!ss){if(doneCount>0){var defS=4,sd=new Date(today.getFullYear(),today.getMonth(),today.getDate()-defS+1);ss=fmt(sd);baseline=Math.max(0,doneCount-defS)}else{ss=fmt(today);baseline=0}localStorage.setItem('streakStart_'+prefix,ss);localStorage.setItem('streakBaseline_'+prefix,String(baseline))}
     var tOnly=new Date(today.getFullYear(),today.getMonth(),today.getDate()),p=ss.split('-'),sOnly=new Date(parseInt(p[0]),parseInt(p[1])-1,parseInt(p[2])),daysSince=Math.floor((tOnly-sOnly)/86400000)+1,newlyDone=doneCount-baseline;
     if(newlyDone>=daysSince-1)return Math.min(newlyDone,daysSince);return 0;
