@@ -1391,7 +1391,7 @@ Python 3.x + akshare + sqlite3 + pandas + matplotlib
           days: 3,
           daysData: [
             {
-              globalDay: 57,
+              globalDay: 58,
               title: "痛点识别——你身边哪些事可以被技术改变？",
               description: "技术能力决定你能做什么，产品思维决定你做什么是有价值的。今天从自己的日常中挖掘痛点——高频发生、让人痛苦、现有方案很烂的，就是机会。",
               prompt: `=== 产品 Day 1：痛点识别 ===
@@ -1417,7 +1417,7 @@ AI助手（头脑风暴）+ 笔记工具
               tasks: ["列出10个痛点", "AI分析3个痛点的市场和竞品", "理解市场验证vs红海竞争的区别"]
             },
             {
-              globalDay: 58,
+              globalDay: 59,
               title: "需求拆解——把模糊的想法变成清晰的功能描述",
               description: "「我想做一个股票分析工具」太模糊了。今天学会用「用户故事」和「功能边界」把想法具象化——谁用？做什么？不做什么？",
               prompt: `=== 产品 Day 2：需求拆解 ===
@@ -1443,7 +1443,7 @@ AI助手（需求分析）+ 笔记工具
               tasks: ["写用户故事（3种角色）+功能边界", "AI审查需求→改进模糊之处", "功能优先级分类（必须有/应该有/可以有）"]
             },
             {
-              globalDay: 59,
+              globalDay: 60,
               title: "竞品扫描——你的想法已经有人做了吗？",
               description: "99%的想法都有人做过。这不一定是坏事——市场验证存在。关键是差异化：同一个需求，你的解法哪里不一样？更快？更简单？更便宜？更专注某个细分群体？",
               prompt: `=== 产品 Day 3：竞品扫描 ===
@@ -1475,7 +1475,7 @@ AI助手（搜索+分析）+ 笔记工具
           days: 3,
           daysData: [
             {
-              globalDay: 60,
+              globalDay: 61,
               title: "MVP思维——最小的、能验证的、产品",
               description: "MVP不是「简陋版产品」，而是「用最少投入验证最核心假设」的实验工具。今天学会砍功能——只保留验证核心假设所必需的3个功能，其他全砍。",
               prompt: `=== 产品 Day 4：MVP思维 ===
@@ -1501,7 +1501,7 @@ AI助手（案例学习）+ 笔记工具
               tasks: ["定义MVP（只保留3个核心功能）", "列出5+砍掉的功能并解释原因", "定义验证通过/失败的明确标准"]
             },
             {
-              globalDay: 61,
+              globalDay: 62,
               title: "用AI从零到一构建MVP——30分钟原型挑战",
               description: "从功能描述直接生成可运行的原型。今天全流程实战：你描述产品→AI生成代码→你运行→发现问题→迭代。目标：30分钟内做出第一版。",
               prompt: `=== 产品 Day 5：AI构建MVP ===
@@ -1527,7 +1527,7 @@ AI助手（Claude Code等能生成完整项目的工具）
               tasks: ["AI生成MVP原型（30分钟限时）", "完成「生成→运行→调试→跑通」闭环", "记录最卡壳的环节，优化你的AI协作策略"]
             },
             {
-              globalDay: 62,
+              globalDay: 63,
               title: "验证与迭代——你做的这个东西真的有人用吗？",
               description: "验证≠问别人「你觉得怎么样」（礼貌性反馈不可信）。真正的验证：有人愿意为此改变行为。今天找至少1个人试用你的MVP，观察真实行为。",
               prompt: `=== 产品 Day 6：验证与迭代 ===
@@ -1559,7 +1559,7 @@ AI助手（Claude Code等能生成完整项目的工具）
           days: 2,
           daysData: [
             {
-              globalDay: 63,
+              globalDay: 64,
               title: "你的「想法→产品」个人工作流",
               description: "总结从发现机会到AI实现再到验证的完整流程。这份工作流文档是你AI时代最重要的个人资产——它让你在未来任何场景下都能快速启动。",
               prompt: `=== 产品 Day 7：创作者工作流 ===
@@ -1585,7 +1585,7 @@ AI助手 + 笔记工具（建议用Markdown）
               tasks: ["写「AI时代开发工作流」文档（6阶段）", "每阶段标注输入/输出/AI角色/你的判断", "自我评估优势环节和薄弱环节"]
             },
             {
-              globalDay: 64,
+              globalDay: 65,
               title: "缓冲/复盘——重新审视「我是谁」",
               description: "对比学代码之前和现在：你看待问题的方式有什么不同？整理「待实现的想法清单」作为后续阶段的实战素材。展望：下一阶段将深入AI技术本身。",
               prompt: `=== 产品 Day 8：缓冲/复盘 ===
@@ -1625,7 +1625,7 @@ AI助手 + 笔记工具（建议用Markdown）
           days: 4,
           daysData: [
             {
-              globalDay: 58,
+              globalDay: 66,
               title: "Token是什么？为什么模型「一个字一个字」地输出？",
               description: "理解LLM的第一步不是Transformer架构，而是最基础的「Token」概念。Token不是汉字——用代码亲眼看到一段中文被切成多少个token，你会对「模型怎么理解文字」有全新的认识。",
               prompt: `=== 第58天：Token 概念 ===
@@ -1653,7 +1653,7 @@ Python 3.x + tiktoken（安装：uv add tiktoken）
               tasks: ["用 tiktoken 统计文本的 token 数", "理解中文 token 化和英文的差异", "测试不同 tokenizer 对同一文本的 token 数"]
             },
             {
-              globalDay: 59,
+              globalDay: 67,
               title: "Embedding是什么？——「国王-男人+女人≈女王」",
               description: "Embedding 就是把文字变成一串数字（向量），让计算机理解语义。语义相近的词，向量距离也近——「新能源汽车」和「动力电池」的向量距离远小于和「白酒消费」的距离。",
               prompt: `=== 第59天：Embedding 概念 ===
@@ -1681,7 +1681,7 @@ Python 3.x + sentence-transformers（安装：uv add sentence-transformers）
               tasks: ["理解 Embedding = 语义→向量的映射", "用 sentence-transformers 给股票描述生成向量", "计算相似度并可视化"]
             },
             {
-              globalDay: 60,
+              globalDay: 68,
               title: "Context Window、Temperature、Top-P——这些参数如何影响输出？",
               description: "模型的「性格」由参数决定。Temperature=0 时模型死板但确定，Temperature=1 时天马行空。今天用同一个 prompt 配合不同参数，亲眼看到输出的差异。",
               prompt: `=== 第60天：LLM 参数理解 ===
@@ -1711,7 +1711,7 @@ Python 3.x + openai（或任意 LLM API）
               tasks: ["用不同 temperature 生成文本并对比", "用不同 top_p 生成文本并对比", "理解参数选择与任务类型的匹配关系"]
             },
             {
-              globalDay: 61,
+              globalDay: 69,
               title: "System Prompt vs User Prompt——学会「调教」模型行为",
               description: "System Prompt 设定模型的人设和能力边界，User Prompt 是具体任务指令。好的 System Prompt 写清楚：角色+能力+边界+输出格式——这比你会写代码更重要。",
               prompt: `=== 第61天：System Prompt 设计 ===
@@ -1747,7 +1747,7 @@ Python 3.x + openai（或任意 LLM API）
           days: 4,
           daysData: [
             {
-              globalDay: 62,
+              globalDay: 70,
               title: "基础Prompt技巧——角色设定、Few-shot、Chain-of-Thought",
               description: "Prompt 是新的编程语言。Few-shot（给AI看例子让它模仿）、Chain-of-Thought（让AI一步步思考）是最核心的两种技巧。今天的目标：学会用Few-shot让AI输出结构化的JSON格式。",
               prompt: `=== 第62天：Prompt 基础技巧 ===
@@ -1773,7 +1773,7 @@ LLM API（openai/ollama）
               tasks: ["掌握 Few-shot 技巧让AI输出结构化数据", "用 Chain-of-Thought 提高AI分析质量", "对比不同 Prompt 技巧的输出差异"]
             },
             {
-              globalDay: 63,
+              globalDay: 71,
               title: "用AI分析一份财报摘要——设计Prompt提取关键财务指标",
               description: "真实场景：给AI一份A股年报摘要，让它提取营收、净利润、毛利率、ROE等关键财务指标并输出结构化JSON。今天的挑战：处理AI有时返回格式不一致的问题。",
               prompt: `=== 第63天：财报分析 Prompt ===
@@ -1800,7 +1800,7 @@ LLM API + Python
               tasks: ["设计财报分析 Prompt 提取关键指标", "实现 AI 输出的 JSON 格式验证", "优化 Prompt 解决格式不一致问题"]
             },
             {
-              globalDay: 64,
+              globalDay: 72,
               title: "用AI生成交易策略思路——Few-shot让AI模仿已知策略模式",
               description: "给AI看2-3个经典策略（均线交叉、动量突破、均值回复），让它生成类似但不同的策略思路。AI的策略必须能写成可执行的规则才算合格——不能只给模糊的方向。",
               prompt: `=== 第64天：AI 策略生成 ===
@@ -1829,7 +1829,7 @@ LLM API + Python
               tasks: ["用 Few-shot 让AI生成交易策略思路", "审查AI生成的策略（逻辑+前视偏差+可行性）", "选1个策略写成可回测的 Python 函数"]
             },
             {
-              globalDay: 65,
+              globalDay: 73,
               title: "Prompt版本管理——把Prompt当代码一样管理",
               description: "Prompt就是代码。把Prompt存入独立文件（prompts/analyst.txt），用Git追踪每次修改，对比不同版本的输出质量（A/B测试思维）。这是「AI工程化」的重要里程碑。",
               prompt: `=== 第65天：Prompt 版本管理 ===
@@ -1863,7 +1863,7 @@ Git + 文本编辑器 + LLM API
           days: 1,
           daysData: [
             {
-              globalDay: 66,
+              globalDay: 74,
               title: "缓冲/复习日",
               description: "回顾LLM工作原理和Prompt技巧，整理目前积累的所有Prompt模板。不做新课。",
               prompt: `=== 第66天：缓冲/复习 ===
@@ -1893,7 +1893,7 @@ Git + 文本编辑器 + LLM API
           days: 6,
           daysData: [
             {
-              globalDay: 67,
+              globalDay: 75,
               title: "ChromaDB 基础——什么是向量数据库？",
               description: "传统搜索是关键词匹配（搜「宁德时代」找不到「CATL」），向量搜索是语义匹配（搜「新能源电池龙头」能找到「宁德时代」）。ChromaDB是轻量级的向量数据库，让你用自然语言搜索文档。",
               prompt: `=== 第67天：ChromaDB 基础 ===
@@ -1921,7 +1921,7 @@ Python 3.x + chromadb + sentence-transformers
               tasks: ["安装并配置 ChromaDB", "将公司简介转为向量存入数据库", "用自然语言做语义搜索并验证结果"]
             },
             {
-              globalDay: 68,
+              globalDay: 76,
               title: "文档分块（Chunking）策略",
               description: "为什么不能把整份研报当一个向量存？因为信息会被「稀释」——一篇50页的研报压缩成一个768维向量，什么信息都模糊了。分块策略（Chunking）是RAG系统质量的关键。",
               prompt: `=== 第68天：文档分块策略 ===
@@ -1949,7 +1949,7 @@ Python 3.x + chromadb + langchain（文本分割器）或手写分块逻辑
               tasks: ["理解不同 Chunking 策略的优劣", "用三种策略切分同一份长文档", "对比不同策略的检索效果"]
             },
             {
-              globalDay: 69,
+              globalDay: 77,
               title: "构建一个研报知识库",
               description: "整合：取多份PDF/网页文本 → 清洗 → 分块 → 存向量数据库。你的第一个RAG应用：用几个你知道答案的问题，验证RAG检索到的内容是否真正相关。",
               prompt: `=== 第69天：构建研报知识库 ===
@@ -1976,7 +1976,7 @@ Python 3.x + chromadb + sentence-transformers + PDF解析工具（如 PyPDF2）
               tasks: ["构建至少10份文档的知识库", "清洗→分块→向量化→存储 全流程", "用5个测试问题验证检索质量"]
             },
             {
-              globalDay: 70,
+              globalDay: 78,
               title: "RAG 问答系统——「最近三个月宁德时代的研报都说了什么？」",
               description: "RAG完整流程：用户问题 → 向量检索相关文本 → 把文本+问题一起发给LLM → LLM生成含引用的答案。对比有RAG vs 无RAG 的同一个问题，答案质量天差地别。",
               prompt: `=== 第70天：RAG 问答系统 ===
@@ -2003,7 +2003,7 @@ Python 3.x + chromadb + LLM API
               tasks: ["实现 rag_ask(question) 函数", "对比有RAG vs 无RAG的答案质量", "在答案中加入来源引用"]
             },
             {
-              globalDay: 71,
+              globalDay: 79,
               title: "缓冲/复习日",
               description: "回顾ChromaDB操作和RAG流程。补上掉队的任务。不做新课。",
               prompt: `=== 第71天：缓冲/复习 ===
@@ -2028,7 +2028,7 @@ Python 3.x + chromadb + LLM API
               tasks: ["回顾RAG全链路操作", "确认 rag_ask 函数可用", "补上掉队任务"]
             },
             {
-              globalDay: 72,
+              globalDay: 80,
               title: "缓冲/复习日",
               description: "继续巩固RAG系统，确认知识库检索质量达标。",
               prompt: `=== 第72天：缓冲/复习 ===
@@ -2051,7 +2051,7 @@ Python 3.x + chromadb + LLM API
           days: 5,
           daysData: [
             {
-              globalDay: 73,
+              globalDay: 81,
               title: "Ollama 安装与本地运行",
               description: "云端API虽好，但花钱且有隐私顾虑。Ollama让你在自己的电脑上运行开源大模型（Qwen/Llama/DeepSeek）——一条命令下载，一条命令启动，Python直接调用。",
               prompt: `=== 第73天：Ollama 本地部署 ===
@@ -2079,7 +2079,7 @@ Ollama（安装：ollama.com下载）+ Python ollama包
               tasks: ["安装 Ollama 并下载模型", "命令行直接对话测试", "用 Python 调用本地模型"]
             },
             {
-              globalDay: 74,
+              globalDay: 82,
               title: "OpenAI兼容API——同一套代码调用本地模型和云端模型",
               description: "Ollama自带OpenAI兼容端点。同一个openai Python包，只需切换base_url就能在「本地免费模型」和「云端强模型」之间切换。一套代码，双模运行。",
               prompt: `=== 第74天：OpenAI 兼容 API ===
@@ -2107,7 +2107,7 @@ Python 3.x + openai + ollama
               tasks: ["用 openai 包调用 Ollama 本地模型", "实现 ask_llm() 双模切换函数", "对比本地 vs 云端模型的回答质量"]
             },
             {
-              globalDay: 75,
+              globalDay: 83,
               title: "API降级策略——云端挂了自动切本地",
               description: "生产环境中最怕API挂了、超时了、超额了。今天实现自动降级：先调云端API，3秒超时或报错就自动切本地模型——保证服务不中断。",
               prompt: `=== 第75天：API 降级策略 ===
@@ -2135,7 +2135,7 @@ Python 3.x + openai + ollama
               tasks: ["实现 API 自动降级（云端→本地）", "测试降级触发条件（超时/错误）", "记录降级日志便于分析"]
             },
             {
-              globalDay: 76,
+              globalDay: 84,
               title: "成本控制——Token计数、上下文压缩、缓存策略",
               description: "每次API调用都在花钱。今天给你的 ask_llm 函数加上 token 计数和成本统计——你会惊讶地发现，长对话的背景成本有多高。学会压缩上下文、缓存重复查询，让AI用得更聪明（也更便宜）。",
               prompt: `=== 第76天：API 成本控制 ===
@@ -2163,7 +2163,7 @@ Python 3.x + tiktoken + functools.lru_cache
               tasks: ["给 ask_llm 加 token 计数和成本统计", "实现上下文压缩（长对话自动总结）", "用缓存避免重复的API调用"]
             },
             {
-              globalDay: 77,
+              globalDay: 85,
               title: "综合项目：AI投研助手 MVP",
               description: "将前面所学的AI技术整合为一个完整项目：输入股票代码 → RAG检索相关研报 → AI分析 → 降级策略生效 → 成本可控 → 输出结构化投研简报。",
               prompt: `=== 第77天：AI 投研助手 MVP ===
@@ -2190,7 +2190,7 @@ Python 3.x + chromadb + LLM API + ollama + 知识库
               tasks: ["实现AI投研助手完整流程", "验证降级策略和成本控制", "输出一份示例投研报告"]
             },
             {
-              globalDay: 78,
+              globalDay: 86,
               title: "投研助手完善 + 文档",
               description: "继续完善投研助手：优化Prompt、改进检索质量、完善错误处理。输出使用文档，让其他人也能一键运行。",
               prompt: `=== 第78天：投研助手完善 ===
@@ -2217,7 +2217,7 @@ Python 3.x + chromadb + LLM API
               tasks: ["优化Prompt模板和检索策略", "完善异常处理和日志", "写使用文档"]
             },
             {
-              globalDay: 79,
+              globalDay: 87,
               title: "缓冲/复习日",
               description: "回顾阶段三所有内容：LLM原理 → Prompt工程 → RAG → 本地部署 → API降级 → 成本控制 → 投研助手。阶段三综合回顾。",
               prompt: `=== 第79天：缓冲/复习 ===
@@ -2257,7 +2257,7 @@ Python 3.x + chromadb + LLM API
           days: 4,
           daysData: [
             {
-              globalDay: 80,
+              globalDay: 88,
               title: "什么是回测？为什么回测漂亮的策略实盘经常亏钱？",
               description: "回测 = 拿历史数据模拟真实交易。听起来简单，但它有三大陷阱等着你。今天的目标不是跑回测，而是先理解「回测为什么经常骗人」。",
               prompt: `=== 第80天：回测概念 ===
@@ -2286,7 +2286,7 @@ Python 3.x + chromadb + LLM API
               tasks: ["理解回测的本质和三大陷阱", "写「回测的三大谎言」说明文（200字）", "分析一个策略「回测好实盘差」的可能原因"]
             },
             {
-              globalDay: 81,
+              globalDay: 89,
               title: "前视偏差、幸存者偏差、过拟合——回测的三大死穴",
               description: "深入理解三个让回测变成谎言的偏差。前视偏差让你「提前知道了未来」，幸存者偏差让你「只看到成功者」，过拟合让你「记住了噪音」。",
               prompt: `=== 第81天：回测三大死穴 ===
@@ -2314,7 +2314,7 @@ Python 3.x + chromadb + LLM API
               tasks: ["为三种偏差各找一个翻车案例", "设计防范三种偏差的检查清单", "理解防过拟合的重要性和方法"]
             },
             {
-              globalDay: 82,
+              globalDay: 90,
               title: "向量化回测 vs 事件驱动回测",
               description: "向量化回测用pandas一次性算完所有信号（快，适合简单策略），事件驱动回测模拟真实交易逐笔撮合（慢，但能处理复杂逻辑）。两种范式各有利弊，今天的任务是理解何时用哪种。",
               prompt: `=== 第82天：两种回测范式 ===
@@ -2343,7 +2343,7 @@ Python 3.x + pandas（向量化回测示例）
               tasks: ["理解向量化 vs 事件驱动的本质差异", "写对比表（速度/复杂度/真实度/场景）", "确定个人回测工具选择策略"]
             },
             {
-              globalDay: 83,
+              globalDay: 91,
               title: "手写一个最简单的向量化回测——「金叉买、死叉卖，会怎样？」",
               description: "终于动手了！用SMA5和SMA20生成买卖信号，pandas向量化计算每日持仓和收益率，画出第一根资金曲线。这是你的第一个完整回测。",
               prompt: `=== 第83天：第一个向量化回测 ===
@@ -2378,7 +2378,7 @@ Python 3.x + pandas + numpy + matplotlib
           days: 1,
           daysData: [
             {
-              globalDay: 84,
+              globalDay: 92,
               title: "缓冲/复习日",
               description: "回顾回测基础概念——回测的三大死穴、两种回测范式、第一个向量化回测。补上掉队的任务。不做新课。",
               prompt: `=== 第84天：缓冲/复习 ===
@@ -2401,7 +2401,7 @@ Python 3.x + pandas + numpy + matplotlib
           days: 4,
           daysData: [
             {
-              globalDay: 85,
+              globalDay: 93,
               title: "用 VectorBT 快速搭建回测（上）",
               description: "VectorBT是Python最快的向量化回测框架——一行代码跑完策略，自动生成完整回测报告（收益率/Sharpe/回撤/胜率...）。今天安装并跑通第一个VectorBT回测。",
               prompt: `=== 第85天：VectorBT 入门 ===
@@ -2429,7 +2429,7 @@ Python 3.x + vectorbt（安装：uv add vectorbt）
               tasks: ["安装 VectorBT", "用 VectorBT 实现均线交叉回测", "对比手写 vs VectorBT 的结果"]
             },
             {
-              globalDay: 86,
+              globalDay: 94,
               title: "用 VectorBT 快速搭建回测（下）",
               description: "VectorBT 不止能跑回测，还能做参数优化、可视化、热力图分析。今天探索 VectorBT 的高级功能，跑一个参数扫描看看不同均线周期组合的表现。",
               prompt: `=== 第86天：VectorBT 进阶 ===
@@ -2456,7 +2456,7 @@ Python 3.x + vectorbt
               tasks: ["运行参数扫描测试多组均线组合", "画热力图展示不同参数的 Sharpe", "分析最优参数的稳定性"]
             },
             {
-              globalDay: 87,
+              globalDay: 95,
               title: "交易成本建模——手续费、滑点、冲击成本",
               description: "不加成本的策略看起来很美好。加了A股真实成本（佣金万分之2.5+印花税万分之5+滑点）之后，很多「高收益」策略就变成了「刚好回本」。",
               prompt: `=== 第87天：交易成本建模 ===
@@ -2487,7 +2487,7 @@ Python 3.x + vectorbt
               tasks: ["给回测加上A股真实交易成本", "对比有成本 vs 无成本的资金曲线", "分析交易频率对净收益的影响"]
             },
             {
-              globalDay: 88,
+              globalDay: 96,
               title: "基准对比——你的策略跑赢「买入持有」了吗？",
               description: "很多策略的收益率还不如一直拿着不动。今天的核心：在同一张图上画三条曲线——你的策略、买入持有、沪深300指数，看看谁才是真正的赢家。",
               prompt: `=== 第88天：基准对比 ===
@@ -2522,7 +2522,7 @@ Python 3.x + pandas + matplotlib（+ akshare获取指数数据）
           days: 4,
           daysData: [
             {
-              globalDay: 89,
+              globalDay: 97,
               title: "缓冲/复习日",
               description: "回顾回测框架实战内容。补上掉队的回测练习。不做新课。",
               prompt: `=== 第89天：缓冲/复习 ===
@@ -2538,7 +2538,7 @@ Python 3.x + pandas + matplotlib（+ akshare获取指数数据）
               tasks: ["回顾回测框架内容", "确认VectorBT回测完整可用", "补上掉队任务"]
             },
             {
-              globalDay: 90,
+              globalDay: 98,
               title: "因子研究——什么是Alpha因子？常见因子类型",
               description: "因子是选股的「评分标准」——高动量分、低估值分、好质量分...每个因子从不同角度评价一只股票。今天理解四大类因子的核心逻辑和适用场景。",
               prompt: `=== 第90天：因子研究 ===
@@ -2568,7 +2568,7 @@ Python 3.x + pandas + numpy
               tasks: ["理解四类Alpha因子的核心逻辑", "总结A股各因子的可能有效性", "阅读Fama-French三因子模型简介"]
             },
             {
-              globalDay: 91,
+              globalDay: 99,
               title: "用AI生成因子想法——「给我5个基于成交量的A股Alpha因子思路」",
               description: "AI在因子开发中最大的价值是「头脑风暴」——让它生成10个因子想法，你从中筛选出逻辑靠谱的。今天的核心：AI生成创意 → 人工审查逻辑 → 筛选可实现的因子。",
               prompt: `=== 第91天：AI辅助因子研究 ===
@@ -2598,7 +2598,7 @@ LLM API + Python
               tasks: ["用AI生成10个因子创意", "筛选3个靠谱因子并写理由", "为入选因子写Python计算函数"]
             },
             {
-              globalDay: 92,
+              globalDay: 100,
               title: "因子IC分析——这个因子真的能预测收益吗？",
               description: "IC（Information Coefficient）= 因子值与未来收益的相关系数。IC > 0.03 算不错，IC < 0.01 基本没用。今天的核心：计算一个因子的IC序列，画IC走势图，判断因子的预测力是否稳定。",
               prompt: `=== 第92天：因子IC分析 ===
@@ -2628,7 +2628,7 @@ Python 3.x + pandas + numpy + scipy
               tasks: ["计算因子月度IC序列", "画IC走势图", "计算IC统计量并判断因子质量"]
             },
             {
-              globalDay: 93,
+              globalDay: 101,
               title: "因子合成——多因子如何组合？",
               description: "你有了多个因子（动量、价值、质量...），怎么合成一个综合评分？等权合成（最简单稳健）、IC加权（给预测力强的因子更高权重）、机器学习加权（但要非常小心过拟合）。",
               prompt: `=== 第93天：因子合成 ===
@@ -2661,7 +2661,7 @@ Python 3.x + pandas + numpy + sklearn（可选）
           days: 1,
           daysData: [
             {
-              globalDay: 94,
+              globalDay: 102,
               title: "缓冲/复习日",
               description: "回顾因子研究全流程：因子类型 → AI辅助生成 → IC分析 → 因子合成。补上掉队的任务。不做新课。",
               prompt: `=== 第94天：缓冲/复习 ===
@@ -2684,7 +2684,7 @@ Python 3.x + pandas + numpy + sklearn（可选）
           days: 5,
           daysData: [
             {
-              globalDay: 95,
+              globalDay: 103,
               title: "Sharpe Ratio、Max Drawdown、Calmar Ratio",
               description: "策略A年化+30%但最大回撤-60%，策略B年化+18%但最大回撤-10%——你选哪个？学会用Sharpe/MaxDD/Calmar三个指标全面评估策略的「风险调整后收益」。",
               prompt: `=== 第95天：策略绩效指标 ===
@@ -2710,7 +2710,7 @@ Python 3.x + numpy + pandas
               tasks: ["计算策略的 Sharpe/MaxDD/Calmar", "对比高收益 vs 低回撤策略", "写策略评估分析"]
             },
             {
-              globalDay: 96,
+              globalDay: 104,
               title: "Walk-Forward 分析——用滚动窗口验证策略稳定性",
               description: "不用全部历史数据训练，用前N天训练、后M天测试，不断滚动。如果策略在大部分时间窗口都有效，才说明它真的有用。",
               prompt: `=== 第96天：Walk-Forward 分析 ===
@@ -2737,7 +2737,7 @@ Python 3.x + pandas + numpy
               tasks: ["实现 Walk-Forward 回测框架", "用多个滚动窗口测试策略", "分析策略的时间稳定性"]
             },
             {
-              globalDay: 97,
+              globalDay: 105,
               title: "蒙特卡洛模拟——随机打乱交易顺序检验显著性",
               description: "把策略的交易记录随机打乱1000次，如果真实收益在随机分布的前5%才算显著。让数据自己说话，不依赖任何分布假设。",
               prompt: `=== 第97天：蒙特卡洛检验 ===
@@ -2763,7 +2763,7 @@ Python 3.x + numpy + matplotlib
               tasks: ["实现蒙特卡洛收益显著性检验", "画随机收益分布直方图", "判断策略收益是否显著"]
             },
             {
-              globalDay: 98,
+              globalDay: 106,
               title: "策略衰减检测——什么信号表明策略过期了？",
               description: "滚动Sharpe持续下降、因子IC从正变负、换手率突然飙升——这些都是策略在失效的警报。实现策略健康度监控面板，让系统自己知道「我是不是该更新了」。",
               prompt: `=== 第98天：策略衰减检测 ===
@@ -2788,7 +2788,7 @@ Python 3.x + pandas + matplotlib
               tasks: ["实现策略健康度三大预警指标", "画策略健康度监控面板", "模拟衰减场景测试预警"]
             },
             {
-              globalDay: 99,
+              globalDay: 107,
               title: "综合验收——输出完整的策略研究报告",
               description: "将阶段四所有分析整合为完整的策略研究报告：选至少2个策略 → IC分析 → Walk-Forward → 成本建模 → 蒙特卡洛 → 基准对比 → 健康度 → 完整报告。",
               prompt: `=== 第99天：策略研究综合验收 ===
@@ -2828,7 +2828,7 @@ Python 3.x + pandas + numpy + matplotlib + vectorbt
           days: 5,
           daysData: [
             {
-              globalDay: 100,
+              globalDay: 108,
               title: "第一个API——/health 返回 {\"status\": \"ok\"}",
               description: "从今天起，你的代码不再只是躺在 .py 文件里，而是运行在服务器上等着被调用。FastAPI让你用几行代码创建REST API。",
               prompt: `=== 第100天：第一个 FastAPI 服务 ===
@@ -2854,7 +2854,7 @@ Python 3.x + FastAPI + uvicorn（安装：uv add fastapi uvicorn）
               tasks: ["安装并配置 FastAPI + uvicorn", "实现 /health 和 /info 端点", "浏览器验证API返回正确"]
             },
             {
-              globalDay: 101,
+              globalDay: 109,
               title: "数据接口——/data/{symbol} 返回股票数据",
               description: "API的真正价值在于提供数据。路径参数{symbol}动态匹配不同股票，查询参数?start=&end=灵活指定时间范围。",
               prompt: `=== 第101天：数据接口 ===
@@ -2879,7 +2879,7 @@ Python 3.x + FastAPI + pandas + SQLite/akshare
               tasks: ["实现 /data/{symbol} 数据接口", "支持 start/end 查询参数", "从数据库读数据返回JSON"]
             },
             {
-              globalDay: 102,
+              globalDay: 110,
               title: "策略接口——/signal/{symbol} 返回交易信号",
               description: "POST接收JSON格式的策略参数，调用回测/信号函数，返回 buy/hold/sell 信号和置信度。",
               prompt: `=== 第102天：策略信号接口 ===
@@ -2904,7 +2904,7 @@ Python 3.x + FastAPI + pydantic
               tasks: ["实现 POST /signal 策略信号接口", "用 pydantic 定义请求结构", "返回结构化信号结果"]
             },
             {
-              globalDay: 103,
+              globalDay: 111,
               title: "pydantic 数据校验——请求参数类型自动检查",
               description: "pydantic让FastAPI自动校验请求参数——类型不匹配自动返回422错误。你不用写任何校验代码。",
               prompt: `=== 第103天：pydantic 数据校验 ===
@@ -2930,7 +2930,7 @@ Python 3.x + FastAPI + pydantic
               tasks: ["给所有API加pydantic数据校验", "测试各种参数错误场景", "访问 /docs 查看文档"]
             },
             {
-              globalDay: 104,
+              globalDay: 112,
               title: "API 文档——FastAPI 自动生成的 Swagger 页面",
               description: "FastAPI自动生成 /docs Swagger交互式文档——所有端点、参数、响应格式一目了然，还能在页面上直接测试API。",
               prompt: `=== 第104天：API文档与总结 ===
@@ -2961,7 +2961,7 @@ Python 3.x + FastAPI
           days: 1,
           daysData: [
             {
-              globalDay: 105,
+              globalDay: 113,
               title: "缓冲/复习日",
               description: "回顾FastAPI服务封装。确认所有API端点可用、pydantic校验生效、Swagger文档完整。不做新课。",
               prompt: `=== 第105天：缓冲/复习 ===
@@ -2984,7 +2984,7 @@ Python 3.x + FastAPI
           days: 3,
           daysData: [
             {
-              globalDay: 106,
+              globalDay: 114,
               title: "schedule 库——每天收盘后自动拉数据",
               description: "从手动运行到定时自动运行。schedule库让你用人类语言描述任务：「每天15:30拉取当日行情」，Python守护进程替你记住时间。",
               prompt: `=== 第106天：定时任务 ===
@@ -3009,7 +3009,7 @@ Python 3.x + schedule（安装：uv add schedule）
               tasks: ["安装并配置 schedule", "实现收盘后自动拉取行情", "测试定时触发并验证"]
             },
             {
-              globalDay: 107,
+              globalDay: 115,
               title: "任务链——拉数据 → 算信号 → 存结果",
               description: "把多个任务串联成自动化链条：收盘后自动拉数据→算信号→存结果，形成完整的无人值守工作流。",
               prompt: `=== 第107天：任务链 ===
@@ -3034,7 +3034,7 @@ Python 3.x + schedule + SQLite
               tasks: ["实现收盘后自动任务链", "每个环节独立函数 + drive() 串联", "加运行日志记录耗时"]
             },
             {
-              globalDay: 108,
+              globalDay: 116,
               title: "异常处理——任务失败怎么重试？",
               description: "定时任务不会有人盯着看——网络断了、数据异常，怎么办？给任务链加上重试机制和异常通知，让系统在无人值守时也能安全运行。",
               prompt: `=== 第108天：任务异常处理 ===
@@ -3065,7 +3065,7 @@ Python 3.x + schedule + time + logging
           days: 4,
           daysData: [
             {
-              globalDay: 109,
+              globalDay: 117,
               title: "数据库选择 + 策略状态表设计",
               description: "SQLite适合单机（一个文件就是数据库），PostgreSQL适合多服务共享。设计核心表结构：持仓表、交易记录表、信号日志表。",
               prompt: `=== 第109天：数据库选择与表设计 ===
@@ -3090,7 +3090,7 @@ Python 3.x + SQLite3（内置）
               tasks: ["设计并创建三张核心表", "插入测试数据", "验证关键查询"]
             },
             {
-              globalDay: 110,
+              globalDay: 118,
               title: "SQLAlchemy ORM——用Python对象操作数据库",
               description: "ORM把数据库表映射为Python类。不用写SQL字符串，用Python代码就能操作数据库。",
               prompt: `=== 第110天：SQLAlchemy ORM ===
@@ -3115,7 +3115,7 @@ Python 3.x + SQLAlchemy（安装：uv add sqlalchemy）
               tasks: ["用SQLAlchemy定义三个Model", "实现CRUD操作", "模拟完整交易记录流程"]
             },
             {
-              globalDay: 111,
+              globalDay: 119,
               title: "数据备份与恢复——保护你的数据",
               description: "定时自动备份数据库，防止数据丢失。SQLite .dump 一条命令导出整个数据库为 SQL 文本文件。",
               prompt: `=== 第111天：数据备份与恢复 ===
@@ -3141,7 +3141,7 @@ Python 3.x + SQLite + schedule
               tasks: ["编写自动备份脚本", "配置定时备份", "验证备份恢复流程"]
             },
             {
-              globalDay: 112,
+              globalDay: 120,
               title: "数据库综合练习——FastAPI + SQLAlchemy + 自动备份",
               description: "整合FastAPI + SQLAlchemy + 自动备份，API调用的数据自动持久化到数据库并定期备份。你的系统有了完整的「记忆」能力。",
               prompt: `=== 第112天：数据库综合练习 ===
@@ -3172,7 +3172,7 @@ Python 3.x + FastAPI + SQLAlchemy + SQLite
           days: 1,
           daysData: [
             {
-              globalDay: 113,
+              globalDay: 121,
               title: "缓冲/复习日",
               description: "回顾数据库与状态持久化内容。确认SQLAlchemy和Alembic能正常使用。不做新课。",
               prompt: `=== 第113天：缓冲/复习 ===
@@ -3194,7 +3194,7 @@ Python 3.x + FastAPI + SQLAlchemy + SQLite
           days: 4,
           daysData: [
             {
-              globalDay: 114,
+              globalDay: 122,
               title: "Docker 基本概念——镜像 vs 容器",
               description: "「在我电脑上能跑」是程序员最怕的话。Docker把代码、环境、依赖全部打包成镜像，任何人任何机器都能一键运行。",
               prompt: `=== 第114天：Docker 基础 ===
@@ -3220,7 +3220,7 @@ Docker Desktop（docker.com下载）
               tasks: ["安装Docker并写Dockerfile", "构建镜像并运行容器", "验证服务在容器中正常运行"]
             },
             {
-              globalDay: 115,
+              globalDay: 123,
               title: "docker-compose——多服务一起启动",
               description: "docker-compose用一个YAML文件定义API+数据库+调度器的完整运行环境，docker compose up 一键全部启动。",
               prompt: `=== 第115天：docker-compose ===
@@ -3246,7 +3246,7 @@ Docker Desktop（内置docker-compose）
               tasks: ["写 docker-compose.yml 多服务编排", "docker compose up 一键启动", "验证所有服务正常运行"]
             },
             {
-              globalDay: 116,
+              globalDay: 124,
               title: "环境变量与密钥管理",
               description: "API Key、数据库密码写到代码里=灾难。用 .env 文件管理敏感信息，docker-compose注入环境变量，.gitignore确保密钥不会被提交。",
               prompt: `=== 第116天：密钥管理 ===
@@ -3272,7 +3272,7 @@ Docker + python-dotenv
               tasks: ["创建 .env 管理敏感信息", "配置 .gitignore 保护 .env", "从环境变量读取配置并验证"]
             },
             {
-              globalDay: 117,
+              globalDay: 125,
               title: "综合验收——docker compose up 一键启动整个系统",
               description: "git clone → docker compose up → 系统正常运行。不需要装Python、不需要配环境——Docker全包了。这就是真正的「一键部署」。",
               prompt: `=== 第117天：部署综合验收 ===
@@ -3312,7 +3312,7 @@ Docker + Git
           days: 5,
           daysData: [
             {
-              globalDay: 118,
+              globalDay: 126,
               title: "什么是Agent？Agent = LLM + 工具 + 记忆 + 规划",
               description: "Agent和普通LLM调用的本质区别：LLM只会回答问题，Agent会自己决定下一步做什么——调用工具、搜索信息、分析结果、循环迭代。",
               prompt: `=== 第118天：Agent 概念 ===
@@ -3337,7 +3337,7 @@ Python 3.x（概念学习 + 简单示例）
               tasks: ["理解Agent四要素和Agent循环", "写Agent vs LLM的区别说明", "设计量化Agent的工具列表"]
             },
             {
-              globalDay: 119,
+              globalDay: 127,
               title: "LangGraph 核心概念——State, Node, Edge",
               description: "LangGraph是构建Agent的框架。State（Agent当前知道的一切）、Node（一个处理步骤）、Edge（步骤之间的流转规则）。",
               prompt: `=== 第119天：LangGraph 核心概念 ===
@@ -3362,7 +3362,7 @@ Python 3.x + langgraph（安装：uv add langgraph）
               tasks: ["理解State/Node/Edge三个核心概念", "画Agent流程图", "实现最简单的LangGraph流程"]
             },
             {
-              globalDay: 120,
+              globalDay: 128,
               title: "构建第一个Agent——「分析这只股票，告诉我能不能买」",
               description: "给Agent配一个工具函数 get_stock_data(symbol)，Agent自主调用工具→拿到数据→分析→输出结论。这是你的第一个自主决策Agent。",
               prompt: `=== 第120天：第一个 Agent ===
@@ -3387,7 +3387,7 @@ Python 3.x + langgraph + LLM API
               tasks: ["定义第一个Agent工具函数", "构建最小可用Agent", "测试Agent自主调用工具分析股票"]
             },
             {
-              globalDay: 121,
+              globalDay: 129,
               title: "工具调用——Agent 可以自己调函数",
               description: "Agent的能力取决于工具的数量和质量。给它配3个工具（获取行情、计算指标、查询新闻），让它自主选择、组合使用。",
               prompt: `=== 第121天：多工具 Agent ===
@@ -3412,7 +3412,7 @@ Python 3.x + langgraph + LLM API
               tasks: ["给Agent配3个工具函数", "测试多工具组合调用", "观察Agent的工具选择策略"]
             },
             {
-              globalDay: 122,
+              globalDay: 130,
               title: "条件路由——不同市场状态走不同分析流程",
               description: "高波动市场需要深度分析，低波动市场可以快速判断。LangGraph条件边让Agent根据市场状态自动选择不同的分析路径。",
               prompt: `=== 第122天：条件路由 Agent ===
@@ -3443,7 +3443,7 @@ Python 3.x + langgraph + LLM API
           days: 1,
           daysData: [
             {
-              globalDay: 123,
+              globalDay: 131,
               title: "缓冲/复习日",
               description: "回顾Agent概念和LangGraph基础。不做新课。",
               prompt: `=== 第123天：缓冲/复习 ===
@@ -3465,7 +3465,7 @@ Python 3.x + langgraph + LLM API
           days: 5,
           daysData: [
             {
-              globalDay: 124,
+              globalDay: 132,
               title: "仓位管理基础——Kelly公式、等权重、风险平价",
               description: "仓位管理是比选股更重要的技能。今天用Python实现三种仓位分配方法，直观对比效果。",
               prompt: `=== 第124天：仓位管理 ===
@@ -3490,7 +3490,7 @@ Python 3.x + numpy
               tasks: ["实现三种仓位分配方法", "对比不同方法的持仓权重", "理解Kelly公式的直觉和局限"]
             },
             {
-              globalDay: 125,
+              globalDay: 133,
               title: "止损/止盈逻辑",
               description: "固定比例止损、移动止损（trailing stop）、时间止损——三种逻辑各有适用场景。今天实现并回测对比。",
               prompt: `=== 第125天：止损/止盈 ===
@@ -3515,7 +3515,7 @@ Python 3.x + pandas + numpy
               tasks: ["实现三种止损逻辑", "回测对比不同止损的效果", "分析止损策略的适用场景"]
             },
             {
-              globalDay: 126,
+              globalDay: 134,
               title: "组合层面的风控——行业集中度、最大回撤限制",
               description: "组合风控检查隐形的集中度风险：10只股票看似分散，如果全在同一行业，风险几乎没有分散。",
               prompt: `=== 第126天：组合风控 ===
@@ -3540,7 +3540,7 @@ Python 3.x + pandas + numpy
               tasks: ["实现组合风控检查函数", "检测行业集中度和仓位违规", "输出调整建议"]
             },
             {
-              globalDay: 127,
+              globalDay: 135,
               title: "风控规则引擎——「如果X则禁止Y」",
               description: "把风控写成一串if-then规则，按优先级执行。硬止损 > 仓位限制 > 行业集中度——高优先级规则可以否决低优先级的调整。",
               prompt: `=== 第127天：风控规则引擎 ===
@@ -3565,7 +3565,7 @@ Python 3.x（纯逻辑代码）
               tasks: ["实现 RiskEngine 风控规则引擎", "定义5条以上优先级规则", "测试交易指令的拦截和放行"]
             },
             {
-              globalDay: 128,
+              globalDay: 136,
               title: "风控与Agent集成——Agent做决策前必须先过风控",
               description: "Agent输出交易建议 → 风控引擎检查 → 通过就执行，拦截就反馈给Agent → Agent调整建议。这是「AI决策+规则约束」的混合架构。",
               prompt: `=== 第128天：Agent + 风控集成 ===
@@ -3596,7 +3596,7 @@ Python 3.x + langgraph + 风控引擎
           days: 1,
           daysData: [
             {
-              globalDay: 129,
+              globalDay: 137,
               title: "缓冲/复习日",
               description: "回顾风控模块。不做新课。",
               prompt: `=== 第129天：缓冲/复习 ===
@@ -3618,7 +3618,7 @@ Python 3.x + langgraph + 风控引擎
           days: 4,
           daysData: [
             {
-              globalDay: 130,
+              globalDay: 138,
               title: "缓冲/复习日",
               description: "回顾Agent基础与风控模块的核心概念。补上掉队的任务。不做新课。",
               prompt: `=== 第130天：缓冲/复习日 ===
@@ -3637,7 +3637,7 @@ Python 3.x + langgraph + 风控引擎
               tasks: ["回顾Agent基础与风控模块", "补上掉队任务"]
             },
             {
-              globalDay: 131,
+              globalDay: 139,
               title: "参数敏感性分析——参数变了，结果怎么变？",
               description: "策略参数（如均线周期）改变时，收益变化有多大？手动扫描多组参数，画参数-收益曲线，理解参数稳健性。",
               prompt: `=== 第131天：参数敏感性分析 ===
@@ -3663,7 +3663,7 @@ Python 3.x + pandas + matplotlib
               tasks: ["扫描多组参数组合", "画参数-收益曲线", "判断策略参数稳健性"]
             },
             {
-              globalDay: 132,
+              globalDay: 140,
               title: "策略衰减监控——自动检测策略表现是否显著恶化",
               description: "滚动Sharpe持续下降、因子IC从正变负、Turnover异常飙升——策略在发出求救信号。实现策略健康度自动检测。",
               prompt: `=== 第132天：策略衰减监控 ===
@@ -3688,7 +3688,7 @@ Python 3.x + pandas + numpy
               tasks: ["实现策略健康度检测函数", "模拟策略衰减场景并测试", "设定警报规则和阈值"]
             },
             {
-              globalDay: 133,
+              globalDay: 141,
               title: "自动迭代——检测到衰减→触发重新分析→自动上线",
               description: "衰减检测 → 自动触发参数重新扫描 → Walk-Forward验证 → 自动上线。但要设置冷静期——不能频繁切换参数。",
               prompt: `=== 第133天：自动迭代 ===
@@ -3719,7 +3719,7 @@ Python 3.x + pandas
           days: 1,
           daysData: [
             {
-              globalDay: 134,
+              globalDay: 142,
               title: "缓冲/复习日",
               description: "回顾策略维护与参数管理内容。不做新课。",
               prompt: `=== 第134天：缓冲/复习 ===
@@ -3741,7 +3741,7 @@ Python 3.x + pandas
           days: 3,
           daysData: [
             {
-              globalDay: 135,
+              globalDay: 143,
               title: "终局综合验收（上）——构建完整闭环系统",
               description: "构建完整闭环：数据更新→信号计算→Agent决策→风控拦截→模拟执行→绩效跟踪。六个环节串联，整条链路跑通。",
               prompt: `=== 第135天：终局验收（上）===
@@ -3766,7 +3766,7 @@ Python 3.x + pandas
               tasks: ["搭建完整闭环系统骨架", "确认各环节输入/输出一致", "跑通完整流程至少一遍"]
             },
             {
-              globalDay: 136,
+              globalDay: 144,
               title: "终局综合验收（中）——模块独立、配置驱动、日志追踪",
               description: "每个模块可独立替换、所有参数配置驱动、全程日志追踪、任何异常都能回溯。系统从能跑通升级到可维护。",
               prompt: `=== 第136天：终局验收（中）===
@@ -3791,7 +3791,7 @@ Python 3.x + pandas
               tasks: ["模块化：每个环节可独立替换", "配置驱动：参数集中到config.json", "完善日志追踪"]
             },
             {
-              globalDay: 137,
+              globalDay: 145,
               title: "终局综合验收（下）——系统架构文档 + 最终展示",
               description: "产出完整的系统架构文档（组件图+数据流图），确保整个系统可在本地持续运行。这是六个月学习旅程的最终收获。",
               prompt: `=== 第137天：终局验收（下）===
@@ -4601,7 +4601,7 @@ Python + numpy + scipy.stats + matplotlib
           tasks: ["创建三组模拟数据（强相关/弱相关/不相关），分别拟合回归并计算 R²", "画三张子图，每张标注 R² 值——直观理解 R² = 0.8 vs 0.1 vs 0.01 的区别"]
         },
         {
-          globalDay: 22, syncMain: 58,
+          globalDay: 22, syncMain: 66,
           title: "多元线性回归直觉——不止一个 X 时怎么办",
           description: "股票收益不只跟大盘有关。多元回归：Ŷ = a + b₁X₁ + ... + bₙXₙ。每个 bᵢ = \"在其他因素不变时，Xᵢ 每变化 1 单位，Y 平均变化多少\"。",
           prompt: `=== Math Day 22：多元线性回归直觉——不止一个 X 时怎么办 ===
@@ -4636,7 +4636,7 @@ Python + numpy + sklearn.linear_model
           tasks: ["模拟：Y = 股票收益，X₁ = 大盘，X₂ = 规模，X₃ = 价值", "用 sklearn 拟合，对比一元 vs 三元回归的 R²——多了两个因子，解释力提升了吗？"]
         },
         {
-          globalDay: 23, syncMain: 59,
+          globalDay: 23, syncMain: 67,
           title: "过拟合的数学——当\"解释得太好\"反而是问题",
           description: "用 10 个因子拟合一只股票 → R² = 0.95！但预测明天 → 很差。为什么？模型把\"噪音\"当成了\"信号\"。过拟合 = 记住了历史，但预测不了未来。参数太多、数据太少 → 过拟合。",
           prompt: `=== Math Day 23：过拟合的数学——当"解释得太好"反而是问题 ===
@@ -4687,7 +4687,7 @@ Python + numpy + sklearn.linear_model
       subtitle: "理解AI的数学语言",
       daysData: [
         {
-          globalDay: 24, syncMain: 60,
+          globalDay: 24, syncMain: 68,
           title: "向量是什么？——从列表到空间中的箭头",
           description: "你认识的 Python 列表：[10, 20, 30]。数学上的向量：一模一样，但它还是\"空间中的箭头\"。2 维向量 [x, y] = 平面上从原点指向 (x,y) 的箭头。3 维 = 空间中的箭头。",
           prompt: `=== Math Day 24：向量是什么？——从列表到空间中的箭头 ===
@@ -4724,7 +4724,7 @@ Python + numpy + matplotlib
           tasks: ["画 2D 平面上三个向量：(3,2), (-1,4), (0,-3)，用 plt.quiver() 画箭头", "计算每个向量的长度 √(x²+y²)，比较谁\"最长\"", "思考：如果 Embedding 是 768 维向量，它的\"长度\"和\"方向\"代表什么？"]
         },
         {
-          globalDay: 25, syncMain: 61,
+          globalDay: 25, syncMain: 69,
           title: "向量加减法——为什么\"国王-男人+女人≈女王\"",
           description: "向量加法 = 箭头首尾相接：(1,2)+(3,1)=(4,3)。向量减法 = 从终点到\"反向\"终点的箭头。",
           prompt: `=== Math Day 25：向量加减法——为什么"国王-男人+女人≈女王" ===
@@ -4760,7 +4760,7 @@ Python + numpy + matplotlib
           tasks: ["手动创建 2D 语义向量：king=[0.9,0.5], man=[0.7,0.3], woman=[0.7,-0.3]", "计算 queen_hat = king - man + woman，画四个向量对比", "思考：prince 应该在哪个位置？(prince = king - man + boy)"]
         },
         {
-          globalDay: 26, syncMain: 62,
+          globalDay: 26, syncMain: 70,
           title: "标量乘法与线性组合——能\"到达\"的所有位置",
           description: "标量乘法：2 × [1, 3] = [2, 6]（拉长/缩短）。线性组合：c₁·v₁ + c₂·v₂——用两个向量\"拼\"出第三个。",
           prompt: `=== Math Day 26：标量乘法与线性组合——能"到达"的所有位置 ===
@@ -4795,7 +4795,7 @@ Python + numpy + matplotlib
           tasks: ["选 v1=[2,0], v2=[0,1]（不共线），随机取 c1,c2 画结果点 → 覆盖整个平面", "选 v1=[2,0], v2=[4,0]（共线），重复实验 → 只能覆盖一条线"]
         },
         {
-          globalDay: 27, syncMain: 63,
+          globalDay: 27, syncMain: 71,
           title: "向量点积——相似度的数学根源",
           description: "点积 v·w = v₁w₁ + v₂w₂ + ... = |v| × |w| × cos(θ)。当方向一致（θ=0°）→ 点积最大；垂直（θ=90°）→ 0；方向相反（θ=180°）→ 最小。",
           prompt: `=== Math Day 27：向量点积——相似度的数学根源 ===
@@ -4831,7 +4831,7 @@ Python + numpy + matplotlib
           tasks: ["定义 v1=[1,2], v2=[2,4]（同方向）, v3=[−2,1]（垂直），写 cosine_sim() 计算", "画三个向量并标注两两之间的余弦相似度", "解释：两篇文章的 Embedding 余弦相似度 = 0.95 说明什么？= 0.02 呢？"]
         },
         {
-          globalDay: 28, syncMain: 64,
+          globalDay: 28, syncMain: 72,
           title: "矩阵是什么？——从表格到线性变换",
           description: "你认识的矩阵：Pandas DataFrame，一张数字表格。数学上的矩阵：不仅仅是表格，它是一种\"变换机器\"——矩阵 × 向量 = 新向量（把输入\"变换\"成输出）。",
           prompt: `=== Math Day 28：矩阵是什么？——从表格到线性变换 ===
@@ -4868,7 +4868,7 @@ Python + numpy + matplotlib
           tasks: ["定义 M = np.array([[1,0],[0,-1]])，输入 v=[3,2]，算 w=M@v=[3,-2]", "画原始向量 v 和变换后的向量 w，理解\"翻转\"", "猜猜矩阵 [[0,1],[1,0]] 对 [3,2] 做了什么变换？验证你的猜测"]
         },
         {
-          globalDay: 29, syncMain: 65,
+          globalDay: 29, syncMain: 73,
           title: "矩阵乘法——那套\"行×列\"规则到底在干什么",
           description: "矩阵乘法 = 把\"变换 1\"和\"变换 2\"叠加成一个复合变换。(A×B)×v = A×(B×v)：先 B 变换 v，再 A 变换结果 = 直接用 (A×B) 一次性变换。",
           prompt: `=== Math Day 29：矩阵乘法——那套"行×列"规则到底在干什么 ===
@@ -4905,7 +4905,7 @@ Python + numpy
           tasks: ["A=[[1,0],[0,-1]]（翻转）, B=[[2,0],[0,1]]（拉伸），验证 A@(B@v) = (A@B)@v", "验证 A@B ≠ B@A（先翻后拉 ≠ 先拉后翻）", "思考：为什么 Attention 用 Q×Kᵀ 而不是 Kᵀ×Q？"]
         },
         {
-          globalDay: 30, syncMain: 66,
+          globalDay: 30, syncMain: 74,
           title: "转置矩阵——为什么 Kᵀ 出现得到处都是",
           description: "转置 = 把矩阵沿对角线\"翻面\"：行变列，列变行。在 Attention 公式中：Q × Kᵀ——Q 的每一行 (query) 与 K 的每一行 (key) 做点积 → 产生\"相似度矩阵\"。",
           prompt: `=== Math Day 30：转置矩阵——为什么 Kᵀ 出现得到处都是 ===
@@ -4940,7 +4940,7 @@ Python + numpy
           tasks: ["创建 Q (2×3) 和 K (2×3)，计算 Q@K.T (2×2)", "验证结果矩阵每个元素 = 两行的点积"]
         },
         {
-          globalDay: 31, syncMain: 67,
+          globalDay: 31, syncMain: 75,
           title: "缓冲/复习——向量与矩阵核心直觉",
           description: "缓冲/复习——向量与矩阵核心直觉",
           prompt: `=== Math Day 31：缓冲/复习——向量与矩阵核心直觉 ===
@@ -4955,7 +4955,7 @@ Python + numpy
           tasks: []
         },
         {
-          globalDay: 32, syncMain: 68,
+          globalDay: 32, syncMain: 76,
           title: "特征向量与特征值——矩阵的\"本性\"",
           description: "对大多数向量，矩阵 × 它 = 方向改变 + 长度改变。但对某些特殊的向量（特征向量），矩阵 × 它 = 只改变长度，不改变方向。这些特殊方向就是矩阵的\"本性\"。特征值越大 = 该方向越重要。",
           prompt: `=== Math Day 32：特征向量与特征值——矩阵的"本性" ===
@@ -4988,7 +4988,7 @@ Python + numpy（演示用，不需要手写代码）
           tasks: ["阅读并运行 np.linalg.eig 的示例代码，观察特征值和特征向量的输出"]
         },
         {
-          globalDay: 33, syncMain: 69,
+          globalDay: 33, syncMain: 77,
           title: "降维思维——PCA的直觉",
           description: "1000 只股票 × 1000 个特征 = 高维空间，人脑无法理解。PCA：找到数据\"方差最大\"的方向（第一主成分），然后是第二、第三……通常前 5-10 个主成分已解释 80-90% 的方差。",
           prompt: `=== Math Day 33：降维思维——PCA的直觉 ===
@@ -5021,7 +5021,7 @@ Python + sklearn.decomposition.PCA（演示用）
           tasks: ["阅读并运行 sklearn PCA 的示例代码，观察 explained_variance_ratio_（每个主成分解释了多大比例的方差）"]
         },
         {
-          globalDay: 34, syncMain: 70,
+          globalDay: 34, syncMain: 78,
           title: "Embedding的数学——向量空间中的语义",
           description: "Embedding = 把离散的东西（词、句子、图片）映射到连续向量空间。训练目标：语义相似 → 向量距离近（余弦相似度高）。",
           prompt: `=== Math Day 34：Embedding的数学——向量空间中的语义 ===
@@ -5058,7 +5058,7 @@ Python + sentence-transformers（或 openai embedding API）
           tasks: ["用 sentence-transformers 把\"新能源汽车\"和\"动力电池\"转成向量，算余弦相似度", "再算\"新能源汽车\"和\"白酒消费\"——对比高低差异", "思考：能不能把\"股票\"也做 Embedding？用什么信息？（基本面？走势图？新闻？）"]
         },
         {
-          globalDay: 35, syncMain: 71,
+          globalDay: 35, syncMain: 79,
           title: "Softmax——把任意数变成概率分布",
           description: "问题：有一组数 [3.2, 1.5, 0.1, 4.7]，怎么把它们变成\"概率\"（和 = 1，每个在 0~1 之间）？Softmax(xᵢ) = eˣᵢ / Σeˣ。",
           prompt: `=== Math Day 35：Softmax——把任意数变成概率分布 ===
@@ -5095,7 +5095,7 @@ Python + numpy
           tasks: ["实现 softmax(scores, T=1.0) 函数（3 行代码）", "分别用 T=0.1, T=1.0, T=5.0 处理 [3.2, 1.5, 0.1, 4.7]，对比概率分布差异", "解释：LLM 的 temperature=0.1（确定）vs temperature=1.5（随机）的效果"]
         },
         {
-          globalDay: 36, syncMain: 72,
+          globalDay: 36, syncMain: 80,
           title: "梯度下降——AI\"学习\"的数学引擎",
           description: "问题：怎么找到让\"损失函数\"最小的参数？想象你蒙着眼站在山上（损失函数曲面），怎么走到山谷（最小值）？→ 每一步用脚探\"最陡峭向下\"的方向，朝那走一小步，重复。",
           prompt: `=== Math Day 36：梯度下降——AI"学习"的数学引擎 ===
@@ -5132,7 +5132,7 @@ Python + matplotlib
           tasks: ["对 f(x)=(x-3)²，手动梯度下降：从 x=0 开始，lr=0.1，迭代 50 次", "画图：X 轴=迭代次数，Y 轴=f(x) → 逐渐降到 0", "对比 lr=1.5（震荡发散）和 lr=0.01（收敛慢），直观理解学习率的影响"]
         },
         {
-          globalDay: 37, syncMain: 73,
+          globalDay: 37, syncMain: 81,
           title: "信息熵——\"不确定性\"的数学度量",
           description: "熵 H = -Σ p(x)·log(p(x))。均匀分布（完全不确定，如公平硬币 50/50）→ 熵最大。确定事件（p=1.0）→ 熵 = 0。关键：熵 = \"消息中的信息量\"或\"结果的意外程度\"。",
           prompt: `=== Math Day 37：信息熵——"不确定性"的数学度量 ===
@@ -5169,7 +5169,7 @@ Python + numpy
           tasks: ["计算三种分布（均匀/偏斜/确定）的熵，对比数值大小", "画图：X 轴 = 正面概率 (0→1)，Y 轴 = 熵 → 中间最高", "思考：LLM 在生成确定性答案（如\"1+1=\"）时 entropy 应该高还是低？"]
         },
         {
-          globalDay: 38, syncMain: 74,
+          globalDay: 38, syncMain: 82,
           title: "交叉熵——衡量\"预测分布\"和\"真实分布\"的差距",
           description: "交叉熵 H(p, q) = -Σ p(x)·log(q(x))。p = 真实分布（如真实标签：[1,0,0] 表示\"猫\"），q = 模型预测（如 [0.7,0.2,0.1]）。",
           prompt: `=== Math Day 38：交叉熵——衡量"预测分布"和"真实分布"的差距 ===
@@ -5206,7 +5206,7 @@ Python + numpy
           tasks: ["真实标签=[1,0,0]（猫），对比三个预测的交叉熵：[0.9,0.05,0.05] vs [0.6,0.2,0.2] vs [0.1,0.5,0.4]", "解释：为什么交叉熵比\"准确率\"更适合训练？（交叉熵对\"概率的微小改进\"也有反馈）", "手算：真实=[1,0]，预测=[0.8,0.2] 的交叉熵，验证公式 H = -Σ yᵢ log(pᵢ)"]
         },
         {
-          globalDay: 39, syncMain: 75,
+          globalDay: 39, syncMain: 83,
           title: "模块三复习——AI数学全景",
           description: "模块三复习——AI数学全景",
           prompt: `=== Math Day 39：模块三复习——AI数学全景 ===
@@ -5236,7 +5236,7 @@ Python + numpy
       subtitle: "算法、图网络与量化工具",
       daysData: [
         {
-          globalDay: 40, syncMain: 76,
+          globalDay: 40, syncMain: 84,
           title: "收益率与对数收益率——两种算账方式",
           description: "简单收益率：r = (P₁-P₀)/P₀（日常用）。对数收益率：r_log = ln(P₁/P₀)（数学分析用）。",
           prompt: `=== Math Day 40：收益率与对数收益率——两种算账方式 ===
@@ -5271,7 +5271,7 @@ Python + numpy + matplotlib
           tasks: ["模拟 30 天股价，计算每日简单收益率和对数收益率", "画两张图对比：看小波动时重合、大波动时分化的趋势"]
         },
         {
-          globalDay: 41, syncMain: 77,
+          globalDay: 41, syncMain: 85,
           title: "年化收益率与波动率——把不同时间尺度放在同一标尺下",
           description: "日收益率均值 μ_daily → 年化 ≈ μ_daily × 252。日标准差 σ_daily → 年化 ≈ σ_daily × √252。",
           prompt: `=== Math Day 41：年化收益率与波动率——把不同时间尺度放在同一标尺下 ===
@@ -5306,7 +5306,7 @@ Python + numpy
           tasks: ["模拟 252 天日收益率（均值 0.0005, σ=0.015），算年化收益和年化波动", "验证：np.std(returns) × √252 ≈ 年化波动"]
         },
         {
-          globalDay: 42, syncMain: 78,
+          globalDay: 42, syncMain: 86,
           title: "复利效应与几何平均——\"年平均\"和\"每年实际赚的\"不一样",
           description: "算术平均：两年 +50% 和 -40% → 平均 = 5%。几何平均：(1+0.5)×(1-0.4)=0.9 → √0.9-1 ≈ -5.1%。",
           prompt: `=== Math Day 42：复利效应与几何平均——"年平均"和"每年实际赚的"不一样 ===
@@ -5341,7 +5341,7 @@ Python + numpy + matplotlib
           tasks: ["模拟 10 年随机收益（期望 10%, σ=20%），对比算术 vs 几何平均", "画累计收益曲线，标注算术平均和几何平均的差异"]
         },
         {
-          globalDay: 43, syncMain: 79,
+          globalDay: 43, syncMain: 87,
           title: "组合收益与风险——多只股票放在一起，神奇的事发生了",
           description: "两只股票组合：期望收益 = w₁E(r₁) + w₂E(r₂)（权重加权）。组合方差 = w₁²σ₁² + w₂²σ₂² + 2w₁w₂Cov(r₁,r₂)。",
           prompt: `=== Math Day 43：组合收益与风险——多只股票放在一起，神奇的事发生了 ===
@@ -5377,7 +5377,7 @@ Python + numpy + matplotlib
           tasks: ["创建两只模拟股票 A(μ=8%,σ=20%) 和 B(μ=12%,σ=30%)，尝试 ρ=-0.5/0/0.5", "计算各 ρ 下 50/50 组合的风险，画 ρ vs 组合风险图"]
         },
         {
-          globalDay: 44, syncMain: 80,
+          globalDay: 44, syncMain: 88,
           title: "算法复杂度直觉——代码运行多快才算快？",
           description: "Big O 描述\"输入增大时，运行时间/空间如何增长\"。O(1)：不管输入多大，恒定时间（字典取值）。O(log n)：每次对半砍（二分查找）。O(n)：输入翻倍时间翻倍（遍历）。",
           prompt: `=== Math Day 44：算法复杂度直觉——代码运行多快才算快？ ===
@@ -5414,7 +5414,7 @@ Python + time + matplotlib
           tasks: ["实现 linear_search 和 binary_search，在 n=1000/10000/100000 下测时", "画 X=n, Y=耗时 → O(n) 是直线，O(log n) 几乎是平的", "思考：你写的回测循环里，有没有无意中写了 O(n²) 的嵌套循环？"]
         },
         {
-          globalDay: 45, syncMain: 81,
+          globalDay: 45, syncMain: 89,
           title: "Sharpe Ratio——\"性价比\"之王",
           description: "Sharpe = (r_strategy - r_riskfree) / σ_strategy。= 每承担 1 单位风险，赚了多少超额收益。Sharpe=1：还行。Sharpe=2：优秀。",
           prompt: `=== Math Day 45：Sharpe Ratio——"性价比"之王 ===
@@ -5449,7 +5449,7 @@ Python + numpy
           tasks: ["取模拟策略日收益序列，计算年化 Sharpe", "对比：策略 A（年化 30%, σ=25%） vs 策略 B（年化 18%, σ=10%）——哪个 Sharpe 更高？"]
         },
         {
-          globalDay: 46, syncMain: 82,
+          globalDay: 46, syncMain: 90,
           title: "最大回撤——你最惨的时候亏了多少",
           description: "Max Drawdown = (峰值 - 谷底) / 峰值——从最高点到之后最低点的最大跌幅。例：100 万 → 150 万 → 90 万，回撤 = (150-90)/150 = 40%。",
           prompt: `=== Math Day 46：最大回撤——你最惨的时候亏了多少 ===
@@ -5484,7 +5484,7 @@ Python + numpy + matplotlib
           tasks: ["从累积收益率曲线计算滚动回撤，画回撤曲线图（一直在 0 以下）", "找到最深的\"坑\"，标注回撤幅度"]
         },
         {
-          globalDay: 47, syncMain: 83,
+          globalDay: 47, syncMain: 91,
           title: "图与网络——万物皆可\"节点+边\"",
           description: "图 = 节点 (Node) + 边 (Edge)。有向图：边有方向（Twitter 关注）。无向图：边没方向（微信好友）。加权图：边有权重（距离、相似度）。",
           prompt: `=== Math Day 47：图与网络——万物皆可"节点+边" ===
@@ -5521,7 +5521,7 @@ Python + networkx + matplotlib
           tasks: ["用 NetworkX 创建小型社交网络（5 节点 + 朋友关系），画图", "计算每个节点的 degree（朋友数）和 betweenness（谁是\"中间人\"）", "思考：你写的 Agent 调用链（A→B→C→D）是什么图结构？"]
         },
         {
-          globalDay: 48, syncMain: 84,
+          globalDay: 48, syncMain: 92,
           title: "IC与Rank IC——因子预测力的数字",
           description: "IC = 因子值(t) 与未来收益(t+1) 的相关系数。IC > 0 → 正向预测；IC < 0 → 反向预测。|IC| > 0.05：很强。|IC| 0.02-0.05：可用。",
           prompt: `=== Math Day 48：IC与Rank IC——因子预测力的数字 ===
@@ -5556,7 +5556,7 @@ Python + numpy + scipy.stats
           tasks: ["模拟月度因子值和下月收益，计算 Pearson IC 和 Spearman Rank IC", "画 IC 序列图（每个月一个 IC），观察稳定性"]
         },
         {
-          globalDay: 49, syncMain: 85,
+          globalDay: 49, syncMain: 93,
           title: "Bootstrap——当数据不够时，我们自己\"造\"数据",
           description: "问题：策略只有 50 笔交易，怎么判断 Sharpe 是真的还是运气？Bootstrap：1) 从 50 笔收益中有放回地抽 50 笔（重复 10000 次）；2) 每次算 Sharpe；3) 得到 。",
           prompt: `=== Math Day 49：Bootstrap——当数据不够时，我们自己"造"数据 ===
@@ -5591,7 +5591,7 @@ Python + numpy + matplotlib
           tasks: ["50 笔交易收益率（均值 0.5%, σ=2%），Bootstrap 10000 次，每次算均值", "画 10000 个均值的直方图——这就是\"均值的经验分布\""]
         },
         {
-          globalDay: 50, syncMain: 86,
+          globalDay: 50, syncMain: 94,
           title: "蒙特卡洛模拟——用随机数探索\"可能的未来\"",
           description: "蒙特卡洛核心思路：1) 定义不确定因素的分布（如日收益 ~ N(μ,σ²)）；2) 随机生成 M 种可能的未来路径；3) 统计结果分布。",
           prompt: `=== Math Day 50：蒙特卡洛模拟——用随机数探索"可能的未来" ===
@@ -5626,7 +5626,7 @@ Python + numpy + matplotlib
           tasks: ["模拟 10000 种 252 天价格路径（日收益 ~ N(0.0005, 0.015)）", "每条路径上跑简单策略，画终端收益分布直方图 + 标注 95% VaR"]
         },
         {
-          globalDay: 51, syncMain: 87,
+          globalDay: 51, syncMain: 95,
           title: "时间序列：自相关——今天跟昨天像不像？",
           description: "自相关 ρ_k = 今天收益率与 k 天前收益率的相关性。ρ₁ = 0.3 → 趋势延续（正自相关）。ρ₁ ≈ 0 → 随机游走（无规律）。ρ₁ = -0.3 → 反转效应（负自相关）。",
           prompt: `=== Math Day 51：时间序列：自相关——今天跟昨天像不像？ ===
@@ -5661,7 +5661,7 @@ Python + numpy + matplotlib + statsmodels（画 ACF）
           tasks: ["模拟随机游走（无自相关）和趋势模型（正自相关），分别画 ACF 图", "对比：哪个有可以利用的规律？"]
         },
         {
-          globalDay: 52, syncMain: 88,
+          globalDay: 52, syncMain: 96,
           title: "模块四复习——量化策略的数学检验全流程",
           description: "模块四复习——量化策略的数学检验全流程",
           prompt: `=== Math Day 52：模块四复习——量化策略的数学检验全流程 ===
@@ -5690,7 +5690,7 @@ Python + numpy + matplotlib + statsmodels（画 ACF）
       subtitle: "信息论、优化与数值方法",
       daysData: [
         {
-          globalDay: 53, syncMain: 89,
+          globalDay: 53, syncMain: 97,
           title: "KL散度——两个分布的\"距离\"",
           description: "KL 散度 D_KL(P||Q) = \"用 Q 来近似 P 时，损失了多少信息\"。不对称：D(P||Q) ≠ D(Q||P)（所以叫\"散度\"不叫\"距离\"）。交叉熵 = 熵 + KL 散度。",
           prompt: `=== Math Day 53：KL散度——两个分布的"距离" ===
@@ -5723,7 +5723,7 @@ Python + numpy（演示用）
           tasks: ["读取代码示例：计算 P=[0.7,0.3] 与 Q1=[0.6,0.4], Q2=[0.9,0.1], Q3=[0.3,0.7] 的 KL 散度，感受哪个 Q \"最像\" P"]
         },
         {
-          globalDay: 54, syncMain: 90,
+          globalDay: 54, syncMain: 98,
           title: "贝叶斯思维——根据新证据更新信念",
           description: "先验概率 P(H)——看到数据前，你认为策略有效的概率（比如 10%）。似然 P(D|H)——如果真有效，出现当前数据的概率。",
           prompt: `=== Math Day 54：贝叶斯思维——根据新证据更新信念 ===
@@ -5756,7 +5756,7 @@ Python + numpy（演示用）
           tasks: ["阅读代码示例：初始先验 10%，连续 10 年正收益回测后，后验概率是多少？如果只有 3 年呢？"]
         },
         {
-          globalDay: 55, syncMain: 91,
+          globalDay: 55, syncMain: 99,
           title: "马尔可夫链——\"下一步只跟现在有关\"",
           description: "马尔可夫性质：下一步只取决于当前状态，不依赖更早的历史。状态转移矩阵：每个状态 → 转移到其他状态的概率。应用：市场状态（牛市/熊市/震荡）的转换概率。",
           prompt: `=== Math Day 55：马尔可夫链——"下一步只跟现在有关" ===
@@ -5789,7 +5789,7 @@ Python + numpy（演示用）
           tasks: ["阅读代码示例：定义三状态（牛/熊/震）转移矩阵，从牛市出发模拟 100 步，观察状态变化"]
         },
         {
-          globalDay: 56, syncMain: 92,
+          globalDay: 56, syncMain: 100,
           title: "数值方法——当公式算不出来时怎么办？",
           description: "很多问题没有\"解析解\"（无法用一个漂亮公式写出答案）。数值方法 = 用\"猜 + 改进\"的方式逼近精确解。",
           prompt: `=== Math Day 56：数值方法——当公式算不出来时怎么办？ ===
@@ -5822,7 +5822,7 @@ Python（演示用）
           tasks: ["阅读代码示例：二分法解 x³-x-2=0（在 [1,2] 之间找根）；梯形法则计算 ∫sin(x²)dx"]
         },
         {
-          globalDay: 57, syncMain: 93,
+          globalDay: 57, syncMain: 101,
           title: "凸优化直觉——找\"最优\"的数学",
           description: "凸函数：形状像碗（∪），有唯一全局最低点。非凸函数：像山脉，有很多局部最低点。很多问题本质是优化——最小化误差（ML 训练）、最小化风险（组合优化）、最小化路径（导航）。",
           prompt: `=== Math Day 57：凸优化直觉——找"最优"的数学 ===
@@ -5855,7 +5855,7 @@ Python + matplotlib（演示用）
           tasks: ["阅读代码示例：画凸函数 f(x)=(x-3)² 和非凸函数 g(x)=sin(5x)+x²/10；从不同起点做梯度下降 → 非凸函数到达不同\"山谷\""]
         },
         {
-          globalDay: 58, syncMain: 94,
+          globalDay: 58, syncMain: 102,
           title: "决策树与信息增益——\"分而治之\"的数学",
           description: "决策树：在每个节点选一个特征、一个阈值，把数据分成两组。怎么选\"最好的分割\"？→ 让分割后\"纯度\"最高。信息增益 = 分割前熵 - 分割后加权熵 = \"不确定性减少了多少\"。",
           prompt: `=== Math Day 58：决策树与信息增益——"分而治之"的数学 ===
@@ -5888,7 +5888,7 @@ Python + sklearn（演示用）
           tasks: ["阅读代码示例：3 个因子 + 涨跌标签，sklearn 决策树分类，看树的可视化"]
         },
         {
-          globalDay: 59, syncMain: 95,
+          globalDay: 59, syncMain: 103,
           title: "正则化——\"不要太自信\"的数学",
           description: "过拟合模型：参数值很大（对训练数据的微小波动也敏感）。正则化 = 在损失函数上加 \"罚参数太大\"。L1(Lasso)：加 |w| → 让某些参数 = 0（自动选特征）。",
           prompt: `=== Math Day 59：正则化——"不要太自信"的数学 ===
@@ -5921,7 +5921,7 @@ Python + sklearn（演示用）
           tasks: ["阅读代码示例：同一组数据，无正则/L1/L2 线性回归，对比系数和预测误差"]
         },
         {
-          globalDay: 60, syncMain: 96,
+          globalDay: 60, syncMain: 104,
           title: "高维空间的直觉——维度诅咒",
           description: "1D 空间中随机两点平均距离 = 1/3。10D 空间中 ≈ 1.32。高维中一切点都\"差不多远\"——最近邻和最远邻差异很小。",
           prompt: `=== Math Day 60：高维空间的直觉——维度诅咒 ===
@@ -5954,7 +5954,7 @@ Python + numpy + matplotlib（演示用）
           tasks: ["阅读代码示例：在 D=1 到 100 维中随机撒点，计算\"最近邻距离/最远邻距离\"比值，画比值 vs 维度图"]
         },
         {
-          globalDay: 61, syncMain: 97,
+          globalDay: 61, syncMain: 105,
           title: "终局复习——从零基础到AI量化数学全景",
           description: "终局复习——从零基础到AI量化数学全景",
           prompt: `=== Math Day 61：终局复习——从零基础到AI量化数学全景 ===

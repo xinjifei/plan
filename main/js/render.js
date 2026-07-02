@@ -150,7 +150,7 @@ function updateStats(){
 function checkOverlay(){
   var plan=getPlan(),total=currentTrack==='math'?MATH_TRACK.totalDays:MAIN_PLAN.totalDays;
   var allDone=true;
-  if(currentTrack==='math'){MATH_TRACK.allDays().forEach(function(day){if(!Store.isDayDone(day.globalDay))allDone=false})}else{for(var i=1;i<=total;i++){if(!Store.isDayDone(i)){allDone=false;break}}}
+  if(currentTrack==='math'){MATH_TRACK.allDays().forEach(function(day){if(!Store.isDayDone(day.globalDay))allDone=false})}else{MAIN_PLAN.allDays().forEach(function(gd){if(!Store.isDayDone(gd))allDone=false})}
   var ov=document.getElementById('overlay');
   if(allDone&&total>0){ov.classList.add('show');document.getElementById('overlay-msg').textContent=(currentTrack==='math'?'Math Track':'Main Plan')+' Complete! 🎉'}else{ov.classList.remove('show')}
 }
@@ -167,8 +167,9 @@ function renderOverview(){
   if(mathRing)mathRing.style.strokeDashoffset=440-(440*mathPct/100);
   var pctEl=document.getElementById('ov-ring-pct');if(pctEl)pctEl.textContent=combinedPct+'%';
   // Continue cards
-  var mainNext=1;currentTrack='main';
-  for(var i=1;i<=mainTotal;i++){if(!Store.isDayDone(i)){mainNext=i;break}else mainNext=i}if(mainNext>mainTotal)mainNext=mainTotal;
+  var mainAll=MAIN_PLAN.allDays(),mainNext=mainAll.length>0?mainAll[0]:1;currentTrack='main';
+  for(var i=0;i<mainAll.length;i++){var gd=mainAll[i];if(!Store.isDayDone(gd)){mainNext=gd;break}else mainNext=gd}
+  if(!mainNext||mainNext>mainAll[mainAll.length-1])mainNext=mainAll[mainAll.length-1];
   var mainDayData=MAIN_PLAN.getDay(mainNext)||MAIN_PLAN.getDay(mainTotal);
   var mc=document.getElementById('ov-main-title');if(mc)mc.textContent=(mainDayData?'Day '+mainNext+': '+mainDayData.title:'暂无数据');
   var mm=document.getElementById('ov-main-meta');if(mm)mm.textContent='';

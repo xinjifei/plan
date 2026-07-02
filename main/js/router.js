@@ -72,8 +72,9 @@ function goNextDay(track){
     var all=MATH_TRACK.allDays();
     for(var i=0;i<all.length;i++){var gd=all[i].globalDay;if(!Store.isDayDone(gd)){nextDay=gd;break}else nextDay=gd}
   } else {
-    for(var i=1;i<=plan.totalDays;i++){if(!Store.isDayDone(i)){nextDay=i;break}else nextDay=i}
-    if(nextDay>plan.totalDays)nextDay=plan.totalDays;
+    var all=plan.allDays();
+    for(var i=0;i<all.length;i++){var gd=all[i];if(!Store.isDayDone(gd)){nextDay=gd;break}else nextDay=gd}
+    if(!nextDay||nextDay>all[all.length-1])nextDay=all[all.length-1];
   }
   currentTrack=prevTrack;
   setHash(track+'-'+nextDay);
