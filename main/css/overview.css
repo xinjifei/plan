@@ -38,14 +38,11 @@
 .ov-outline-hd{font-size:15px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:24px;text-align:center}
 .mindmap{position:relative;padding:12px 0}
 .mindmap::before{content:'';position:absolute;left:50%;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--accent),var(--accent2),#f472b6);transform:translateX(-50%);border-radius:1px;}
-.mm-row{display:flex;align-items:flex-start;position:relative;margin-bottom:44px}
-.mm-dot{position:absolute;left:50%;top:18px;transform:translate(-50%,-50%);width:12px;height:12px;border-radius:50%;z-index:2;flex-shrink:0;}
-.mm-dot.main{background:var(--accent);box-shadow:0 0 12px var(--accent-glow)}
-.mm-dot.math{background:#f472b6;box-shadow:0 0 12px rgba(244,114,182,0.3)}
-.mm-left{flex:1;padding-right:56px;text-align:right}
-.mm-right{flex:1;padding-left:56px;text-align:left}
+.mm-row{display:flex;align-items:flex-start;position:relative}
+.mm-left{flex:1;padding-right:56px;text-align:right;position:relative}
+.mm-right{flex:1;padding-left:56px;text-align:left;position:relative}
 .mm-parent{font-size:18px;font-weight:700;color:var(--text);cursor:pointer;padding:12px 0 16px;position:relative;}
-.mm-parent:hover{color:var(--accent)}.mm-right .mm-parent:hover{color:#f472b6}
+.mm-parent:hover{color:var(--accent)}
 .mm-parent-meta{font-size:12px;font-weight:400;color:var(--text3)}
 
 /* 树形连线 — 左侧 */
@@ -61,19 +58,20 @@
 .mm-left .mm-l3-item.st0{color:var(--text3)}.mm-left .mm-l3-item.st1{color:var(--text2)}.mm-left .mm-l3-item.st2{color:var(--accent)}
 .mm-left .mm-l3-item:hover{opacity:0.8}
 
-/* 树形连线 — 右侧 */
-.mm-right .mm-children{position:relative;padding:7px 0 7px 36px}
-.mm-right .mm-children::before{content:'';position:absolute;left:0;top:5px;bottom:16px;width:2px;background:var(--mm-line);border-radius:1px}
-.mm-right .mm-child{font-size:14px;color:var(--text3);cursor:pointer;padding:7px 0 7px 28px;position:relative;transition:color var(--dur-fast)}
-.mm-right .mm-child::before{content:'';position:absolute;left:0;top:50%;width:18px;height:2px;background:var(--mm-line);border-radius:1px}
-.mm-right .mm-child.st0{color:var(--text3)}.mm-right .mm-child.st1{color:var(--text2)}.mm-right .mm-child.st2{color:#f472b6}
-.mm-right .mm-child:hover{opacity:0.8}
-
-/* 衔接桥 */
-.mm-bridge{display:flex;align-items:flex-start;padding:10px 0 28px;position:relative}
-.mm-bridge-l{flex:1;text-align:right;padding-right:56px}
-.mm-bridge-r{flex:1;text-align:left;padding-left:56px}
+/* 桥接（仅左侧） */
+.mm-bridge-l{text-align:right;padding:10px 56px 28px 0}
 .mm-bridge-text{display:inline-block;font-size:12px;color:var(--text3);font-style:italic;padding:5px 14px;border-radius:var(--r-full);background:rgba(255,255,255,0.03);border:1px dashed var(--glass-border-xs);max-width:280px;line-height:1.5}
+
+/* 右侧模块标题容器 */
+.mm-mod-hds{position:absolute;right:0;top:0;width:150px;z-index:3;text-align:left}
+.mm-mod-hd{font-size:14px;font-weight:700;color:var(--text2);padding:4px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+.mm-mod-hd.done{color:#f472b6}
+
+/* 右侧：数学天条目（初始位置，JS 会覆盖为 absolute） */
+.mm-r-day{font-size:14px;cursor:pointer;padding:6px 0 6px 28px;position:relative;transition:color var(--dur-fast)}
+.mm-r-day::before{content:'';position:absolute;left:0;top:50%;width:14px;height:1.5px;background:var(--mm-line2);border-radius:1px}
+.mm-r-day.st0{color:var(--text3)}.mm-r-day.st1{color:var(--text2)}.mm-r-day.st2{color:#f472b6}
+.mm-r-day:hover{opacity:0.8}
 
 @media(max-width:768px){
   .ov-top{flex-direction:column;align-items:center;gap:20px}
@@ -82,8 +80,7 @@
   .ov-content{padding:20px 14px 32px}
   .mm-left{padding-right:14px}.mm-right{padding-left:14px}
   .mm-left .mm-l2{padding-right:18px}.mm-left .mm-l3{padding-right:28px}
-  .mm-right .mm-children{padding-left:18px}
-  .mm-parent{font-size:15px}.mm-child{font-size:12px}
-  .mm-bridge-l{padding-right:10px}.mm-bridge-r{padding-left:10px}
+  .mm-parent{font-size:15px}.mm-l3-item,.mm-r-day{font-size:12px}
+  .mm-bridge-l{padding-right:10px}
   .mm-bridge-text{max-width:150px;font-size:11px}
 }

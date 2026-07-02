@@ -183,19 +183,117 @@ function renderOverview(){
   document.getElementById('ov-streak-main-num').textContent=mainStreak;
   document.getElementById('ov-streak-math-num').textContent=mathStreak;
 
-  // Mind map — 分轨渲染
+  // Mind map — 左列树结构 + 右列 JS 测量对齐
   var ol=document.getElementById('ov-outline');if(!ol)return;
-  var bridges={main:['↓ 会写代码了，怎么处理真实金融数据？','↓ 管道通了，工程稳了，补上金融数学基础','↓ 技术有了，但做什么产品？AI怎么帮你？','↓ 会用AI了，回到量化：策略怎么评估？','↓ 策略有了，怎么让它每天自动跑？','↓ 部署好了，能不能让AI自己管？'],math:['↓ 有了描述不确定性的语言，如何从数据推断规律？','↓ 数据在高维空间长什么样？AI内部算什么？','↓ 数学地基打好，回到量化：那些数字的本质是什么？','↓ 工具箱齐全。还有些高阶概念需要知道它们存在。']};
+  var bridges={main:['↓ 会写代码了，怎么处理真实金融数据？','↓ 管道通了，工程稳了，补上金融数学基础','↓ 技术有了，但做什么产品？AI怎么帮你？','↓ 会用AI了，回到量化：策略怎么评估？','↓ 策略有了，怎么让它每天自动跑？','↓ 部署好了，能不能让AI自己管？']};
+
+  // 构建 syncMain → {day, moduleName} 映射
+  var mathBySync={};
+  MATH_TRACK.modules.forEach(function(mod){
+    mod.daysData.forEach(function(day){
+      mathBySync[day.syncMain]={day:day, moduleName:mod.name};
+    });
+  });
+
+  // 左列：嵌套树结构（mm-l2 包裹 section，mm-l3 包裹天）
+  var leftHtml='', rightHtml='';
+  MAIN_PLAN.stages.forEach(function(stage,stageIdx){
+    var totalDays=0;
+    stage.sections.forEach(function(sec){totalDays+=sec.daysData.length;});
+
+    leftHtml+='<div class="mm-parent" onclick="goTrack(\'main\')">'+stage.name+'<span class="mm-parent-meta">'+totalDays+'天</span></div>';
+    leftHtml+='<div class="mm-l2">';
+
+    stage.sections.forEach(function(sec){
+      leftHtml+='<div class="mm-l2-item" onclick="setHash(\'read-main-'+sec.daysData[0].globalDay+'\')">'+sec.name+' ('+sec.daysData.length+'天)</div>';
+      leftHtml+='<div class="mm-l3">';
+
+      sec.daysData.forEach(function(day){
+        currentTrack='main';
+        var st=Store.isDayDone(day.globalDay)?'st2':(Store.isTaskDone(day.globalDay,0)?'st1':'st0');
+        leftHtml+='<div class="mm-l3-item '+st+'" data-gd="'+day.globalDay+'" onclick="event.stopPropagation();setHash(\'read-main-'+day.globalDay+'\')">D'+day.globalDay+': '+day.title+'</div>';
+      });
+
+      leftHtml+='</div>';
+    });
+
+    leftHtml+='</div>';
+    if(stageIdx<MAIN_PLAN.stages.length-1&&bridges.main[stageIdx]){
+      leftHtml+='<div class="mm-bridge-l"><span class="mm-bridge-text">'+bridges.main[stageIdx]+'</span></div>';
+    }
+  });
+
+  // 右列：数学天 + 模块标题分开
+  var modHdsHtml='';
+  MATH_TRACK.modules.forEach(function(mod){
+    modHdsHtml+='<div class="mm-mod-hd" data-mod="'+mod.name+'">'+mod.name+'</div>';
+    mod.daysData.forEach(function(day){
+      currentTrack='math';
+      var st=Store.isDayDone(day.globalDay)?'st2':(Store.isTaskDone(day.globalDay,0)?'st1':'st0');
+      rightHtml+='<div class="mm-r-day '+st+'" data-sync="'+day.syncMain+'" onclick="event.stopPropagation();setHash(\'read-math-'+day.globalDay+'\')">M'+day.globalDay+': '+day.title+'</div>';
+    });
+  });
+
   var html='<div class="ov-outline-hd">课程大纲</div><div class="mindmap">';
-  var maxRows=Math.max(MAIN_PLAN.stages.length,MATH_TRACK.modules.length),bridgeIdx=0;
-  for(var i=0;i<maxRows;i++){
-    html+='<div class="mm-row">';
-    if(i<MAIN_PLAN.stages.length){currentTrack='main';var stage=MAIN_PLAN.stages[i],totalDays=0,l2='';stage.sections.forEach(function(sec){var secDays=0,l3='';sec.daysData.forEach(function(day){totalDays++;secDays++;var st=Store.isDayDone(day.globalDay)?'st2':(Store.isTaskDone(day.globalDay,0)?'st1':'st0');l3+='<div class="mm-l3-item '+st+'" onclick="event.stopPropagation();setHash(\'read-main-'+day.globalDay+'\')">D'+day.globalDay+': '+day.title+'</div>';});l2+='<div class="mm-l2-item" onclick="event.stopPropagation();setHash(\'read-main-'+sec.daysData[0].globalDay+'\')">'+sec.name+' ('+secDays+'天)</div><div class="mm-l3">'+l3+'</div>';});html+='<div class="mm-left"><div class="mm-parent" onclick="goTrack(\'main\')">'+stage.name+'<span class="mm-parent-meta">'+totalDays+'天</span></div><div class="mm-l2">'+l2+'</div></div>';}else{html+='<div class="mm-left"></div>'}
-    html+='<div class="mm-dot '+(i<MAIN_PLAN.stages.length?'main':'math')+'"></div>';
-    if(i<MATH_TRACK.modules.length){currentTrack='math';var mod=MATH_TRACK.modules[i],children='';mod.daysData.forEach(function(day){var st=Store.isDayDone(day.globalDay)?'st2':(Store.isTaskDone(day.globalDay,0)?'st1':'st0');children+='<div class="mm-child '+st+'" onclick="event.stopPropagation();setHash(\'read-math-'+day.globalDay+'\')">M'+day.globalDay+': '+day.title+'</div>';});html+='<div class="mm-right"><div class="mm-parent" onclick="goTrack(\'math\')">'+mod.name+'<span class="mm-parent-meta">'+mod.daysData.length+'天</span></div><div class="mm-children">'+children+'</div></div>';}else{html+='<div class="mm-right"></div>'}
-    html+='</div>';
-    if(i<maxRows-1){var bm=bridges.main[bridgeIdx]||'',bmt=bridges.math[bridgeIdx]||'';html+='<div class="mm-bridge"><div class="mm-bridge-l">'+(bm?'<span class="mm-bridge-text">'+bm+'</span>':'')+'</div><div class="mm-bridge-r">'+(bmt?'<span class="mm-bridge-text">'+bmt+'</span>':'')+'</div></div>';bridgeIdx++;}
-  }
+  html+='<div class="mm-mod-hds">'+modHdsHtml+'</div>';
+  html+='<div class="mm-row"><div class="mm-left">'+leftHtml+'</div><div class="mm-right">'+rightHtml+'</div></div>';
   html+='</div>';ol.innerHTML=html;
+
+  // JS 动态对齐：左列测位 → 右列数学天 + 左侧模块标题绝对定位
+  setTimeout(function(){
+    var leftContainer=document.querySelector('.mm-left');
+    var rightContainer=document.querySelector('.mm-right');
+    var hdsContainer=document.querySelector('.mm-mod-hds');
+    if(!leftContainer)return;
+
+    var leftBase=leftContainer.getBoundingClientRect().top;
+
+    // 建立 globalDay → 相对 left 容器 top 的偏移
+    var gdToTop={};
+    leftContainer.querySelectorAll('.mm-l3-item').forEach(function(item){
+      var gd=parseInt(item.getAttribute('data-gd'));
+      if(gd)gdToTop[gd]=item.getBoundingClientRect().top-leftBase;
+    });
+
+    // 右列数学天：绝对定位
+    if(rightContainer){
+      rightContainer.style.minHeight=leftContainer.offsetHeight+'px';
+      rightContainer.querySelectorAll('.mm-r-day').forEach(function(el){
+        var sync=parseInt(el.getAttribute('data-sync'));
+        var top=gdToTop[sync];
+        if(top===undefined)return;
+        el.style.position='absolute';
+        el.style.left='28px'; el.style.right='0';
+        el.style.top=top+'px';
+      });
+    }
+
+    // 左侧模块标题：放在右侧，检查模块完成状态
+    if(hdsContainer){
+      hdsContainer.style.minHeight=leftContainer.offsetHeight+'px';
+      var doneMods={};
+      rightContainer.querySelectorAll('.mm-r-day').forEach(function(el){
+        var sync=parseInt(el.getAttribute('data-sync'));
+        var top=gdToTop[sync];
+        if(top===undefined)return;
+        MATH_TRACK.modules.forEach(function(mod){
+          mod.daysData.forEach(function(day){
+            if(day.syncMain===sync && !doneMods[mod.name]){
+              doneMods[mod.name]=true;
+              var hd=hdsContainer.querySelector('[data-mod="'+mod.name+'"]');
+              if(hd){
+                // 检查整个模块是否全部完成
+                currentTrack='math';
+                var allDone=mod.daysData.every(function(d){return Store.isDayDone(d.globalDay);});
+                hd.className='mm-mod-hd'+(allDone?' done':'');
+                hd.style.position='absolute';
+                hd.style.top=top+'px';
+              }
+            }
+          });
+        });
+      });
+    }
+  },50);
   currentTrack=tempTrack;
 }
