@@ -69,8 +69,8 @@
               <text x="120" y="112" text-anchor="middle" fill="var(--text)" font-family="var(--mono)" font-size="28" font-weight="800" id="ov-ring-pct">0%</text>
               <text x="120" y="132" text-anchor="middle" fill="var(--text3)" font-size="10" font-weight="600" letter-spacing="0.06em">总进度</text>
               <defs>
-                <linearGradient id="gradMain" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="var(--accent)"/><stop offset="100%" stop-color="var(--accent2)"/></linearGradient>
-                <linearGradient id="gradMath" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f472b6"/><stop offset="100%" stop-color="var(--accent)"/></linearGradient>
+                <linearGradient id="gradMain" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" style="stop-color:var(--accent)"/><stop offset="100%" style="stop-color:var(--accent2)"/></linearGradient>
+                <linearGradient id="gradMath" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" style="stop-color:var(--accent3)"/><stop offset="100%" style="stop-color:var(--accent)"/></linearGradient>
               </defs>
             </svg>
             <div class="ov-ring-labels"><span class="ov-ring-lbl main">主计划</span><span class="ov-ring-lbl math">数学</span></div>
@@ -81,25 +81,17 @@
               <div class="ov-card ov-card--big" id="ov-card-math" onclick="goNextDay('math')"><div class="ov-card-badge math">数学 · 继续学习</div><div class="ov-card-title" id="ov-math-title"></div><div class="ov-card-meta" id="ov-math-meta"></div></div>
             </div>
             <div class="ov-browse">
-              <div class="ov-card ov-card--sm" onclick="goTrack('main')"><div class="ov-card-badge">主计划</div><div class="ov-card-title">浏览全部</div></div>
-              <div class="ov-card ov-card--sm" onclick="goTrack('math')"><div class="ov-card-badge math">数学</div><div class="ov-card-title">浏览全部</div></div>
+              <button class="ov-link" onclick="goTrack('main')">浏览主计划全部<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>
+              <button class="ov-link" onclick="goTrack('math')">浏览数学全部<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>
             </div>
           </div>
         </div>
         <div class="ov-streak-row" id="ov-streak-row">
           <div class="ov-streak-card main" id="ov-streak-main">
-            <div class="ov-streak-icon">🔥</div>
+            <div class="ov-streak-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></div>
             <div class="ov-streak-info">
-              <div class="ov-streak-label">主线连胜</div>
-              <div class="ov-streak-num" id="ov-streak-main-num">0</div>
-              <div class="ov-streak-sub">天</div>
-            </div>
-          </div>
-          <div class="ov-streak-card math" id="ov-streak-math">
-            <div class="ov-streak-icon">🔥</div>
-            <div class="ov-streak-info">
-              <div class="ov-streak-label">数学连胜</div>
-              <div class="ov-streak-num" id="ov-streak-math-num">0</div>
+              <div class="ov-streak-label">总连胜</div>
+              <div class="ov-streak-num" id="ov-streak-combined-num">0</div>
               <div class="ov-streak-sub">天</div>
             </div>
           </div>
@@ -119,7 +111,6 @@
 <div class="float-tip" id="float-tip"></div>
 
 <script src="js/data.js"></script>
-<script src="js/streak-data.js"></script>
 <script src="js/store.js"></script>
 <script src="js/router.js"></script>
 <script src="js/render.js"></script>

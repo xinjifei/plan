@@ -172,16 +172,15 @@ function renderOverview(){
   if(!mainNext||mainNext>mainAll[mainAll.length-1])mainNext=mainAll[mainAll.length-1];
   var mainDayData=MAIN_PLAN.getDay(mainNext)||MAIN_PLAN.getDay(mainTotal);
   var mc=document.getElementById('ov-main-title');if(mc)mc.textContent=(mainDayData?'Day '+mainNext+': '+mainDayData.title:'暂无数据');
-  var mm=document.getElementById('ov-main-meta');if(mm)mm.textContent='';
+  var mm=document.getElementById('ov-main-meta');if(mm)mm.textContent='已完成 '+mainDone+'/'+mainTotal+' 天 · '+mainPct+'%';
   var mathAll=MATH_TRACK.allDays();var mathNext=mathAll.length>0?mathAll[0].globalDay:1;currentTrack='math';
   for(var j=0;j<mathAll.length;j++){var md=mathAll[j].globalDay;if(!Store.isDayDone(md)){mathNext=md;break}else mathNext=md}
   var mathDayData=MATH_TRACK.getDay(mathNext);
   var mtc=document.getElementById('ov-math-title');if(mtc)mtc.textContent=(mathDayData?'Day '+mathNext+': '+mathDayData.title:'暂无数据');
-  var mtm=document.getElementById('ov-math-meta');if(mtm)mtm.textContent='';
-  // Streak banner
-  var mainStreak=Store.getStreak();currentTrack='math';var mathStreak=Store.getStreak();currentTrack=tempTrack;
-  document.getElementById('ov-streak-main-num').textContent=mainStreak;
-  document.getElementById('ov-streak-math-num').textContent=mathStreak;
+  var mtm=document.getElementById('ov-math-meta');if(mtm)mtm.textContent='已完成 '+mathDone+'/'+mathTotal+' 天 · '+mathPct+'%';
+  // Streak banner（总连胜，合并主线+数学）
+  var combinedStreak=Store.getStreak();
+  var cse=document.getElementById('ov-streak-combined-num');if(cse)cse.textContent=combinedStreak;
 
   // Mind map — 左列树结构 + 右列 JS 测量对齐
   var ol=document.getElementById('ov-outline');if(!ol)return;
