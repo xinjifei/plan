@@ -3,6 +3,9 @@ function getHash(){return location.hash.replace('#','')||'overview'}
 function setHash(h){if(location.hash!=='#'+h)location.hash=h}
 
 function route(){
+  // init 之前不渲染：app.js 里 location.hash='overview' 会异步再触发一次 hashchange，
+  // 那一刻进度还没读进来，照渲染会用空数据画一遍
+  if(typeof Store==='undefined'||!Store.ready())return;
   var h=getHash();
   var isOverview=(h==='overview');
   document.getElementById('sidebar').style.display=isOverview?'none':'';

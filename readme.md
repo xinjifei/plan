@@ -1,6 +1,6 @@
 # 量化学习计划追踪器 (Plan Tracker)
 
-> 双轨学习系统 — 主计划 137 天（Python → 量化 → AI → 部署 → Agent）+ 数学轨道 61 天 — 全部内置每日 Prompt + 任务清单，localStorage 持久化进度。
+> 双轨学习系统 — 主计划 137 天（Python → 量化 → AI → 部署 → Agent）+ 数学轨道 61 天 — 全部内置每日 Prompt + 任务清单，进度落成仓库里的一个 JSON 文件。
 
 ---
 
@@ -25,11 +25,19 @@ main/
 │   └── overview.css    # 总览页 — 环形进度、连击卡片、双列思维导图
 └── js/
     ├── data.js         # 全部学习数据 — MAIN_PLAN (137天) + MATH_TRACK (61天)
-    ├── store.js        # 状态管理 — localStorage 读写、任务完成度、连胜计算
+    ├── store.js        # 状态管理 — 启动时读进内存、写回文件、离线降级、连胜计算
     ├── router.js       # Hash 路由 — #overview / #main / #math / #main-12 / #math-34
     ├── render.js       # 渲染逻辑 — 首页热力图、侧栏导航、日详情、总览页思维导图
-    ├── streak-data.js  # 连胜配置 — 起始日期、基线天数、强制覆盖开关
     └── app.js          # 应用入口 — 初始化、Toast、键盘快捷键、浮动提示
+
+tools/
+└── plan_server.py      # 本地服务（仅标准库）— 静态服务 main/ + 进度文件读写 API
+
+progress/               # 进度文件（不进 git，见下面「进度存在哪」）
+└── current.json        # 当前进度；history/<日期>.json 是每天的自动快照
+
+启动学习计划.command      # Mac 双击启动
+启动学习计划.bat          # Windows 双击启动
 ```
 
 ### 数据流
@@ -40,12 +48,18 @@ mine_outline.py / math_outline.py     ← Python 源数据（仅用于生成）
         ▼  scripts/*.py 同步脚本
 main/js/data.js                       ← 前端唯一数据源（MAIN_PLAN + MATH_TRACK）
         │
-        ▼  store.js 加载
-localStorage                          ← 用户进度持久化（plan_tracker_main / plan_tracker_math）
-        │
-        ▼  render.js
+        ▼  store.js 启动时一次性读进内存
+progress/current.json                 ← 用户进度（唯一的真相，浏览器只是显示它）
+        │                                ▲
+        │                                │ 防抖 400ms 后 PUT 回写
+        ▼  render.js                     │
 DOM                                   ← 热力图 / 日详情 / Prompt 区 / 任务列表
+                                      Store.toggleTask() 等写操作
 ```
+
+**为什么是「启动时一次性读进内存」**：`render.js` 是**同步**调用 Store 的读接口的
+（`isTaskDone` / `getDayDone` / `getLevel` / `getDoneCount` 都在渲染函数里同步取数）。
+所以异步读文件这条路走不通 —— 只能在启动时把整个进度读进内存，之后所有读操作同步返回。
 
 ### 路由设计
 
@@ -66,9 +80,10 @@ DOM                                   ← 热力图 / 日详情 / Prompt 区 / �
 - **热力图日格子** — 4 级完成度色阶（0% → 25% → 50% → 75% → 100%），hover 浮动提示
 - **思维导图总览** — 左列 137 天主计划树结构，右列 61 天数学按 syncMain 自动对齐定位
 - **SyncMain 交叉引用** — 数学轨道每天标注主计划首次使用该概念的位置，可一键跳转
-- **离线可用** — 纯前端，localStorage 持久化，无需服务器
+- **进度存进文件** — 落成 `progress/current.json`，换机器、换浏览器都跟着走
+- **能断网** — 服务没起来时自动退回 localStorage，右下角徽章变黄告诉你；服务回来 3 秒内自己同步
 - **键盘快捷键** — `Ctrl+Enter` 完成下一个任务，`Esc` 返回首页
-- **连胜追踪** — 两条轨道独立计算连续学习天数
+- **连胜追踪** — 两条轨道合并计算连续学习天数（错过一整天就断）
 
 ---
 
@@ -103,7 +118,10 @@ DOM                                   ← 热力图 / 日详情 / Prompt 区 / �
 | `学习对齐研究/` | 双轨对齐问题分析、认知科学审计 |
 | `data/` | 概念映射数据（concept_map.py → concept_map_data.js） |
 | `archive/` | 历史备份、旧版 demo |
-| `backup/` | localStorage 数据备份 JSON |
+| `backup/` | 从浏览器里导出的进度备份 JSON（历史遗留，见「怎么把老进度搬过来」） |
+| `tools/` | `plan_server.py` — 本地服务，静态服务 `main/` 并读写进度文件 |
+| `progress/` | 进度文件落盘处（**不进 git**） |
+| `启动学习计划.command` / `.bat` | Mac / Windows 双击启动器 |
 
 ### 当前应用（`main/`）
 
@@ -114,11 +132,13 @@ DOM                                   ← 热力图 / 日详情 / Prompt 区 / �
 | `css/style.css` | ~600 | 全局样式 + 首页 + 日详情 |
 | `css/overview.css` | ~200 | 总览页样式 + 思维导图 |
 | `js/data.js` | ~8000 | MAIN_PLAN 7 阶段 + MATH_TRACK 5 模块所有数据 |
-| `js/store.js` | 42 | localStorage 状态管理 |
-| `js/router.js` | 82 | Hash 路由分发 |
+| `js/store.js` | ~290 | 内存状态 + 进度文件读写 + 离线降级 + 连接状态徽章 |
+| `js/router.js` | ~85 | Hash 路由分发（含 `Store.ready()` 守卫） |
 | `js/render.js` | 300 | 所有视图渲染逻辑 |
-| `js/streak-data.js` | 30 | 连胜配置 |
 | `js/app.js` | 26 | 初始化、Toast、快捷键 |
+
+> `js/streak-data.js` 已删除：`index.html` 从来没加载过它，全仓库对 `STREAK_CONFIG` 也零引用。
+> 连胜数据现在跟着进度一起存进 `progress/current.json` 的 `streak` 字段。
 
 ---
 
@@ -155,11 +175,83 @@ DOM                                   ← 热力图 / 日详情 / Prompt 区 / �
 
 ## 本地运行
 
-直接用浏览器打开 `main/index.html`，或使用任意静态服务器：
+**双击 `启动学习计划.command`（Mac）或 `启动学习计划.bat`（Windows）** —— 会自动起服务并打开浏览器，
+进度实时写进 `progress/current.json`。
 
-```bash
-cd main && python -m http.server 8080
-# 访问 http://localhost:8080
+需要 python3，Mac 和 Windows 都没有的话会提示怎么装。**没有构建步骤，没有第三方依赖。**
+
+> Mac 首次双击可能被 Gatekeeper 拦下（提示"无法验证开发者"）→ **右键 →「打开」→ 再点一次「打开」**。
+> 命令行的话 `python3 tools/plan_server.py` 也一样，参数见 `--help`
+> （`--host` 默认 `127.0.0.1`、`--port` 默认 `8000`、`--no-browser` 不自动开浏览器）。
+
+也可以**直接双击 `main/index.html`** —— 那种情况够不着文件，会自动进「离线模式」，
+进度只存在这个浏览器里，右下角徽章是黄的。等哪天双击了启动器，进度会自动写进文件。
+
+### 进度存在哪
+
+| | |
+|---|---|
+| 当前进度 | `progress/current.json` |
+| 每日快照 | `progress/history/<日期>.json`（每次写入顺带存一份，写坏了可以拿回来） |
+| 格式 | `{version, rev, updatedAt, main, math, streak}`，`main`/`math` 的结构和旧版 localStorage **逐字节同构** |
+
+`progress/` **不进 git** —— 它的定位是"由服务端持有的运行时数据"，将来跑在那台 Ubuntu 上，
+两台电脑都连同一个服务，就不存在"同步"这回事了。
+
+右下角徽章是你唯一需要留意的状态：
+
+- **绿 `● 已连接 · 进度存于 progress/current.json`** —— 正常，你勾的每一笔都在往文件写
+- **黄 `● 未连接 · 进度仅存本浏览器`** —— 服务没起来 / 起的是别的服务 / 直接开的 `index.html`。
+  照样能勾，数据存在浏览器里，服务回来 **3 秒内自动同步**
+
+### ⚠️ 同一时间只在一台设备上编辑
+
+现在是「最后写入者赢」：服务端靠 `rev` 号发现冲突会返回 409，页面会弹窗问你
+**用本机这份覆盖文件** 还是 **改用文件里的进度**。它**不会**自动合并 ——
+所以别两台电脑同时开着勾。冲突时无论你选哪个，另一份都还在**当天的 history 快照**
+和**那个浏览器的 localStorage** 里，不会凭空消失。
+
+---
+
+## 怎么把老进度搬过来
+
+进度原来是存在浏览器 localStorage 里的，**`file://` 和 `http://127.0.0.1` 是两个不同的 origin**，
+换个浏览器、换个打开方式就读不到了。所以要搬只能从**原来那个浏览器**里导出：
+
+**方法一（推荐，一行命令）** —— 在**原来那个浏览器**打开旧页面（`index_old.html` 或 `main/index.html`），
+按 F12 打开 Console，粘贴回车：
+
+```js
+copy(JSON.stringify({exportedAt:new Date().toISOString(),
+  main:JSON.parse(localStorage.plan_tracker_main||'{}'),
+  math:JSON.parse(localStorage.plan_tracker_math||'{}')}))
 ```
 
-无构建步骤，无依赖。新用户从 `#overview` 进入，旧版用户打开后自动继承 localStorage 中的学习进度。
+然后把剪贴板里的内容存成 `progress/current.json`：
+
+```bash
+pbpaste > progress/current.json     # Mac
+```
+
+**方法二（不用 Console）** —— 打开 `index_old.html` → 进任意一天的日详情 → **在内容区长按 3 秒**，
+会下载一个 `plan-tracker-backup-<日期>.json`，改名叫 `current.json` 放进 `progress/` 即可。
+（这个长按手势是旧版唯一的导出入口，没有按钮，比较隐蔽。）
+
+> 前端会自己做**归一化**，所以旧备份里的 `exportedAt`（而不是 `updatedAt`）、缺 `rev`、缺 `streak`
+> 都能直接用 —— 服务端只负责原样存取字节。停在 `progress/` 的 `current.json` **不需要**有 `rev`。
+
+**连胜不迁移**：旧版 Edge 里的 `streakStart_main` 是另一套语义，与现在的 `streak` 不通用，
+所以搬过来之后连胜会从下次完成重新起算。
+
+---
+
+## 遇到问题
+
+| 现象 | 原因 / 怎么办 |
+|------|----------------|
+| 徽章是黄的 | 服务没起来，或者你开的是 `index.html`。双击启动器即可 |
+| 点勾了但刷新就没了 | 同上 —— 数据只在当前浏览器里。起服务后会自动同步上去 |
+| 双击启动器没反应（Mac） | Gatekeeper 拦了，右键 →「打开」 |
+| 提示端口被占 | 服务会自己往后试 20 个端口，看终端打印的实际 URL |
+| 想从头开始 | 删掉 `progress/current.json` 再刷新（页面会发现文件空了，然后……**用它自己那份重新播种**，所以你多半还想清一下浏览器 localStorage） |
+| 文件写坏了 | 从 `progress/history/` 里拿最近一份好的覆盖回 `current.json` |

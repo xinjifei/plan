@@ -21,5 +21,6 @@ document.addEventListener('keydown',function(e){
 // 启动
 document.addEventListener('DOMContentLoaded',function(){
   if(!location.hash)location.hash='overview';
-  route();
+  // 进度读进来之后再渲染。这里不要再补一行裸 route()
+  Store.init(function(){route();});
 });

@@ -1,0 +1,12 @@
+# 进度文件：将来跑在服务器上自动存，不进 git（两台电脑不用再来回同步）
+progress/
+
+# Python
+__pycache__/
+*.pyc
+
+# Claude Code 的本地权限白名单（每台机器一份，含本机路径）
+.claude/settings.local.json
+
+# macOS
+.DS_Store
