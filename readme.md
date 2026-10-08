@@ -45,10 +45,7 @@ progress/               # 进度文件（不进 git，见下面「进度存在�
 ### 数据流
 
 ```
-mine_outline.py / math_outline.py     ← Python 源数据（仅用于生成）
-        │
-        ▼  scripts/*.py 同步脚本
-main/js/data.js                       ← 前端唯一数据源（MAIN_PLAN + MATH_TRACK）
+main/js/data.js                       ← 唯一数据源（MAIN_PLAN + MATH_TRACK）。改计划＝改这个文件
         │
         ▼  store.js 启动时一次性读进内存
 progress/current.json                 ← 用户进度（唯一的真相，浏览器只是显示它）
@@ -58,6 +55,13 @@ progress/current.json                 ← 用户进度（唯一的真相，浏�
 DOM                                   ← 热力图 / 日详情 / Prompt 区 / 任务列表
                                       Store.toggleTask() 等写操作
 ```
+
+> **`main/js/data.js` 没有生成器** —— 它是手工编辑的。`mine_outline.py` / `math_outline.py`
+> 是它的**人类可读版大纲**（带缩进，比 332KB 的 `data.js` 好读得多），**不参与生成**；
+> 改计划就是直接改 `data.js`。
+> 曾经的同步脚本在 `archive/scripts/`，**已归档、跑不通** —— 它们的路径写死在旧的 Windows 目录，
+> 而且输出目标是根目录那个已经死掉的 `app.js`（不是 `main/js/data.js`），
+> 跑起来会「打印成功但页面一个字没变」。**别去修它们。**
 
 **为什么是「启动时一次性读进内存」**：`render.js` 是**同步**调用 Store 的读接口的
 （`isTaskDone` / `isDayDone` / `getLevel` / `getDoneCount` 都在渲染函数里同步取数）。
@@ -104,19 +108,19 @@ DOM                                   ← 热力图 / 日详情 / Prompt 区 / �
 
 ## 文件清单
 
-### 根目录（遗留 + 源数据）
+### 根目录（遗留 + 大纲）
 
 | 文件/目录 | 用途 |
 |-----------|------|
 | `app.js` | 旧版单文件应用（344KB / 6678 行），已重构到 `main/` |
-| `index_old.html` | 旧版入口页面（88 行）—— 长按导出老进度就是从这里进的 |
+| `index_old.html` | 旧版入口页面（88 行）—— 唯一能读到老 localStorage 进度的入口，别删 |
 | `style.css` | 旧版样式（391 行） |
-| `mine_outline.py` | 主计划 Python 源数据 |
-| `math_outline.py` | 数学轨道 Python 源数据（61 天 × 7 字段 prompt） |
-| `主轨道思维导图.md` | 主计划思维导图 |
-| `数学轨道思维导图.md` | 61 天数学轨道思维导图 |
-| `docs/` | 双轨哲学、数学重写原则 |
-| `scripts/` | Python 源数据 → JS 的同步/校验脚本 |
+| `mine_outline.py` | 主计划大纲（**人类可读版**，不参与生成，见「数据流」） |
+| `math_outline.py` | 数学轨道大纲（61 天 × 7 字段 prompt 的可读版） |
+| `主轨道思维导图.md` | 主计划思维导图（`data.js` 的手抄副本，改完要自己同步） |
+| `数学轨道思维导图.md` | 61 天数学轨道思维导图（同上） |
+| `docs/` | 双轨哲学、数学重写原则、项目审计报告 |
+| `archive/scripts/` | **已归档**的同步/校验脚本 —— 路径写死在旧 Windows 目录，跑不通，别修 |
 | `学习对齐研究/` | 双轨对齐问题分析、认知科学审计 |
 | `data/` | 概念映射数据（concept_map.py → concept_map_data.js） |
 | `archive/` | 历史备份、旧版 demo |
@@ -261,9 +265,12 @@ copy(JSON.stringify({exportedAt:new Date().toISOString(),
 pbpaste > progress/current.json     # Mac
 ```
 
-**方法二（不用 Console）** —— 打开 `index_old.html` → 进任意一天的日详情 → **在内容区长按 3 秒**，
-会下载一个 `plan-tracker-backup-<日期>.json`，改名叫 `current.json` 放进 `progress/` 即可。
-（这个长按手势是旧版唯一的导出入口，没有按钮，比较隐蔽。）
+> ~~**方法二（不用 Console）** —— 打开 `index_old.html` → 长按 3 秒导出。~~
+> **已删除，别用这条。** 那个长按手势走的是旧版 `app.js`，而它启动时会先把 `d1`–`d33`
+> 无条件写成「三天全完成」（`prefillDone33()`，闸门存在 localStorage 里、**按浏览器算**）。
+> 在干净浏览器上用它导出，会**凭空多出 33 天假进度** —— 进度文件里那 10 个死键 `d13`–`d22`
+> 就是这么来的。该调用已于 2026-10-08 停用（见 `docs/审计-2026-10-08.md`），
+> 但这条路径不再推荐，**只用上面的方法一**（直接读 `localStorage`，不经过 `app.js`）。
 
 > 前端会自己做**归一化**，所以旧备份里的 `exportedAt`（而不是 `updatedAt`）、缺 `rev`、缺 `streak`
 > 都能直接用 —— 服务端只负责原样存取字节。停在 `progress/` 的 `current.json` **不需要**有 `rev`。

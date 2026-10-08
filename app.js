@@ -6657,6 +6657,10 @@ function initTabs() {
 
 // ---------- Init ----------
 
+// ⚠️ 已停用，别再调用它。
+// 它会把 d1–d33 无条件写成「三天全完成」，而唯一的闸门 plan_prefill_33_done 存在
+// localStorage 里（按浏览器算）——换台干净的电脑就会凭空多出 33 天的假进度。
+// progress 里那 10 个死键 d13–d22 就是这么来的。见 docs/审计-2026-10-08.md。
 function prefillDone33() {
   try {
     if (localStorage.getItem("plan_prefill_33_done")) return;
@@ -6670,7 +6674,7 @@ function prefillDone33() {
 }
 
 function init() {
-  prefillDone33();
+  // prefillDone33();   ← 已停用：它会伪造出 33 天假进度，原因见上面那段注释
   initTabs();
   Router.init();
 }

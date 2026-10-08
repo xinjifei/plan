@@ -251,10 +251,13 @@ class Handler(SimpleHTTPRequestHandler):
     # ---- 静态文件
 
     def translate_path(self, path):
-        # 只在 main/ 下服务，SimpleHTTPRequestHandler 自己会挡 ..
+        # 只在 main/ 下服务。注意：基类那套「会挡 ..」在覆写了这个方法之后就不生效了，
+        # 而且带前导 / 时 normpath 会把根以上的 .. 吃掉、不带前导时不会 ——
+        # 所以这里逐段过滤，把 .. 和空段全丢掉（否则 GET ../../../../etc/passwd 能读到 Web 根外面）。
         path = path.split('?', 1)[0].split('#', 1)[0]
         clean = os.path.normpath(path).lstrip('/')
-        if clean in ('.', ''):
+        clean = '/'.join(p for p in clean.split('/') if p not in ('', '.', '..'))
+        if clean == '':
             clean = 'index.html'
         return os.path.join(WEB_DIR, clean)
 
