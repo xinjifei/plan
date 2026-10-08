@@ -56,17 +56,67 @@ var Store={
   },
 
   // ---- 写接口 ----
-  toggleTask(day,idx){var d=this.load(),dk='d'+day;if(!d[dk]){var plan=getPlan(),dd=plan.getDay(day);var n=dd&&dd.tasks?dd.tasks.length:3;d[dk]={tasks:new Array(n).fill(false)}}d[dk].tasks[idx]=!d[dk].tasks[idx];this._touch();if(this.isDayDone(day))this.recordCompletion()},
-  markReviewed(day){var d=this.load(),dk='d'+day;if(!d[dk])d[dk]={tasks:[],reviewed:false};d[dk].reviewed=!d[dk].reviewed;this._touch();if(this.isDayDone(day))this.recordCompletion();return d[dk].reviewed},
-  recordCompletion(){
+  toggleTask(day,idx){var d=this.load(),dk='d'+day;if(!d[dk]){var plan=getPlan(),dd=plan.getDay(day);var n=dd&&dd.tasks?dd.tasks.length:3;d[dk]={tasks:new Array(n).fill(false)}}var was=this.isDayDone(day);d[dk].tasks[idx]=!d[dk].tasks[idx];this._touch();this._syncStreak(day,was)},
+  markReviewed(day){var d=this.load(),dk='d'+day;if(!d[dk])d[dk]={tasks:[],reviewed:false};var was=this.isDayDone(day);d[dk].reviewed=!d[dk].reviewed;this._touch();this._syncStreak(day,was);return d[dk].reviewed},
+
+  // ---- 连胜：勾满要记账，由完成变未完成要退账 ----
+  // 进度记录里只有 tasks，没有日期，所以"哪天学的"只能靠 streak 这个计数器记。
+  // 只写不退的话，把当天全点灭，连胜还会赖着不走。
+  _syncStreak(day,wasDone){
+    var key=this.trackKey()+':'+day;          // 如 'main:71'
+    if(this.isDayDone(day))this.recordCompletion(key);
+    else if(wasDone)this._revokeCompletion(key);   // 只有"本来完成、现在不完成"才退账
+  },
+  _todayDone(st){st=st||this._mem.streak||{};if(!Array.isArray(st.todayDone))st.todayDone=[];return st.todayDone},
+  _keyDone(key){                              // 'main:71' 那天现在还完成着吗
+    var p=String(key||'').split(':'),day=parseInt(p[1],10);
+    if(!day)return false;
+    var saved=currentTrack;currentTrack=(p[0]==='math')?'math':'main';
+    var r=this.isDayDone(day);
+    currentTrack=saved;
+    return r;
+  },
+  recordCompletion(key){
     // 某天从"未完成"变"完成"时调用；同一天内幂等
     var st=this._mem.streak||(this._mem.streak={});
     var today=fmtDay(_todayOnly()),yesterday=fmtDay(_daysAgo(1));
-    if(st.lastDate===today)return;                          // 今天已记过
+    if(st.lastDate===today){                                // 今天已记过：只补记"今天完成的天"
+      if(key&&this._todayDone(st).indexOf(key)<0)st.todayDone.push(key);
+      this._touch();return;
+    }
+    st.prevStreak=st.streak||0;                             // 记一笔改之前的样子，撤勾时好还原
+    st.prevLastDate=st.lastDate||'';
     if(st.lastDate===yesterday)st.streak=(st.streak||0)+1;  // 连续
     else st.streak=1;                                       // 断过或首次，重新起算
     st.lastDate=today;
+    st.todayDone=key?[key]:[];                              // 今天完成的天，撤光了就退账
     this._touch();
+  },
+  _revokeCompletion(key){
+    // 撤勾：今天完成的天全撤光了，就把今天这一笔整个退掉（历史连胜不动）
+    var st=this._mem.streak;
+    if(!st||st.lastDate!==fmtDay(_todayOnly()))return;      // 今天本来就没记账
+    var list=this._todayDone(st),self=this;
+    if(key){var i=list.indexOf(key);if(i>=0)list.splice(i,1)}
+    else{
+      // 启动自检（key 为空）：账上记着"今天完成过"的天，逐个核对现在还完成着没有
+      for(var j=list.length-1;j>=0;j--)if(!self._keyDone(list[j]))list.splice(j,1);
+    }
+    if(list.length)return;                                  // 今天还有别的天完成 → 今天算学过
+    st.streak=st.prevStreak||0;
+    st.lastDate=st.prevLastDate||'';
+    delete st.prevStreak;delete st.prevLastDate;delete st.todayDone;
+    this._touch();
+  },
+  _reconcileStreak(){
+    // 启动自检：文件里记着"今天完成过"，但今天完成的天现在一个都不在了 → 把那一笔退掉。
+    // （老数据没有 todayDone 这本账，无从判断，就不动它）
+    var st=this._mem.streak;
+    if(!st||!st.lastDate||st.lastDate!==fmtDay(_todayOnly()))return;
+    if(!Array.isArray(st.todayDone))return;
+    var self=this;
+    if(st.todayDone.some(function(k){return self._keyDone(k)}))return;
+    this._revokeCompletion(null);
   },
 
   // ---- 回写 ----
@@ -171,14 +221,43 @@ var Store={
   },
   _renderBadge(){
     var el=document.getElementById('conn-badge');
-    if(!el)return;
-    el.classList.toggle('on',!this._degraded);
-    el.textContent=this._degraded
-      ?'● 未连接 · 进度仅存本浏览器'
-      :'● 已连接 · 进度存于 progress/current.json';
-    el.title=this._degraded
-      ?'没连上本地服务，填写的内容只在这个浏览器里。双击「启动学习计划」后会自动同步过来。'
-      :'进度实时写入仓库的 progress/current.json';
+    if(el){
+      el.classList.toggle('on',!this._degraded);
+      el.textContent=this._degraded
+        ?'● 未连接 · 进度仅存本浏览器'
+        :'● 已连接 · 进度存于 progress/current.json';
+      el.title=this._degraded
+        ?'没连上本地服务，填写的内容只在这个浏览器里。双击「启动学习计划」后会自动同步过来。'
+        :'进度实时写入仓库的 progress/current.json';
+    }
+    this._renderWarn();
+  },
+  _renderWarn(){
+    // 角落那个小徽章太容易被忽略：进度读不到时页面就是一片 0，
+    // 分不清是"没连上"还是"真没学"。这里把原因直接说在页面上。
+    var box=document.getElementById('conn-warn');
+    if(!this._degraded){if(box)box.style.display='none';return}   // 连上了 → 什么都不显示
+    if(!document.body)return;                                      // 理论上到不了（init 在 DOMContentLoaded 里）
+    var isFile=location.protocol==='file:';
+    if(!box){
+      box=document.createElement('div');
+      box.id='conn-warn';
+      box.className='conn-warn';
+      box.innerHTML='<div class="cw-icon">!</div>'+
+        '<div class="cw-body"><span class="cw-title"></span><span class="cw-text"></span></div>'+
+        '<button class="cw-close" title="知道了">✕</button>';
+      box.querySelector('.cw-close').addEventListener('click',function(){box.style.display='none'});
+      document.body.appendChild(box);
+    }
+    box.querySelector('.cw-title').textContent=
+      isFile?'进度没读出来 —— 这样打开是错的':'连不上本地服务，进度没存进文件';
+    box.querySelector('.cw-text').innerHTML=isFile
+      ?'你是<b>直接双击网页文件</b>打开的（地址栏是 <code>file://…</code>），它够不着 '+
+       '<b>progress/current.json</b>，所以进度只会显示 0。<b>关掉这个标签页</b>，改双击根目录的 '+
+       '<b>启动学习计划.command</b> —— 它会自己开好浏览器，用那个 <code>http://127.0.0.1</code> 的地址看。'
+      :'你勾的东西暂时只存在这个浏览器里。请双击根目录的 <b>启动学习计划.command</b>，'+
+       '<b>并保持弹出的终端窗口开着</b>（关掉窗口服务就停了）。服务一回来 3 秒内会自动同步。';
+    box.style.display='flex';
   },
 
   // ---- 启动 ----
@@ -188,6 +267,7 @@ var Store={
       if(done)return;             // 超时和 abort 会双触发，这里挡一下
       done=true;
       self._ready=true;
+      self._reconcileStreak();    // 上次关页面时留下的烂账，这次开页面时对一遍
       self._renderBadge();
       cb();
     }

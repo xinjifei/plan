@@ -1,4 +1,6 @@
-// ===== 学习计划数据（137天主计划 + 61天数学）=====
+// ===== 学习计划数据（主计划 135 天 / 8 阶段 + 数学 61 天 / 5 模块）=====
+// 天号跳过 13–22（早期版本删掉的 10 天，编号沿用至今），所以是 135 天、最大天号 145。
+// 各阶段天数之和 = 135；prompt 正文头部的「第 N 天」必须与 globalDay 一致（阶段三那 8 天用的是「产品 Day 1–8」）。
 
 var MAIN_PLAN = {
   stages: [
@@ -1628,7 +1630,7 @@ AI助手 + 笔记工具（建议用Markdown）
               globalDay: 66,
               title: "Token是什么？为什么模型「一个字一个字」地输出？",
               description: "理解LLM的第一步不是Transformer架构，而是最基础的「Token」概念。Token不是汉字——用代码亲眼看到一段中文被切成多少个token，你会对「模型怎么理解文字」有全新的认识。",
-              prompt: `=== 第58天：Token 概念 ===
+              prompt: `=== 第66天：Token 概念 ===
 
 【每日学习时长】约3小时
 
@@ -1656,7 +1658,7 @@ Python 3.x + tiktoken（安装：uv add tiktoken）
               globalDay: 67,
               title: "Embedding是什么？——「国王-男人+女人≈女王」",
               description: "Embedding 就是把文字变成一串数字（向量），让计算机理解语义。语义相近的词，向量距离也近——「新能源汽车」和「动力电池」的向量距离远小于和「白酒消费」的距离。",
-              prompt: `=== 第59天：Embedding 概念 ===
+              prompt: `=== 第67天：Embedding 概念 ===
 
 【每日学习时长】约3小时
 
@@ -1684,7 +1686,7 @@ Python 3.x + sentence-transformers（安装：uv add sentence-transformers）
               globalDay: 68,
               title: "Context Window、Temperature、Top-P——这些参数如何影响输出？",
               description: "模型的「性格」由参数决定。Temperature=0 时模型死板但确定，Temperature=1 时天马行空。今天用同一个 prompt 配合不同参数，亲眼看到输出的差异。",
-              prompt: `=== 第60天：LLM 参数理解 ===
+              prompt: `=== 第68天：LLM 参数理解 ===
 
 【每日学习时长】约3小时
 
@@ -1714,7 +1716,7 @@ Python 3.x + openai（或任意 LLM API）
               globalDay: 69,
               title: "System Prompt vs User Prompt——学会「调教」模型行为",
               description: "System Prompt 设定模型的人设和能力边界，User Prompt 是具体任务指令。好的 System Prompt 写清楚：角色+能力+边界+输出格式——这比你会写代码更重要。",
-              prompt: `=== 第61天：System Prompt 设计 ===
+              prompt: `=== 第69天：System Prompt 设计 ===
 
 【每日学习时长】约3小时
 
@@ -1750,7 +1752,7 @@ Python 3.x + openai（或任意 LLM API）
               globalDay: 70,
               title: "基础Prompt技巧——角色设定、Few-shot、Chain-of-Thought",
               description: "Prompt 是新的编程语言。Few-shot（给AI看例子让它模仿）、Chain-of-Thought（让AI一步步思考）是最核心的两种技巧。今天的目标：学会用Few-shot让AI输出结构化的JSON格式。",
-              prompt: `=== 第62天：Prompt 基础技巧 ===
+              prompt: `=== 第70天：Prompt 基础技巧 ===
 
 【每日学习时长】约3小时
 
@@ -1776,7 +1778,7 @@ LLM API（openai/ollama）
               globalDay: 71,
               title: "用AI分析一份财报摘要——设计Prompt提取关键财务指标",
               description: "真实场景：给AI一份A股年报摘要，让它提取营收、净利润、毛利率、ROE等关键财务指标并输出结构化JSON。今天的挑战：处理AI有时返回格式不一致的问题。",
-              prompt: `=== 第63天：财报分析 Prompt ===
+              prompt: `=== 第71天：财报分析 Prompt ===
 
 【每日学习时长】约3小时
 
@@ -1803,7 +1805,7 @@ LLM API + Python
               globalDay: 72,
               title: "用AI生成交易策略思路——Few-shot让AI模仿已知策略模式",
               description: "给AI看2-3个经典策略（均线交叉、动量突破、均值回复），让它生成类似但不同的策略思路。AI的策略必须能写成可执行的规则才算合格——不能只给模糊的方向。",
-              prompt: `=== 第64天：AI 策略生成 ===
+              prompt: `=== 第72天：AI 策略生成 ===
 
 【每日学习时长】约3小时
 
@@ -1832,7 +1834,7 @@ LLM API + Python
               globalDay: 73,
               title: "Prompt版本管理——把Prompt当代码一样管理",
               description: "Prompt就是代码。把Prompt存入独立文件（prompts/analyst.txt），用Git追踪每次修改，对比不同版本的输出质量（A/B测试思维）。这是「AI工程化」的重要里程碑。",
-              prompt: `=== 第65天：Prompt 版本管理 ===
+              prompt: `=== 第73天：Prompt 版本管理 ===
 
 【每日学习时长】约3小时
 
@@ -1866,7 +1868,7 @@ Git + 文本编辑器 + LLM API
               globalDay: 74,
               title: "缓冲/复习日",
               description: "回顾LLM工作原理和Prompt技巧，整理目前积累的所有Prompt模板。不做新课。",
-              prompt: `=== 第66天：缓冲/复习 ===
+              prompt: `=== 第74天：缓冲/复习 ===
 
 【每日学习时长】约3小时
 
@@ -1896,7 +1898,7 @@ Git + 文本编辑器 + LLM API
               globalDay: 75,
               title: "ChromaDB 基础——什么是向量数据库？",
               description: "传统搜索是关键词匹配（搜「宁德时代」找不到「CATL」），向量搜索是语义匹配（搜「新能源电池龙头」能找到「宁德时代」）。ChromaDB是轻量级的向量数据库，让你用自然语言搜索文档。",
-              prompt: `=== 第67天：ChromaDB 基础 ===
+              prompt: `=== 第75天：ChromaDB 基础 ===
 
 【每日学习时长】约3小时
 
@@ -1924,7 +1926,7 @@ Python 3.x + chromadb + sentence-transformers
               globalDay: 76,
               title: "文档分块（Chunking）策略",
               description: "为什么不能把整份研报当一个向量存？因为信息会被「稀释」——一篇50页的研报压缩成一个768维向量，什么信息都模糊了。分块策略（Chunking）是RAG系统质量的关键。",
-              prompt: `=== 第68天：文档分块策略 ===
+              prompt: `=== 第76天：文档分块策略 ===
 
 【每日学习时长】约3小时
 
@@ -1952,7 +1954,7 @@ Python 3.x + chromadb + langchain（文本分割器）或手写分块逻辑
               globalDay: 77,
               title: "构建一个研报知识库",
               description: "整合：取多份PDF/网页文本 → 清洗 → 分块 → 存向量数据库。你的第一个RAG应用：用几个你知道答案的问题，验证RAG检索到的内容是否真正相关。",
-              prompt: `=== 第69天：构建研报知识库 ===
+              prompt: `=== 第77天：构建研报知识库 ===
 
 【每日学习时长】约3小时
 
@@ -1979,7 +1981,7 @@ Python 3.x + chromadb + sentence-transformers + PDF解析工具（如 PyPDF2）
               globalDay: 78,
               title: "RAG 问答系统——「最近三个月宁德时代的研报都说了什么？」",
               description: "RAG完整流程：用户问题 → 向量检索相关文本 → 把文本+问题一起发给LLM → LLM生成含引用的答案。对比有RAG vs 无RAG 的同一个问题，答案质量天差地别。",
-              prompt: `=== 第70天：RAG 问答系统 ===
+              prompt: `=== 第78天：RAG 问答系统 ===
 
 【每日学习时长】约3小时
 
@@ -2006,7 +2008,7 @@ Python 3.x + chromadb + LLM API
               globalDay: 79,
               title: "缓冲/复习日",
               description: "回顾ChromaDB操作和RAG流程。补上掉队的任务。不做新课。",
-              prompt: `=== 第71天：缓冲/复习 ===
+              prompt: `=== 第79天：缓冲/复习 ===
 
 【每日学习时长】约3小时
 
@@ -2031,7 +2033,7 @@ Python 3.x + chromadb + LLM API
               globalDay: 80,
               title: "缓冲/复习日",
               description: "继续巩固RAG系统，确认知识库检索质量达标。",
-              prompt: `=== 第72天：缓冲/复习 ===
+              prompt: `=== 第80天：缓冲/复习 ===
 
 【每日学习时长】约3小时
 
@@ -2054,7 +2056,7 @@ Python 3.x + chromadb + LLM API
               globalDay: 81,
               title: "Ollama 安装与本地运行",
               description: "云端API虽好，但花钱且有隐私顾虑。Ollama让你在自己的电脑上运行开源大模型（Qwen/Llama/DeepSeek）——一条命令下载，一条命令启动，Python直接调用。",
-              prompt: `=== 第73天：Ollama 本地部署 ===
+              prompt: `=== 第81天：Ollama 本地部署 ===
 
 【每日学习时长】约3小时
 
@@ -2082,7 +2084,7 @@ Ollama（安装：ollama.com下载）+ Python ollama包
               globalDay: 82,
               title: "OpenAI兼容API——同一套代码调用本地模型和云端模型",
               description: "Ollama自带OpenAI兼容端点。同一个openai Python包，只需切换base_url就能在「本地免费模型」和「云端强模型」之间切换。一套代码，双模运行。",
-              prompt: `=== 第74天：OpenAI 兼容 API ===
+              prompt: `=== 第82天：OpenAI 兼容 API ===
 
 【每日学习时长】约3小时
 
@@ -2110,7 +2112,7 @@ Python 3.x + openai + ollama
               globalDay: 83,
               title: "API降级策略——云端挂了自动切本地",
               description: "生产环境中最怕API挂了、超时了、超额了。今天实现自动降级：先调云端API，3秒超时或报错就自动切本地模型——保证服务不中断。",
-              prompt: `=== 第75天：API 降级策略 ===
+              prompt: `=== 第83天：API 降级策略 ===
 
 【每日学习时长】约3小时
 
@@ -2138,7 +2140,7 @@ Python 3.x + openai + ollama
               globalDay: 84,
               title: "成本控制——Token计数、上下文压缩、缓存策略",
               description: "每次API调用都在花钱。今天给你的 ask_llm 函数加上 token 计数和成本统计——你会惊讶地发现，长对话的背景成本有多高。学会压缩上下文、缓存重复查询，让AI用得更聪明（也更便宜）。",
-              prompt: `=== 第76天：API 成本控制 ===
+              prompt: `=== 第84天：API 成本控制 ===
 
 【每日学习时长】约3小时
 
@@ -2166,7 +2168,7 @@ Python 3.x + tiktoken + functools.lru_cache
               globalDay: 85,
               title: "综合项目：AI投研助手 MVP",
               description: "将前面所学的AI技术整合为一个完整项目：输入股票代码 → RAG检索相关研报 → AI分析 → 降级策略生效 → 成本可控 → 输出结构化投研简报。",
-              prompt: `=== 第77天：AI 投研助手 MVP ===
+              prompt: `=== 第85天：AI 投研助手 MVP ===
 
 【每日学习时长】约3小时
 
@@ -2193,7 +2195,7 @@ Python 3.x + chromadb + LLM API + ollama + 知识库
               globalDay: 86,
               title: "投研助手完善 + 文档",
               description: "继续完善投研助手：优化Prompt、改进检索质量、完善错误处理。输出使用文档，让其他人也能一键运行。",
-              prompt: `=== 第78天：投研助手完善 ===
+              prompt: `=== 第86天：投研助手完善 ===
 
 【每日学习时长】约3小时
 
@@ -2220,7 +2222,7 @@ Python 3.x + chromadb + LLM API
               globalDay: 87,
               title: "缓冲/复习日",
               description: "回顾阶段三所有内容：LLM原理 → Prompt工程 → RAG → 本地部署 → API降级 → 成本控制 → 投研助手。阶段三综合回顾。",
-              prompt: `=== 第79天：缓冲/复习 ===
+              prompt: `=== 第87天：缓冲/复习 ===
 
 【每日学习时长】约3小时
 
@@ -2260,7 +2262,7 @@ Python 3.x + chromadb + LLM API
               globalDay: 88,
               title: "什么是回测？为什么回测漂亮的策略实盘经常亏钱？",
               description: "回测 = 拿历史数据模拟真实交易。听起来简单，但它有三大陷阱等着你。今天的目标不是跑回测，而是先理解「回测为什么经常骗人」。",
-              prompt: `=== 第80天：回测概念 ===
+              prompt: `=== 第88天：回测概念 ===
 
 【每日学习时长】约3小时
 
@@ -2289,7 +2291,7 @@ Python 3.x + chromadb + LLM API
               globalDay: 89,
               title: "前视偏差、幸存者偏差、过拟合——回测的三大死穴",
               description: "深入理解三个让回测变成谎言的偏差。前视偏差让你「提前知道了未来」，幸存者偏差让你「只看到成功者」，过拟合让你「记住了噪音」。",
-              prompt: `=== 第81天：回测三大死穴 ===
+              prompt: `=== 第89天：回测三大死穴 ===
 
 【每日学习时长】约3小时
 
@@ -2317,7 +2319,7 @@ Python 3.x + chromadb + LLM API
               globalDay: 90,
               title: "向量化回测 vs 事件驱动回测",
               description: "向量化回测用pandas一次性算完所有信号（快，适合简单策略），事件驱动回测模拟真实交易逐笔撮合（慢，但能处理复杂逻辑）。两种范式各有利弊，今天的任务是理解何时用哪种。",
-              prompt: `=== 第82天：两种回测范式 ===
+              prompt: `=== 第90天：两种回测范式 ===
 
 【每日学习时长】约3小时
 
@@ -2346,7 +2348,7 @@ Python 3.x + pandas（向量化回测示例）
               globalDay: 91,
               title: "手写一个最简单的向量化回测——「金叉买、死叉卖，会怎样？」",
               description: "终于动手了！用SMA5和SMA20生成买卖信号，pandas向量化计算每日持仓和收益率，画出第一根资金曲线。这是你的第一个完整回测。",
-              prompt: `=== 第83天：第一个向量化回测 ===
+              prompt: `=== 第91天：第一个向量化回测 ===
 
 【每日学习时长】约3小时
 
@@ -2381,7 +2383,7 @@ Python 3.x + pandas + numpy + matplotlib
               globalDay: 92,
               title: "缓冲/复习日",
               description: "回顾回测基础概念——回测的三大死穴、两种回测范式、第一个向量化回测。补上掉队的任务。不做新课。",
-              prompt: `=== 第84天：缓冲/复习 ===
+              prompt: `=== 第92天：缓冲/复习 ===
 
 【每日学习时长】约3小时
 
@@ -2404,7 +2406,7 @@ Python 3.x + pandas + numpy + matplotlib
               globalDay: 93,
               title: "用 VectorBT 快速搭建回测（上）",
               description: "VectorBT是Python最快的向量化回测框架——一行代码跑完策略，自动生成完整回测报告（收益率/Sharpe/回撤/胜率...）。今天安装并跑通第一个VectorBT回测。",
-              prompt: `=== 第85天：VectorBT 入门 ===
+              prompt: `=== 第93天：VectorBT 入门 ===
 
 【每日学习时长】约3小时
 
@@ -2432,7 +2434,7 @@ Python 3.x + vectorbt（安装：uv add vectorbt）
               globalDay: 94,
               title: "用 VectorBT 快速搭建回测（下）",
               description: "VectorBT 不止能跑回测，还能做参数优化、可视化、热力图分析。今天探索 VectorBT 的高级功能，跑一个参数扫描看看不同均线周期组合的表现。",
-              prompt: `=== 第86天：VectorBT 进阶 ===
+              prompt: `=== 第94天：VectorBT 进阶 ===
 
 【每日学习时长】约3小时
 
@@ -2459,7 +2461,7 @@ Python 3.x + vectorbt
               globalDay: 95,
               title: "交易成本建模——手续费、滑点、冲击成本",
               description: "不加成本的策略看起来很美好。加了A股真实成本（佣金万分之2.5+印花税万分之5+滑点）之后，很多「高收益」策略就变成了「刚好回本」。",
-              prompt: `=== 第87天：交易成本建模 ===
+              prompt: `=== 第95天：交易成本建模 ===
 
 【每日学习时长】约3小时
 
@@ -2490,7 +2492,7 @@ Python 3.x + vectorbt
               globalDay: 96,
               title: "基准对比——你的策略跑赢「买入持有」了吗？",
               description: "很多策略的收益率还不如一直拿着不动。今天的核心：在同一张图上画三条曲线——你的策略、买入持有、沪深300指数，看看谁才是真正的赢家。",
-              prompt: `=== 第88天：基准对比 ===
+              prompt: `=== 第96天：基准对比 ===
 
 【每日学习时长】约3小时
 
@@ -2525,7 +2527,7 @@ Python 3.x + pandas + matplotlib（+ akshare获取指数数据）
               globalDay: 97,
               title: "缓冲/复习日",
               description: "回顾回测框架实战内容。补上掉队的回测练习。不做新课。",
-              prompt: `=== 第89天：缓冲/复习 ===
+              prompt: `=== 第97天：缓冲/复习 ===
 
 【每日学习时长】约3小时
 
@@ -2541,7 +2543,7 @@ Python 3.x + pandas + matplotlib（+ akshare获取指数数据）
               globalDay: 98,
               title: "因子研究——什么是Alpha因子？常见因子类型",
               description: "因子是选股的「评分标准」——高动量分、低估值分、好质量分...每个因子从不同角度评价一只股票。今天理解四大类因子的核心逻辑和适用场景。",
-              prompt: `=== 第90天：因子研究 ===
+              prompt: `=== 第98天：因子研究 ===
 
 【每日学习时长】约3小时
 
@@ -2571,7 +2573,7 @@ Python 3.x + pandas + numpy
               globalDay: 99,
               title: "用AI生成因子想法——「给我5个基于成交量的A股Alpha因子思路」",
               description: "AI在因子开发中最大的价值是「头脑风暴」——让它生成10个因子想法，你从中筛选出逻辑靠谱的。今天的核心：AI生成创意 → 人工审查逻辑 → 筛选可实现的因子。",
-              prompt: `=== 第91天：AI辅助因子研究 ===
+              prompt: `=== 第99天：AI辅助因子研究 ===
 
 【每日学习时长】约3小时
 
@@ -2601,7 +2603,7 @@ LLM API + Python
               globalDay: 100,
               title: "因子IC分析——这个因子真的能预测收益吗？",
               description: "IC（Information Coefficient）= 因子值与未来收益的相关系数。IC > 0.03 算不错，IC < 0.01 基本没用。今天的核心：计算一个因子的IC序列，画IC走势图，判断因子的预测力是否稳定。",
-              prompt: `=== 第92天：因子IC分析 ===
+              prompt: `=== 第100天：因子IC分析 ===
 
 【每日学习时长】约3小时
 
@@ -2631,7 +2633,7 @@ Python 3.x + pandas + numpy + scipy
               globalDay: 101,
               title: "因子合成——多因子如何组合？",
               description: "你有了多个因子（动量、价值、质量...），怎么合成一个综合评分？等权合成（最简单稳健）、IC加权（给预测力强的因子更高权重）、机器学习加权（但要非常小心过拟合）。",
-              prompt: `=== 第93天：因子合成 ===
+              prompt: `=== 第101天：因子合成 ===
 
 【每日学习时长】约3小时
 
@@ -2664,7 +2666,7 @@ Python 3.x + pandas + numpy + sklearn（可选）
               globalDay: 102,
               title: "缓冲/复习日",
               description: "回顾因子研究全流程：因子类型 → AI辅助生成 → IC分析 → 因子合成。补上掉队的任务。不做新课。",
-              prompt: `=== 第94天：缓冲/复习 ===
+              prompt: `=== 第102天：缓冲/复习 ===
 
 【每日学习时长】约3小时
 
@@ -2687,7 +2689,7 @@ Python 3.x + pandas + numpy + sklearn（可选）
               globalDay: 103,
               title: "Sharpe Ratio、Max Drawdown、Calmar Ratio",
               description: "策略A年化+30%但最大回撤-60%，策略B年化+18%但最大回撤-10%——你选哪个？学会用Sharpe/MaxDD/Calmar三个指标全面评估策略的「风险调整后收益」。",
-              prompt: `=== 第95天：策略绩效指标 ===
+              prompt: `=== 第103天：策略绩效指标 ===
 
 【每日学习时长】约3小时
 
@@ -2713,7 +2715,7 @@ Python 3.x + numpy + pandas
               globalDay: 104,
               title: "Walk-Forward 分析——用滚动窗口验证策略稳定性",
               description: "不用全部历史数据训练，用前N天训练、后M天测试，不断滚动。如果策略在大部分时间窗口都有效，才说明它真的有用。",
-              prompt: `=== 第96天：Walk-Forward 分析 ===
+              prompt: `=== 第104天：Walk-Forward 分析 ===
 
 【每日学习时长】约3小时
 
@@ -2740,7 +2742,7 @@ Python 3.x + pandas + numpy
               globalDay: 105,
               title: "蒙特卡洛模拟——随机打乱交易顺序检验显著性",
               description: "把策略的交易记录随机打乱1000次，如果真实收益在随机分布的前5%才算显著。让数据自己说话，不依赖任何分布假设。",
-              prompt: `=== 第97天：蒙特卡洛检验 ===
+              prompt: `=== 第105天：蒙特卡洛检验 ===
 
 【每日学习时长】约3小时
 
@@ -2766,7 +2768,7 @@ Python 3.x + numpy + matplotlib
               globalDay: 106,
               title: "策略衰减检测——什么信号表明策略过期了？",
               description: "滚动Sharpe持续下降、因子IC从正变负、换手率突然飙升——这些都是策略在失效的警报。实现策略健康度监控面板，让系统自己知道「我是不是该更新了」。",
-              prompt: `=== 第98天：策略衰减检测 ===
+              prompt: `=== 第106天：策略衰减检测 ===
 
 【每日学习时长】约3小时
 
@@ -2791,7 +2793,7 @@ Python 3.x + pandas + matplotlib
               globalDay: 107,
               title: "综合验收——输出完整的策略研究报告",
               description: "将阶段四所有分析整合为完整的策略研究报告：选至少2个策略 → IC分析 → Walk-Forward → 成本建模 → 蒙特卡洛 → 基准对比 → 健康度 → 完整报告。",
-              prompt: `=== 第99天：策略研究综合验收 ===
+              prompt: `=== 第107天：策略研究综合验收 ===
 
 【每日学习时长】约3小时
 
@@ -2831,7 +2833,7 @@ Python 3.x + pandas + numpy + matplotlib + vectorbt
               globalDay: 108,
               title: "第一个API——/health 返回 {\"status\": \"ok\"}",
               description: "从今天起，你的代码不再只是躺在 .py 文件里，而是运行在服务器上等着被调用。FastAPI让你用几行代码创建REST API。",
-              prompt: `=== 第100天：第一个 FastAPI 服务 ===
+              prompt: `=== 第108天：第一个 FastAPI 服务 ===
 
 【每日学习时长】约3小时
 
@@ -2857,7 +2859,7 @@ Python 3.x + FastAPI + uvicorn（安装：uv add fastapi uvicorn）
               globalDay: 109,
               title: "数据接口——/data/{symbol} 返回股票数据",
               description: "API的真正价值在于提供数据。路径参数{symbol}动态匹配不同股票，查询参数?start=&end=灵活指定时间范围。",
-              prompt: `=== 第101天：数据接口 ===
+              prompt: `=== 第109天：数据接口 ===
 
 【每日学习时长】约3小时
 
@@ -2882,7 +2884,7 @@ Python 3.x + FastAPI + pandas + SQLite/akshare
               globalDay: 110,
               title: "策略接口——/signal/{symbol} 返回交易信号",
               description: "POST接收JSON格式的策略参数，调用回测/信号函数，返回 buy/hold/sell 信号和置信度。",
-              prompt: `=== 第102天：策略信号接口 ===
+              prompt: `=== 第110天：策略信号接口 ===
 
 【每日学习时长】约3小时
 
@@ -2907,7 +2909,7 @@ Python 3.x + FastAPI + pydantic
               globalDay: 111,
               title: "pydantic 数据校验——请求参数类型自动检查",
               description: "pydantic让FastAPI自动校验请求参数——类型不匹配自动返回422错误。你不用写任何校验代码。",
-              prompt: `=== 第103天：pydantic 数据校验 ===
+              prompt: `=== 第111天：pydantic 数据校验 ===
 
 【每日学习时长】约3小时
 
@@ -2933,7 +2935,7 @@ Python 3.x + FastAPI + pydantic
               globalDay: 112,
               title: "API 文档——FastAPI 自动生成的 Swagger 页面",
               description: "FastAPI自动生成 /docs Swagger交互式文档——所有端点、参数、响应格式一目了然，还能在页面上直接测试API。",
-              prompt: `=== 第104天：API文档与总结 ===
+              prompt: `=== 第112天：API文档与总结 ===
 
 【每日学习时长】约3小时
 
@@ -2964,7 +2966,7 @@ Python 3.x + FastAPI
               globalDay: 113,
               title: "缓冲/复习日",
               description: "回顾FastAPI服务封装。确认所有API端点可用、pydantic校验生效、Swagger文档完整。不做新课。",
-              prompt: `=== 第105天：缓冲/复习 ===
+              prompt: `=== 第113天：缓冲/复习 ===
 
 【每日学习时长】约3小时
 
@@ -2987,7 +2989,7 @@ Python 3.x + FastAPI
               globalDay: 114,
               title: "schedule 库——每天收盘后自动拉数据",
               description: "从手动运行到定时自动运行。schedule库让你用人类语言描述任务：「每天15:30拉取当日行情」，Python守护进程替你记住时间。",
-              prompt: `=== 第106天：定时任务 ===
+              prompt: `=== 第114天：定时任务 ===
 
 【每日学习时长】约3小时
 
@@ -3012,7 +3014,7 @@ Python 3.x + schedule（安装：uv add schedule）
               globalDay: 115,
               title: "任务链——拉数据 → 算信号 → 存结果",
               description: "把多个任务串联成自动化链条：收盘后自动拉数据→算信号→存结果，形成完整的无人值守工作流。",
-              prompt: `=== 第107天：任务链 ===
+              prompt: `=== 第115天：任务链 ===
 
 【每日学习时长】约3小时
 
@@ -3037,7 +3039,7 @@ Python 3.x + schedule + SQLite
               globalDay: 116,
               title: "异常处理——任务失败怎么重试？",
               description: "定时任务不会有人盯着看——网络断了、数据异常，怎么办？给任务链加上重试机制和异常通知，让系统在无人值守时也能安全运行。",
-              prompt: `=== 第108天：任务异常处理 ===
+              prompt: `=== 第116天：任务异常处理 ===
 
 【每日学习时长】约3小时
 
@@ -3068,7 +3070,7 @@ Python 3.x + schedule + time + logging
               globalDay: 117,
               title: "数据库选择 + 策略状态表设计",
               description: "SQLite适合单机（一个文件就是数据库），PostgreSQL适合多服务共享。设计核心表结构：持仓表、交易记录表、信号日志表。",
-              prompt: `=== 第109天：数据库选择与表设计 ===
+              prompt: `=== 第117天：数据库选择与表设计 ===
 
 【每日学习时长】约3小时
 
@@ -3093,7 +3095,7 @@ Python 3.x + SQLite3（内置）
               globalDay: 118,
               title: "SQLAlchemy ORM——用Python对象操作数据库",
               description: "ORM把数据库表映射为Python类。不用写SQL字符串，用Python代码就能操作数据库。",
-              prompt: `=== 第110天：SQLAlchemy ORM ===
+              prompt: `=== 第118天：SQLAlchemy ORM ===
 
 【每日学习时长】约3小时
 
@@ -3118,7 +3120,7 @@ Python 3.x + SQLAlchemy（安装：uv add sqlalchemy）
               globalDay: 119,
               title: "数据备份与恢复——保护你的数据",
               description: "定时自动备份数据库，防止数据丢失。SQLite .dump 一条命令导出整个数据库为 SQL 文本文件。",
-              prompt: `=== 第111天：数据备份与恢复 ===
+              prompt: `=== 第119天：数据备份与恢复 ===
 
 【每日学习时长】约3小时
 
@@ -3144,7 +3146,7 @@ Python 3.x + SQLite + schedule
               globalDay: 120,
               title: "数据库综合练习——FastAPI + SQLAlchemy + 自动备份",
               description: "整合FastAPI + SQLAlchemy + 自动备份，API调用的数据自动持久化到数据库并定期备份。你的系统有了完整的「记忆」能力。",
-              prompt: `=== 第112天：数据库综合练习 ===
+              prompt: `=== 第120天：数据库综合练习 ===
 
 【每日学习时长】约3小时
 
@@ -3175,7 +3177,7 @@ Python 3.x + FastAPI + SQLAlchemy + SQLite
               globalDay: 121,
               title: "缓冲/复习日",
               description: "回顾数据库与状态持久化内容。确认SQLAlchemy和Alembic能正常使用。不做新课。",
-              prompt: `=== 第113天：缓冲/复习 ===
+              prompt: `=== 第121天：缓冲/复习 ===
 
 【每日学习时长】约3小时
 
@@ -3197,7 +3199,7 @@ Python 3.x + FastAPI + SQLAlchemy + SQLite
               globalDay: 122,
               title: "Docker 基本概念——镜像 vs 容器",
               description: "「在我电脑上能跑」是程序员最怕的话。Docker把代码、环境、依赖全部打包成镜像，任何人任何机器都能一键运行。",
-              prompt: `=== 第114天：Docker 基础 ===
+              prompt: `=== 第122天：Docker 基础 ===
 
 【每日学习时长】约3小时
 
@@ -3223,7 +3225,7 @@ Docker Desktop（docker.com下载）
               globalDay: 123,
               title: "docker-compose——多服务一起启动",
               description: "docker-compose用一个YAML文件定义API+数据库+调度器的完整运行环境，docker compose up 一键全部启动。",
-              prompt: `=== 第115天：docker-compose ===
+              prompt: `=== 第123天：docker-compose ===
 
 【每日学习时长】约3小时
 
@@ -3249,7 +3251,7 @@ Docker Desktop（内置docker-compose）
               globalDay: 124,
               title: "环境变量与密钥管理",
               description: "API Key、数据库密码写到代码里=灾难。用 .env 文件管理敏感信息，docker-compose注入环境变量，.gitignore确保密钥不会被提交。",
-              prompt: `=== 第116天：密钥管理 ===
+              prompt: `=== 第124天：密钥管理 ===
 
 【每日学习时长】约3小时
 
@@ -3275,7 +3277,7 @@ Docker + python-dotenv
               globalDay: 125,
               title: "综合验收——docker compose up 一键启动整个系统",
               description: "git clone → docker compose up → 系统正常运行。不需要装Python、不需要配环境——Docker全包了。这就是真正的「一键部署」。",
-              prompt: `=== 第117天：部署综合验收 ===
+              prompt: `=== 第125天：部署综合验收 ===
 
 【每日学习时长】约3小时
 
@@ -3315,7 +3317,7 @@ Docker + Git
               globalDay: 126,
               title: "什么是Agent？Agent = LLM + 工具 + 记忆 + 规划",
               description: "Agent和普通LLM调用的本质区别：LLM只会回答问题，Agent会自己决定下一步做什么——调用工具、搜索信息、分析结果、循环迭代。",
-              prompt: `=== 第118天：Agent 概念 ===
+              prompt: `=== 第126天：Agent 概念 ===
 
 【每日学习时长】约3小时
 
@@ -3340,7 +3342,7 @@ Python 3.x（概念学习 + 简单示例）
               globalDay: 127,
               title: "LangGraph 核心概念——State, Node, Edge",
               description: "LangGraph是构建Agent的框架。State（Agent当前知道的一切）、Node（一个处理步骤）、Edge（步骤之间的流转规则）。",
-              prompt: `=== 第119天：LangGraph 核心概念 ===
+              prompt: `=== 第127天：LangGraph 核心概念 ===
 
 【每日学习时长】约3小时
 
@@ -3365,7 +3367,7 @@ Python 3.x + langgraph（安装：uv add langgraph）
               globalDay: 128,
               title: "构建第一个Agent——「分析这只股票，告诉我能不能买」",
               description: "给Agent配一个工具函数 get_stock_data(symbol)，Agent自主调用工具→拿到数据→分析→输出结论。这是你的第一个自主决策Agent。",
-              prompt: `=== 第120天：第一个 Agent ===
+              prompt: `=== 第128天：第一个 Agent ===
 
 【每日学习时长】约3小时
 
@@ -3390,7 +3392,7 @@ Python 3.x + langgraph + LLM API
               globalDay: 129,
               title: "工具调用——Agent 可以自己调函数",
               description: "Agent的能力取决于工具的数量和质量。给它配3个工具（获取行情、计算指标、查询新闻），让它自主选择、组合使用。",
-              prompt: `=== 第121天：多工具 Agent ===
+              prompt: `=== 第129天：多工具 Agent ===
 
 【每日学习时长】约3小时
 
@@ -3415,7 +3417,7 @@ Python 3.x + langgraph + LLM API
               globalDay: 130,
               title: "条件路由——不同市场状态走不同分析流程",
               description: "高波动市场需要深度分析，低波动市场可以快速判断。LangGraph条件边让Agent根据市场状态自动选择不同的分析路径。",
-              prompt: `=== 第122天：条件路由 Agent ===
+              prompt: `=== 第130天：条件路由 Agent ===
 
 【每日学习时长】约3小时
 
@@ -3446,7 +3448,7 @@ Python 3.x + langgraph + LLM API
               globalDay: 131,
               title: "缓冲/复习日",
               description: "回顾Agent概念和LangGraph基础。不做新课。",
-              prompt: `=== 第123天：缓冲/复习 ===
+              prompt: `=== 第131天：缓冲/复习 ===
 
 【每日学习时长】约3小时
 
@@ -3468,7 +3470,7 @@ Python 3.x + langgraph + LLM API
               globalDay: 132,
               title: "仓位管理基础——Kelly公式、等权重、风险平价",
               description: "仓位管理是比选股更重要的技能。今天用Python实现三种仓位分配方法，直观对比效果。",
-              prompt: `=== 第124天：仓位管理 ===
+              prompt: `=== 第132天：仓位管理 ===
 
 【每日学习时长】约3小时
 
@@ -3493,7 +3495,7 @@ Python 3.x + numpy
               globalDay: 133,
               title: "止损/止盈逻辑",
               description: "固定比例止损、移动止损（trailing stop）、时间止损——三种逻辑各有适用场景。今天实现并回测对比。",
-              prompt: `=== 第125天：止损/止盈 ===
+              prompt: `=== 第133天：止损/止盈 ===
 
 【每日学习时长】约3小时
 
@@ -3518,7 +3520,7 @@ Python 3.x + pandas + numpy
               globalDay: 134,
               title: "组合层面的风控——行业集中度、最大回撤限制",
               description: "组合风控检查隐形的集中度风险：10只股票看似分散，如果全在同一行业，风险几乎没有分散。",
-              prompt: `=== 第126天：组合风控 ===
+              prompt: `=== 第134天：组合风控 ===
 
 【每日学习时长】约3小时
 
@@ -3543,7 +3545,7 @@ Python 3.x + pandas + numpy
               globalDay: 135,
               title: "风控规则引擎——「如果X则禁止Y」",
               description: "把风控写成一串if-then规则，按优先级执行。硬止损 > 仓位限制 > 行业集中度——高优先级规则可以否决低优先级的调整。",
-              prompt: `=== 第127天：风控规则引擎 ===
+              prompt: `=== 第135天：风控规则引擎 ===
 
 【每日学习时长】约3小时
 
@@ -3568,7 +3570,7 @@ Python 3.x（纯逻辑代码）
               globalDay: 136,
               title: "风控与Agent集成——Agent做决策前必须先过风控",
               description: "Agent输出交易建议 → 风控引擎检查 → 通过就执行，拦截就反馈给Agent → Agent调整建议。这是「AI决策+规则约束」的混合架构。",
-              prompt: `=== 第128天：Agent + 风控集成 ===
+              prompt: `=== 第136天：Agent + 风控集成 ===
 
 【每日学习时长】约3小时
 
@@ -3599,7 +3601,7 @@ Python 3.x + langgraph + 风控引擎
               globalDay: 137,
               title: "缓冲/复习日",
               description: "回顾风控模块。不做新课。",
-              prompt: `=== 第129天：缓冲/复习 ===
+              prompt: `=== 第137天：缓冲/复习 ===
 
 【每日学习时长】约3小时
 
@@ -3621,7 +3623,7 @@ Python 3.x + langgraph + 风控引擎
               globalDay: 138,
               title: "缓冲/复习日",
               description: "回顾Agent基础与风控模块的核心概念。补上掉队的任务。不做新课。",
-              prompt: `=== 第130天：缓冲/复习日 ===
+              prompt: `=== 第138天：缓冲/复习日 ===
 
 【每日学习时长】约3小时
 
@@ -3640,7 +3642,7 @@ Python 3.x + langgraph + 风控引擎
               globalDay: 139,
               title: "参数敏感性分析——参数变了，结果怎么变？",
               description: "策略参数（如均线周期）改变时，收益变化有多大？手动扫描多组参数，画参数-收益曲线，理解参数稳健性。",
-              prompt: `=== 第131天：参数敏感性分析 ===
+              prompt: `=== 第139天：参数敏感性分析 ===
 
 【每日学习时长】约3小时
 
@@ -3666,7 +3668,7 @@ Python 3.x + pandas + matplotlib
               globalDay: 140,
               title: "策略衰减监控——自动检测策略表现是否显著恶化",
               description: "滚动Sharpe持续下降、因子IC从正变负、Turnover异常飙升——策略在发出求救信号。实现策略健康度自动检测。",
-              prompt: `=== 第132天：策略衰减监控 ===
+              prompt: `=== 第140天：策略衰减监控 ===
 
 【每日学习时长】约3小时
 
@@ -3691,7 +3693,7 @@ Python 3.x + pandas + numpy
               globalDay: 141,
               title: "自动迭代——检测到衰减→触发重新分析→自动上线",
               description: "衰减检测 → 自动触发参数重新扫描 → Walk-Forward验证 → 自动上线。但要设置冷静期——不能频繁切换参数。",
-              prompt: `=== 第133天：自动迭代 ===
+              prompt: `=== 第141天：自动迭代 ===
 
 【每日学习时长】约3小时
 
@@ -3722,7 +3724,7 @@ Python 3.x + pandas
               globalDay: 142,
               title: "缓冲/复习日",
               description: "回顾策略维护与参数管理内容。不做新课。",
-              prompt: `=== 第134天：缓冲/复习 ===
+              prompt: `=== 第142天：缓冲/复习 ===
 
 【每日学习时长】约3小时
 
@@ -3744,7 +3746,7 @@ Python 3.x + pandas
               globalDay: 143,
               title: "终局综合验收（上）——构建完整闭环系统",
               description: "构建完整闭环：数据更新→信号计算→Agent决策→风控拦截→模拟执行→绩效跟踪。六个环节串联，整条链路跑通。",
-              prompt: `=== 第135天：终局验收（上）===
+              prompt: `=== 第143天：终局验收（上）===
 
 【每日学习时长】约3小时
 
@@ -3769,7 +3771,7 @@ Python 3.x + pandas
               globalDay: 144,
               title: "终局综合验收（中）——模块独立、配置驱动、日志追踪",
               description: "每个模块可独立替换、所有参数配置驱动、全程日志追踪、任何异常都能回溯。系统从能跑通升级到可维护。",
-              prompt: `=== 第136天：终局验收（中）===
+              prompt: `=== 第144天：终局验收（中）===
 
 【每日学习时长】约3小时
 
@@ -3794,7 +3796,7 @@ Python 3.x + pandas
               globalDay: 145,
               title: "终局综合验收（下）——系统架构文档 + 最终展示",
               description: "产出完整的系统架构文档（组件图+数据流图），确保整个系统可在本地持续运行。这是六个月学习旅程的最终收获。",
-              prompt: `=== 第137天：终局验收（下）===
+              prompt: `=== 第145天：终局验收（下）===
 
 【每日学习时长】约3小时
 
