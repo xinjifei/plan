@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "mode": "operate",
+  "direction": "true-black-flat",
+  "directionSeed": "680993631",
+  "tokens": {
+    "ground": "#000000",
+    "surface": "#111111",
+    "ink": "#ffffff",
+    "primary": "#ffffff",
+    "accent": "#c6f24e",
+    "radiusCard": "8px",
+    "radiusControl": "6px"
+  },
+  "source": "DESIGN.md"
+}

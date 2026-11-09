@@ -1,0 +1,100 @@
+import { Browser } from '/Users/lyuchanghe/.codex/skills/design-taste-frontend/scripts/lib/cdp.mjs';
+import { mkdirSync,writeFileSync } from 'node:fs';
+const dir=new URL('../.impeccable/review/',import.meta.url);mkdirSync(dir,{recursive:true});
+const browser=await Browser.launch();
+const results=[];
+const check=(name,value)=>{results.push({name,pass:!!value});if(!value)throw Error(name);};
+try {
+ const page=await browser.newPage();
+ await page.goto('http://127.0.0.1:4173/');
+ await page.eval(()=>{localStorage.removeItem('dual-track-ui-demo-v1');location.reload();});
+ await new Promise(r=>setTimeout(r,500));
+ check('默认首页',await page.eval(()=>document.querySelector('h1').textContent==='今日学习'));
+ check('默认连续学习6天',await page.eval(()=>document.querySelector('.study-rhythm strong').textContent==='6'));
+ check('初始进度 77/96 与 33/42',await page.eval(()=>document.body.textContent.includes('77 / 96')&&document.body.textContent.includes('33 / 42')));
+ await page.eval(()=>{location.hash='#outline/main';});await new Promise(r=>setTimeout(r,150));
+ check('课程目录打开思维导图',await page.eval(()=>document.querySelector('h1').textContent==='课程大纲'&&document.querySelectorAll('.plan-map-day').length===138));
+ await page.eval(()=>document.querySelector('[data-map-stage="3"][data-map-track="main"]').click());await new Promise(r=>setTimeout(r,150));
+ check('思维导图定位阶段',await page.eval(()=>location.hash==='#courses/main'&&document.querySelector('[data-stage="3"]')?.getAttribute('aria-current')==='true'));
+ await page.eval(()=>{location.hash='#day/main/78';});await new Promise(r=>setTimeout(r,150));
+ await page.eval(()=>document.querySelector('.skip-link').click());
+ check('跳过导航保留学习路由并聚焦main',await page.eval(()=>location.hash==='#day/main/78'&&document.activeElement.id==='main'&&document.querySelector('h1').textContent==='RAG 问答系统'));
+ check('完成按钮阻止未完成任务',await page.eval(()=>document.querySelector('[data-action="complete"]').disabled));
+ await page.eval(()=>{document.querySelectorAll('[data-task]').forEach(x=>{if(!x.checked)x.click();});});
+ check('任务全部勾选后可完成',await page.eval(()=>!document.querySelector('[data-action="complete"]').disabled));
+ await page.eval(()=>document.querySelector('[data-action="complete"]').click());
+ check('完成后进度同步',await page.eval(()=>document.body.textContent.includes('78 / 96')&&!!document.querySelector('[data-action="reopen"]')));
+ await page.eval(()=>{location.reload();});await new Promise(r=>setTimeout(r,300));
+ check('刷新后状态持久化',await page.eval(()=>!!document.querySelector('[data-action="reopen"]')));
+ await page.eval(()=>document.querySelector('[data-task="0"]').click());
+ check('取消任务同步撤销当天完成',await page.eval(()=>document.body.textContent.includes('77 / 96')&&document.querySelector('[data-action="complete"]').disabled));
+ await page.eval(()=>document.querySelector('.related-link').click());await new Promise(r=>setTimeout(r,150));
+ check('数学关联跳转',await page.eval(()=>document.querySelector('h1').textContent==='Embedding 的数学'));
+ await page.eval(()=>document.querySelector('.related-link').click());await new Promise(r=>setTimeout(r,150));
+ check('数学返回主计划',await page.eval(()=>location.hash==='#day/main/78'));
+ await page.eval(()=>{location.hash='#courses/main';});await new Promise(r=>setTimeout(r,150));
+ await page.eval(()=>{const s=document.querySelector('#course-search');s.value='34';s.dispatchEvent(new Event('input',{bubbles:true}));});
+ check('跨阶段精确编号搜索',await page.eval(()=>document.querySelectorAll('.course-row').length===1&&document.querySelector('.course-row').getAttribute('href')==='#day/main/34'));
+ await page.eval(()=>{const s=document.querySelector('#course-search');s.value='不存在的课程';s.dispatchEvent(new Event('input',{bubbles:true}));});
+ check('搜索空状态',await page.eval(()=>!!document.querySelector('.search-empty')));
+ await page.eval(()=>document.querySelector('[data-action="clear-search"]').click());
+ check('清除筛选',await page.eval(()=>document.querySelectorAll('.course-row').length===96));
+ // Restore the deterministic baseline before captures.
+ await page.eval(()=>{localStorage.setItem('dual-track-ui-demo-v1',JSON.stringify(Curriculum.initialState()));location.reload();});await new Promise(r=>setTimeout(r,250));
+ for(const [name,width,height] of [['desktop',1440,900],['tablet',768,1024],['mobile',390,844]]){
+  await page.setViewport({width,height,mobile:width<700});
+  for(const [view,hash] of [['home','#home/main'],['outline','#outline/main'],['lesson','#day/main/78'],['courses','#courses/main'],['math','#day/math/34']]){
+   await page.eval(h=>{location.hash=h;},hash);await new Promise(r=>setTimeout(r,130));
+   check(`${name} ${view} 无横向溢出`,await page.eval(()=>document.documentElement.scrollWidth<=innerWidth));
+   check(`${name} ${view} 单一标题`,await page.eval(()=>document.querySelectorAll('h1').length===1));
+   await page.screenshot({path:new URL(`${view}-${name}.png`,dir).pathname,format:'png',fullPage:true});
+  }
+ }
+ await page.eval(()=>{location.hash='#day/main/79';});await new Promise(r=>setTimeout(r,100));
+ check('尚未开始学习日',await page.eval(()=>document.querySelector('.lesson-page-head .status').textContent.includes('未开始')));
+ await page.screenshot({path:new URL('not-started-mobile.png',dir).pathname,format:'png',fullPage:true});
+ await page.eval(()=>{location.hash='#day/main/77';});await new Promise(r=>setTimeout(r,100));
+ check('已完成学习日',await page.eval(()=>!!document.querySelector('[data-action="reopen"]')));
+ await page.screenshot({path:new URL('completed-mobile.png',dir).pathname,format:'png',fullPage:true});
+ await page.eval(()=>document.querySelector('[data-action="menu"]').click());
+ check('手机导航展开',await page.eval(()=>document.querySelector('[data-action="menu"]').getAttribute('aria-expanded')==='true'));
+ await page.send('Input.dispatchKeyEvent',{type:'keyDown',key:'Escape',code:'Escape',windowsVirtualKeyCode:27});
+ check('Escape关闭导航',await page.eval(()=>document.querySelector('[data-action="menu"]').getAttribute('aria-expanded')==='false'));
+ await page.eval(()=>{location.hash='#day/main/78';});await new Promise(r=>setTimeout(r,100));
+ await page.eval(()=>document.querySelector('.prompt-disclosure summary').click());
+ check('Prompt可收起',await page.eval(()=>!document.querySelector('.prompt-disclosure').open));
+ await page.eval(()=>document.querySelector('.prompt-disclosure summary').click());
+ check('Prompt可展开',await page.eval(()=>document.querySelector('.prompt-disclosure').open));
+ await page.eval(()=>document.querySelector('[data-task="1"]').focus());
+ await page.send('Input.dispatchKeyEvent',{type:'keyDown',key:' ',code:'Space',windowsVirtualKeyCode:32});
+ await page.send('Input.dispatchKeyEvent',{type:'keyUp',key:' ',code:'Space',windowsVirtualKeyCode:32});
+ check('键盘空格可切换任务',await page.eval(()=>document.querySelector('[data-task="1"]').checked));
+ await page.send('Input.dispatchKeyEvent',{type:'keyDown',key:'Tab',code:'Tab',windowsVirtualKeyCode:9});
+ check('Tab进入下一个任务',await page.eval(()=>document.activeElement.dataset.task==='2'));
+ check('键盘焦点可见',await page.eval(()=>getComputedStyle(document.activeElement).outlineStyle==='solid'));
+ await page.eval(()=>document.querySelector('.prompt-disclosure summary').focus());
+ await page.send('Input.dispatchKeyEvent',{type:'keyDown',key:'Enter',code:'Enter',windowsVirtualKeyCode:13,text:'\r'});
+ await page.send('Input.dispatchKeyEvent',{type:'keyUp',key:'Enter',code:'Enter',windowsVirtualKeyCode:13});
+ check('键盘Enter收起Prompt',await page.eval(()=>!document.querySelector('.prompt-disclosure').open));
+
+ await page.eval(()=>document.querySelector('[data-action="demo"]').click());
+ check('演示状态对话框',await page.eval(()=>document.querySelector('#demo-dialog').open));
+ await page.eval(()=>{document.querySelector('#demo-mode').value='empty';document.querySelector('#apply-mode').click();});await new Promise(r=>setTimeout(r,100));
+ check('全新记录的零进度',await page.eval(()=>document.body.textContent.includes('0 / 96')&&document.body.textContent.includes('还没有完成记录')));
+ await page.screenshot({path:new URL('empty-home-mobile.png',dir).pathname,format:'png',fullPage:true});
+ await page.eval(()=>{document.querySelector('[data-action="demo"]').click();document.querySelector('#demo-mode').value='complete';document.querySelector('#apply-mode').click();});await new Promise(r=>setTimeout(r,100));
+ check('全部完成终点',await page.eval(()=>document.body.textContent.includes('96 / 96')&&document.body.textContent.includes('这一轨，已走完')));
+ check('模拟完成日期不在未来',await page.eval(()=>Object.values(JSON.parse(localStorage.getItem('dual-track-ui-demo-v1')).records).every(r=>!r.completed||r.completed<=Curriculum.today)));
+ await page.screenshot({path:new URL('complete-home-mobile.png',dir).pathname,format:'png',fullPage:true});
+
+ await page.eval(()=>{location.hash='#day/main/1';});await new Promise(r=>setTimeout(r,100));
+ check('第一天上一天禁用',await page.eval(()=>!!document.querySelector('.day-navigation button:disabled')));
+ await page.eval(()=>{location.hash='#day/main/96';});await new Promise(r=>setTimeout(r,100));
+ check('最后一天下一天禁用',await page.eval(()=>document.querySelector('.day-navigation button:disabled').textContent.includes('最后')));
+ await page.eval(()=>{location.hash='#day/main/999';});await new Promise(r=>setTimeout(r,100));
+ check('无效路由可恢复',await page.eval(()=>document.querySelector('h1').textContent==='找不到这个学习日'));
+ check('无JS运行错误',page.consoleErrors.length===0);
+ await page.goto('file:///Users/lyuchanghe/stu/plan/demo/index.html');
+ check('file协议可独立运行',await page.eval(()=>document.querySelector('h1').textContent==='今日学习'));
+ console.log(JSON.stringify(results,null,2));
+}finally{writeFileSync(new URL('checks.json',dir),JSON.stringify(results,null,2));await browser.close();}

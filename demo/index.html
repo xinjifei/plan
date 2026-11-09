@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>双轨 · 个人学习计划</title>
+<link rel="stylesheet" href="css/app.css">
+<script defer src="js/data.js"></script>
+<script defer src="js/app.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">跳到主要内容</a>
+<div id="app"></div>
+<div id="notice" class="toast" role="status" aria-live="polite"></div>
+<dialog id="demo-dialog" aria-labelledby="demo-title">
+<form method="dialog"><button class="icon-btn dialog-close" aria-label="关闭"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></form>
+<h2 id="demo-title">演示数据</h2>
+<p>课程和记录均为模拟，演示日期固定为 2026 年 10 月 29 日。操作仅保存在当前浏览器。</p>
+<label for="demo-mode">选择演示状态</label>
+<select id="demo-mode"><option value="normal">正常学习 · 主计划第 78 天</option><option value="empty">尚未开始 · 从第 1 天开始</option><option value="complete">全部完成 · 回顾课程</option></select>
+<p class="small muted">应用后将替换此 Demo 的本地记录。</p>
+<button class="btn primary" id="apply-mode">应用演示状态</button>
+</dialog>
+<noscript>请启用 JavaScript，以使用课程导航和任务勾选。</noscript>
+</body>
+</html>

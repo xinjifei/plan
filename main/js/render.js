@@ -155,7 +155,7 @@ function checkOverlay(){
   if(allDone&&total>0){ov.classList.add('show');document.getElementById('overlay-msg').textContent=(currentTrack==='math'?'Math Track':'Main Plan')+' Complete! 🎉'}else{ov.classList.remove('show')}
 }
 
-// ===== 总览页渲染（135天8阶段 + 61天5模块；天号跳过 13–22，最大到 145）=====
+// ===== 总览页渲染（134天8阶段 + 61天5模块；天号跳过 13–22，最大到 144）=====
 function renderOverview(){
   var tempTrack=currentTrack;
   currentTrack='main';var mainDone=Store.getDoneCount(),mainTotal=MAIN_PLAN.totalDays;var mainPct=mainTotal>0?Math.round(mainDone/mainTotal*100):0;

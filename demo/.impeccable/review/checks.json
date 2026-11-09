@@ -1,0 +1,230 @@
+[
+  {
+    "name": "默认首页",
+    "pass": true
+  },
+  {
+    "name": "默认连续学习6天",
+    "pass": true
+  },
+  {
+    "name": "初始进度 77/96 与 33/42",
+    "pass": true
+  },
+  {
+    "name": "跳过导航保留学习路由并聚焦main",
+    "pass": true
+  },
+  {
+    "name": "完成按钮阻止未完成任务",
+    "pass": true
+  },
+  {
+    "name": "任务全部勾选后可完成",
+    "pass": true
+  },
+  {
+    "name": "完成后进度同步",
+    "pass": true
+  },
+  {
+    "name": "刷新后状态持久化",
+    "pass": true
+  },
+  {
+    "name": "取消任务同步撤销当天完成",
+    "pass": true
+  },
+  {
+    "name": "数学关联跳转",
+    "pass": true
+  },
+  {
+    "name": "数学返回主计划",
+    "pass": true
+  },
+  {
+    "name": "跨阶段精确编号搜索",
+    "pass": true
+  },
+  {
+    "name": "搜索空状态",
+    "pass": true
+  },
+  {
+    "name": "清除筛选",
+    "pass": true
+  },
+  {
+    "name": "desktop home 无横向溢出",
+    "pass": true
+  },
+  {
+    "name": "desktop home 单一标题",
+    "pass": true
+  },
+  {
+    "name": "desktop lesson 无横向溢出",
+    "pass": true
+  },
+  {
+    "name": "desktop lesson 单一标题",
+    "pass": true
+  },
+  {
+    "name": "desktop courses 无横向溢出",
+    "pass": true
+  },
+  {
+    "name": "desktop courses 单一标题",
+    "pass": true
+  },
+  {
+    "name": "desktop math 无横向溢出",
+    "pass": true
+  },
+  {
+    "name": "desktop math 单一标题",
+    "pass": true
+  },
+  {
+    "name": "tablet home 无横向溢出",
+    "pass": true
+  },
+  {
+    "name": "tablet home 单一标题",
+    "pass": true
+  },
+  {
+    "name": "tablet lesson 无横向溢出",
+    "pass": true
+  },
+  {
+    "name": "tablet lesson 单一标题",
+    "pass": true
+  },
+  {
+    "name": "tablet courses 无横向溢出",
+    "pass": true
+  },
+  {
+    "name": "tablet courses 单一标题",
+    "pass": true
+  },
+  {
+    "name": "tablet math 无横向溢出",
+    "pass": true
+  },
+  {
+    "name": "tablet math 单一标题",
+    "pass": true
+  },
+  {
+    "name": "mobile home 无横向溢出",
+    "pass": true
+  },
+  {
+    "name": "mobile home 单一标题",
+    "pass": true
+  },
+  {
+    "name": "mobile lesson 无横向溢出",
+    "pass": true
+  },
+  {
+    "name": "mobile lesson 单一标题",
+    "pass": true
+  },
+  {
+    "name": "mobile courses 无横向溢出",
+    "pass": true
+  },
+  {
+    "name": "mobile courses 单一标题",
+    "pass": true
+  },
+  {
+    "name": "mobile math 无横向溢出",
+    "pass": true
+  },
+  {
+    "name": "mobile math 单一标题",
+    "pass": true
+  },
+  {
+    "name": "尚未开始学习日",
+    "pass": true
+  },
+  {
+    "name": "已完成学习日",
+    "pass": true
+  },
+  {
+    "name": "手机导航展开",
+    "pass": true
+  },
+  {
+    "name": "Escape关闭导航",
+    "pass": true
+  },
+  {
+    "name": "Prompt可收起",
+    "pass": true
+  },
+  {
+    "name": "Prompt可展开",
+    "pass": true
+  },
+  {
+    "name": "键盘空格可切换任务",
+    "pass": true
+  },
+  {
+    "name": "Tab进入下一个任务",
+    "pass": true
+  },
+  {
+    "name": "键盘焦点可见",
+    "pass": true
+  },
+  {
+    "name": "键盘Enter收起Prompt",
+    "pass": true
+  },
+  {
+    "name": "演示状态对话框",
+    "pass": true
+  },
+  {
+    "name": "全新记录的零进度",
+    "pass": true
+  },
+  {
+    "name": "全部完成终点",
+    "pass": true
+  },
+  {
+    "name": "模拟完成日期不在未来",
+    "pass": true
+  },
+  {
+    "name": "第一天上一天禁用",
+    "pass": true
+  },
+  {
+    "name": "最后一天下一天禁用",
+    "pass": true
+  },
+  {
+    "name": "无效路由可恢复",
+    "pass": true
+  },
+  {
+    "name": "无JS运行错误",
+    "pass": true
+  },
+  {
+    "name": "file协议可独立运行",
+    "pass": true
+  }
+]
