@@ -89,7 +89,7 @@ function renderDay(globalDay){
   if(currentTrack==='math'&&dayData.syncMain){sync.style.display='inline-flex';sync.textContent='↗ 同步：Main Day '+dayData.syncMain;sync.onclick=function(){currentTrack='main';switchTrackUI();goDay(dayData.syncMain)};}else{sync.style.display='none'}
   var tl=document.getElementById('task-list');tl.innerHTML='';
   if(dayData.tasks.length===0){
-    // 复习/缓冲日 — 单个完成按钮
+    // 计划未预置任务 — 单个完成按钮，具体实践由当天教学生成
     var reviewed=Store.isDayDone(globalDay);
     var label=document.createElement('label');label.className='task-item';
     if(reviewed)label.classList.add('done');
@@ -229,7 +229,7 @@ function renderOverview(){
     mod.daysData.forEach(function(day){
       currentTrack='math';
       var st=Store.isDayDone(day.globalDay)?'st2':(Store.isTaskDone(day.globalDay,0)?'st1':'st0');
-      rightHtml+='<div class="mm-r-day '+st+'" data-sync="'+day.syncMain+'" onclick="event.stopPropagation();setHash(\'read-math-'+day.globalDay+'\')">M'+day.globalDay+': '+day.title+'</div>';
+      rightHtml+='<div class="mm-r-day '+st+'" data-sync="'+day.syncMain+'" data-math="'+day.globalDay+'" onclick="event.stopPropagation();setHash(\'read-math-'+day.globalDay+'\')">M'+day.globalDay+': '+day.title+'</div>';
     });
   });
 
@@ -254,45 +254,40 @@ function renderOverview(){
       if(gd)gdToTop[gd]=item.getBoundingClientRect().top-leftBase;
     });
 
+    // 无主线关联的数学日接在已定位内容之后，不强造同步日期。
+    var savedTrack=currentTrack,mathDayTops={},mathBottom=0;
     // 右列数学天：绝对定位
     if(rightContainer){
       rightContainer.style.minHeight=leftContainer.offsetHeight+'px';
       rightContainer.querySelectorAll('.mm-r-day').forEach(function(el){
         var sync=parseInt(el.getAttribute('data-sync'));
         var top=gdToTop[sync];
-        if(top===undefined)return;
+        if(top===undefined)top=mathBottom+8;
+        mathDayTops[el.getAttribute('data-math')]=top;
         el.style.position='absolute';
         el.style.left='28px'; el.style.right='0';
         el.style.top=top+'px';
+        mathBottom=Math.max(mathBottom,top+Math.max(el.offsetHeight,24));
       });
+      rightContainer.style.minHeight=Math.max(leftContainer.offsetHeight,mathBottom)+'px';
     }
 
     // 左侧模块标题：放在右侧，检查模块完成状态
     if(hdsContainer){
-      hdsContainer.style.minHeight=leftContainer.offsetHeight+'px';
-      var doneMods={};
-      rightContainer.querySelectorAll('.mm-r-day').forEach(function(el){
-        var sync=parseInt(el.getAttribute('data-sync'));
-        var top=gdToTop[sync];
+      hdsContainer.style.minHeight=Math.max(leftContainer.offsetHeight,mathBottom)+'px';
+      MATH_TRACK.modules.forEach(function(mod){
+        var firstDay=mod.daysData[0],top=mathDayTops[firstDay.globalDay];
         if(top===undefined)return;
-        MATH_TRACK.modules.forEach(function(mod){
-          mod.daysData.forEach(function(day){
-            if(day.syncMain===sync && !doneMods[mod.name]){
-              doneMods[mod.name]=true;
-              var hd=hdsContainer.querySelector('[data-mod="'+mod.name+'"]');
-              if(hd){
-                // 检查整个模块是否全部完成
-                currentTrack='math';
-                var allDone=mod.daysData.every(function(d){return Store.isDayDone(d.globalDay);});
-                hd.className='mm-mod-hd'+(allDone?' done':'');
-                hd.style.position='absolute';
-                hd.style.top=top+'px';
-              }
-            }
-          });
-        });
+        var hd=hdsContainer.querySelector('[data-mod="'+mod.name+'"]');
+        if(hd){
+          currentTrack='math';
+          var allDone=mod.daysData.every(function(d){return Store.isDayDone(d.globalDay);});
+          hd.className='mm-mod-hd'+(allDone?' done':'');
+          hd.style.position='absolute';hd.style.top=top+'px';
+        }
       });
     }
+    currentTrack=savedTrack;
   },50);
   currentTrack=tempTrack;
 }

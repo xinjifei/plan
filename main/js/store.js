@@ -43,8 +43,19 @@ var Store={
 
   // ---- 读接口（逻辑与旧版一致，背后改成读内存） ----
   isTaskDone(day,idx){var d=this.load(),dk='d'+day;return!!(d[dk]&&d[dk].tasks&&d[dk].tasks[idx])},
-  isDayDone(day){var d=this.load(),dk='d'+day;if(!d[dk])return false;var tasks=d[dk].tasks;if(!tasks||tasks.length===0)return!!d[dk].reviewed;var plan=getPlan(),dd=plan.getDay(day);var expectedN=dd&&dd.tasks?dd.tasks.length:tasks.length;for(var i=0;i<expectedN;i++){if(!tasks[i])return false}return true},
-  getLevel(day){var d=this.load(),dk='d'+day;if(!d[dk]||!d[dk].tasks)return 0;var done=d[dk].tasks.filter(function(t){return t}).length,total=d[dk].tasks.length;if(done===total)return 4;if(done>=total*0.66)return 3;if(done>=total*0.33)return 2;return done>0?1:0},
+  isDayDone(day){
+    var d=this.load(),entry=d['d'+day];if(!entry)return false;
+    var tasks=entry.tasks,dd=getPlan().getDay(day);
+    if(dd&&dd.tasks.length===0){
+      if(typeof entry.reviewed==='boolean')return entry.reviewed;
+      // 旧任务记录只在原任务全部完成时继承完成状态；不改写历史数据。
+      return Array.isArray(tasks)&&tasks.length>0&&tasks.every(function(done){return done===true});
+    }
+    if(!tasks||tasks.length===0)return!!entry.reviewed;
+    var expectedN=dd&&dd.tasks?dd.tasks.length:tasks.length;
+    for(var i=0;i<expectedN;i++){if(!tasks[i])return false}return true;
+  },
+  getLevel(day){var dd=getPlan().getDay(day);if(dd&&dd.tasks.length===0)return this.isDayDone(day)?4:0;var d=this.load(),dk='d'+day;if(!d[dk]||!d[dk].tasks)return 0;var done=d[dk].tasks.filter(function(t){return t}).length,total=d[dk].tasks.length;if(done===total)return 4;if(done>=total*0.66)return 3;if(done>=total*0.33)return 2;return done>0?1:0},
   getDoneCount(){var c=0;if(currentTrack==='math'){MATH_TRACK.allDays().forEach(function(day){if(this.isDayDone(day.globalDay))c++}.bind(this))}else{MAIN_PLAN.allDays().forEach(function(gd){if(this.isDayDone(gd))c++}.bind(this))}return c},
   getStreak(){
     // 总连胜：合并主线+数学，按日期记录事实（严格：错过一整天就断）
@@ -57,7 +68,7 @@ var Store={
 
   // ---- 写接口 ----
   toggleTask(day,idx){var d=this.load(),dk='d'+day;if(!d[dk]){var plan=getPlan(),dd=plan.getDay(day);var n=dd&&dd.tasks?dd.tasks.length:3;d[dk]={tasks:new Array(n).fill(false)}}var was=this.isDayDone(day);d[dk].tasks[idx]=!d[dk].tasks[idx];this._touch();this._syncStreak(day,was)},
-  markReviewed(day){var d=this.load(),dk='d'+day;if(!d[dk])d[dk]={tasks:[],reviewed:false};var was=this.isDayDone(day);d[dk].reviewed=!d[dk].reviewed;this._touch();this._syncStreak(day,was);return d[dk].reviewed},
+  markReviewed(day){var d=this.load(),dk='d'+day;if(!d[dk])d[dk]={tasks:[],reviewed:false};var was=this.isDayDone(day);d[dk].reviewed=!was;this._touch();this._syncStreak(day,was);return d[dk].reviewed},
 
   // ---- 连胜：勾满要记账，由完成变未完成要退账 ----
   // 进度记录里只有 tasks，没有日期，所以"哪天学的"只能靠 streak 这个计数器记。
